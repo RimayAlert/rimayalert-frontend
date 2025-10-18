@@ -45,12 +45,10 @@ fun LoginScreen(
         ) {
             Spacer(modifier = Modifier.height(60.dp))
 
-            // Logo de la app (muy tenue)
             AppLogo()
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            // Card principal
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -63,12 +61,10 @@ fun LoginScreen(
                     modifier = Modifier.padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Espacio para la mascota
                     MascotPlaceholder()
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // Título
                     Text(
                         text = "Bienvenido de nuevo",
                         fontSize = 24.sp,
@@ -79,7 +75,6 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(32.dp))
 
-                    // Campo de correo electrónico
                     AuthTextField(
                         value = email,
                         onValueChange = { email = it },
@@ -89,7 +84,6 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Campo de contraseña
                     AuthTextField(
                         value = password,
                         onValueChange = { password = it },
@@ -100,7 +94,6 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // Recordarme y olvidaste contraseña
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -137,7 +130,6 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // Botón de inicio de sesión
                     AuthButton(
                         text = "Iniciar Sesión",
                         onClick = { onLoginClick(email, password) },
@@ -146,7 +138,6 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Registro
                     Row(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
