@@ -3,7 +3,6 @@ package com.fazq.rimayalert.features.auth.views.ui.main.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -23,13 +22,10 @@ import com.fazq.rimayalert.core.ui.theme.AuthColors
 fun RegisterCheckboxes(
     acceptTerms: Boolean,
     onAcceptTermsChange: (Boolean) -> Unit,
-    acceptNotifications: Boolean,
-    onAcceptNotificationsChange: (Boolean) -> Unit,
     onTermsClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-        // Términos de uso
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
@@ -64,29 +60,6 @@ fun RegisterCheckboxes(
                     )
                 }
             }
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Notificaciones
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Checkbox(
-                checked = acceptNotifications,
-                onCheckedChange = onAcceptNotificationsChange,
-                colors = CheckboxDefaults.colors(
-                    checkedColor = AuthColors.Primary,
-                    uncheckedColor = AuthColors.BorderColor
-                )
-            )
-            Text(
-                text = "Recibir notificaciones",
-                fontSize = 14.sp,
-                color = AuthColors.TextSecondary,
-                modifier = Modifier.padding(start = 8.dp)
-            )
         }
     }
 }

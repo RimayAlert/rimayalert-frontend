@@ -21,25 +21,28 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.fazq.rimayalert.core.ui.theme.AuthColors
-import com.fazq.rimayalert.features.auth.domain.model.RegisterFormData
+import com.fazq.rimayalert.features.auth.domain.model.RegisterModel
 import com.fazq.rimayalert.features.auth.views.ui.main.components.AuthButton
 import com.fazq.rimayalert.features.auth.views.ui.main.components.AuthFooterText
 import com.fazq.rimayalert.features.auth.views.ui.main.components.AuthTopBar
 import com.fazq.rimayalert.features.auth.views.ui.main.components.RegisterCheckboxes
 import com.fazq.rimayalert.features.auth.views.ui.main.components.RegisterFormFields
-
+import com.fazq.rimayalert.features.auth.views.viewmodel.RegisterViewModel
 
 
 @Composable
 fun RegisterScreen(
-    onRegisterClick: (RegisterFormData) -> Unit = {},
+    onRegisterClick: (RegisterModel) -> Unit = {},
     onLoginClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
-    onTermsClick: () -> Unit = {}
+    onTermsClick: () -> Unit = {},
+    registerViewModel : RegisterViewModel = hiltViewModel()
 ) {
-    var formData by remember { mutableStateOf(RegisterFormData()) }
+    var registerState by remember { mutableStateOf(RegisterModel()) }
     var displayNameError by remember { mutableStateOf(false) }
 
     Box(
@@ -74,31 +77,47 @@ fun RegisterScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         RegisterFormFields(
-                            username = formData.username,
-                            onUsernameChange = { formData = formData.copy(username = it) },
-                            email = formData.email,
-                            onEmailChange = { formData = formData.copy(email = it) },
-                            displayName = formData.displayName,
+                            first_name = registerState.first_name,
+                            onFirstNameChange = {
+                                registerState = registerState.copy(first_name = it)
+                            },
+                            last_name = registerState.last_name,
+                            onLastNameChange = {
+                                registerState = registerState.copy(last_name = it)
+                            },
+                            dni = registerState.dni,
+                            onDniChange = {
+                                registerState = registerState.copy(dni = it)
+                            },
+                            username = registerState.username,
+                            onUsernameChange = {
+                                registerState = registerState.copy(username = it)
+                            },
+                            email = registerState.email,
+                            onEmailChange = { registerState = registerState.copy(email = it) },
+                            displayName = registerState.displayName,
                             onDisplayNameChange = {
-                                formData = formData.copy(displayName = it)
+                                registerState = registerState.copy(displayName = it)
                                 displayNameError = it.isNotBlank()
                             },
-                            phone = formData.phone,
-                            onPhoneChange = { formData = formData.copy(phone = it) },
-                            password = formData.password,
-                            onPasswordChange = { formData = formData.copy(password = it) },
-                            confirmPassword = formData.confirmPassword,
-                            onConfirmPasswordChange = { formData = formData.copy(confirmPassword = it) },
-                            displayNameError = displayNameError
+                            phone = registerState.phone,
+                            onPhoneChange = { registerState = registerState.copy(phone = it) },
+                            password = registerState.password,
+                            onPasswordChange = {
+                                registerState = registerState.copy(password = it)
+                            },
+                            confirmPassword = registerState.confirmPassword,
+                            onConfirmPasswordChange = {
+                                registerState = registerState.copy(confirmPassword = it)
+                            },
+                            displayNameError = displayNameError,
                         )
 
                         Spacer(modifier = Modifier.height(24.dp))
 
                         RegisterCheckboxes(
-                            acceptTerms = formData.acceptTerms,
-                            onAcceptTermsChange = { formData = formData.copy(acceptTerms = it) },
-                            acceptNotifications = formData.acceptNotifications,
-                            onAcceptNotificationsChange = { formData = formData.copy(acceptNotifications = it) },
+                            acceptTerms = registerState.acceptTerms,
+                            onAcceptTermsChange = { registerState = registerState.copy(acceptTerms = it) },
                             onTermsClick = onTermsClick
                         )
 
@@ -106,13 +125,12 @@ fun RegisterScreen(
 
                         AuthButton(
                             text = "Crear Cuenta",
-                            onClick = { onRegisterClick(formData) },
-                            enabled = formData.username.isNotBlank() &&
-                                    formData.email.isNotBlank() &&
-                                    formData.displayName.isNotBlank() &&
-                                    formData.password.isNotBlank() &&
-                                    formData.confirmPassword.isNotBlank() &&
-                                    formData.acceptTerms
+                            onClick = { onRegisterClick(registerState) },
+                            enabled = registerState.username.isNotBlank() &&
+                                    registerState.email.isNotBlank() &&
+                                    registerState.displayName.isNotBlank() &&
+                                    registerState.password.isNotBlank() &&
+                                    registerState.confirmPassword.isNotBlank()
                         )
 
                         Spacer(modifier = Modifier.height(16.dp))
@@ -127,4 +145,15 @@ fun RegisterScreen(
             }
         }
     }
+}
+
+
+@Preview(showBackground = true, showSystemUi = false)
+@Composable
+fun RegisterScreenPreview() {
+    RegisterScreen(
+        onRegisterClick = {},
+        onLoginClick = {},
+        onBackClick = {},
+    )
 }
