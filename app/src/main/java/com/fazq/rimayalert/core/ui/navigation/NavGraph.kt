@@ -27,7 +27,6 @@ fun NavGraph(navController: NavHostController = rememberNavController()){
             onRegisterClick = {_ ->  },
             onBackClick = {navController.popBackStack()},
             onTermsClick = {}
-
         )}
     }
 

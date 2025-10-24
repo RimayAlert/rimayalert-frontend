@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,6 +15,12 @@ import com.fazq.rimayalert.core.ui.theme.AuthColors
 
 @Composable
 fun RegisterFormFields(
+    first_name : String,
+    onFirstNameChange: (String) -> Unit,
+    last_name : String,
+    onLastNameChange: (String) -> Unit,
+    dni : String,
+    onDniChange: (String) -> Unit,
     username: String,
     onUsernameChange: (String) -> Unit,
     email: String,
@@ -32,6 +37,36 @@ fun RegisterFormFields(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
+
+        AuthTextField(
+            value = first_name,
+            onValueChange = onFirstNameChange,
+            label = "Nombre",
+            keyboardType = KeyboardType.Text
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+
+        AuthTextField(
+            value = last_name,
+            onValueChange = onLastNameChange,
+            label = "apellido",
+            keyboardType = KeyboardType.Text
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        AuthTextField(
+            value = dni,
+            onValueChange = onDniChange,
+            label = "Dni",
+            keyboardType = KeyboardType.Number
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+
         AuthTextField(
             value = username,
             onValueChange = onUsernameChange,
