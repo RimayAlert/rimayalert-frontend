@@ -13,6 +13,20 @@ material = "1.12.0"
 activity = "1.10.1"
 constraintlayout = "2.2.1"
 
+# Retrofit & OkHttp
+retrofit = "3.0.0"
+retrofitScalars = "3.0.0"
+okhttpLogging = "5.2.1"
+
+# Misc libs
+jodaTime = "2.14.0"
+
+# Room
+room = "2.8.3"
+
+# Coroutines
+coroutines = "1.10.2"
+
 # splashscreen
 splashscreen = "1.0.1"
 
@@ -40,6 +54,18 @@ material = { group = "com.google.android.material", name = "material", version.r
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 
+# Room
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+
+# OkHttp
+okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttpLogging" }
+
+# Coroutines
+coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
+
+
 # splashscreen
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
 
@@ -47,6 +73,15 @@ androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscree
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+
+# Retrofit
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-scalars = { group = "com.squareup.retrofit2", name = "converter-scalars", version.ref = "retrofitScalars" }
+retrofit-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+
+# Otros
+joda-time = { group = "joda-time", name = "joda-time", version.ref = "jodaTime" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
