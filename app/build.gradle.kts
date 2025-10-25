@@ -18,6 +18,12 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments["room.schemaLocation"] = "$projectDir/schemas"
+            }
+        }
     }
 
     buildTypes {
@@ -53,6 +59,14 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.appcompat)
 
+    // Room
+    implementation(libs.room.ktx)
+    kapt(libs.room.compiler)
+
+    // Utils
+    implementation(libs.coroutines.core)
+    implementation(libs.coroutines.android)
+
     // DI
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
@@ -60,6 +74,15 @@ dependencies {
 
 //    splashscreen
     implementation(libs.androidx.core.splashscreen)
+
+    // Networking
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.scalars)
+    implementation(libs.retrofit.gson)
+    implementation(libs.okhttp.logging)
+
+    // Utils
+    implementation(libs.joda.time)
 
     implementation(libs.material)
     implementation(libs.androidx.activity)
