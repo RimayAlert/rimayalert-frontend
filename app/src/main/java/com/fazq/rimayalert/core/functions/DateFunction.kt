@@ -52,8 +52,6 @@ fun howLongTimeBetween(
     var minutes = 0
     var hours = 0
     var days = 0
-    println("dateStart: $dateStart")
-    println("dateEnd: $dateEnd")
     if (knowIfDateIs(dateStart, dateEnd, mustBe)) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val dateTime1 = getFormatLocalDateTime(dateStart)
@@ -64,8 +62,6 @@ fun howLongTimeBetween(
             hours = (duration.toHours() % 24).toInt()
             minutes = (duration.toMinutes() % 60).toInt()
             seconds = (duration.seconds % 60).toInt()
-
-            println("Días: $days, Horas: $hours, Minutos: $minutes, Segundos: $seconds")
         } else {
             val dateTime1 = getFormatDateTime(dateStart)
             val dateTime2 = getFormatDateTime(dateEnd)
@@ -75,8 +71,6 @@ fun howLongTimeBetween(
             hours = (duration.standardHours % 24).toInt()
             minutes = (duration.standardMinutes % 60).toInt()
             seconds = (duration.standardSeconds % 60).toInt()
-
-            println("Días: $days, Horas: $hours, Minutos: $minutes, Segundos: $seconds")
         }
     }
 
@@ -89,17 +83,14 @@ fun lessMinutes(minutes: Int): String {
         cal.time = Date()
 
         var tempDate = cal.time
-        println("Fecha actual: $tempDate")
 
         cal[Calendar.MINUTE] = cal[Calendar.MINUTE] - minutes
         tempDate = cal.time
 
-        println("Hora modificada: $tempDate")
         val date = SimpleDateFormat(
             "yyyy'-'MM'-'dd' 'HH':'mm':'ss",
             Locale("es", "ES")
         ).format(cal.time)
-        println(date)
         return date
     } catch (e: ParseException) {
         e.printStackTrace()
@@ -112,17 +103,14 @@ fun plusMinutes(minutes: Int): String {
         cal.time = Date()
 
         var tempDate = cal.time
-        println("Fecha actual: $tempDate")
 
         cal[Calendar.MINUTE] = cal[Calendar.MINUTE] + minutes
         tempDate = cal.time
 
-        println("Hora modificada: $tempDate")
         val date = SimpleDateFormat(
             "yyyy'-'MM'-'dd' 'HH':'mm':'ss",
             Locale("es", "ES")
         ).format(cal.time)
-        println(date)
         return date
     } catch (e: ParseException) {
         e.printStackTrace()
@@ -136,17 +124,14 @@ fun sumSeconds(seconds: Int): String {
         cal.time = Date()
 
         var tempDate = cal.time
-        println("Fecha actual: $tempDate")
 
         cal[Calendar.SECOND] = cal[Calendar.SECOND] + seconds
         tempDate = cal.time
 
-        println("Hora modificada: $tempDate")
         val date = SimpleDateFormat(
             "yyyy'-'MM'-'dd' 'HH':'mm':'ss",
             Locale("es", "ES")
         ).format(cal.time)
-        println(date)
         return date
     } catch (e: ParseException) {
         e.printStackTrace()
