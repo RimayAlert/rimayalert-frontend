@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,6 +45,10 @@ fun RegisterScreen(
 ) {
     var registerState by remember { mutableStateOf(RegisterModel()) }
     var displayNameError by remember { mutableStateOf(false) }
+
+    val registerUiState by registerViewModel.registerUiState.collectAsState()
+
+
 
     Box(
         modifier = Modifier
