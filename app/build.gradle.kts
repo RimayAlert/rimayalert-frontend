@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -5,6 +7,21 @@ plugins {
     alias(libs.plugins.hilt.android)
     id("kotlin-kapt")
 }
+
+/**
+ * Helper para cargar archivos .properties
+ */
+fun loadProperties(fileName: String): Properties {
+    val props = Properties()
+    val file = rootProject.file(fileName)
+    if (file.exists()) {
+        file.inputStream().use { props.load(it) }
+    }
+    return props
+}
+
+//val keystoreProperties = loadProperties("key.properties")
+val envProperties = loadProperties("env.properties")
 
 android {
     namespace = "com.fazq.rimayalert"
@@ -35,6 +52,64 @@ android {
             )
         }
     }
+
+    flavorDimensions += "flavor-type"
+
+    /**
+     * Helper para configurar flavors
+     */
+    fun com.android.build.api.dsl.ProductFlavor.configureFlavor(
+        env: Properties,
+        baseKey: String,
+        socketKey: String,
+        authority: String,
+        appName: String
+    ) {
+        val baseUrl = env.getProperty(baseKey)
+            ?: throw GradleException("$baseKey not set in env.properties")
+
+        val baseUrlSocket = env.getProperty(socketKey)
+            ?: throw GradleException("$socketKey not set in env.properties")
+
+        manifestPlaceholders.putAll(
+            mapOf(
+                "fileProviderAuthority" to authority,
+                "baseUrl" to "\"$baseUrl\"",
+                "baseUrlSocket" to "\"$baseUrlSocket\""
+            )
+        )
+        buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
+        buildConfigField("String", "BASE_URL_SOCKET", "\"$baseUrlSocket\"")
+        resValue("string", "app_name", appName)
+    }
+
+    productFlavors {
+        create("dev") {
+            dimension = "flavor-type"
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
+
+            configureFlavor(
+                envProperties,
+                "BASE_URL_DEV",
+                "BASE_URL_SOCKET_DEV",
+                "com.hey.inplanet.biolunch.dev.fileprovider",
+                "Hey Biometric Dev"
+            )
+        }
+        create("prod") {
+            dimension = "flavor-type"
+
+            configureFlavor(
+                envProperties,
+                "BASE_URL_PROD",
+                "BASE_URL_SOCKET_PROD",
+                "com.fazq.rimayalert.fileprovider",
+                "Rimay Alert"
+            )
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -43,6 +118,8 @@ android {
         jvmTarget = "11"
     }
     buildFeatures {
+        viewBinding = true
+        buildConfig = true
         compose = true
     }
 }
