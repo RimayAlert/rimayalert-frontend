@@ -10,24 +10,32 @@ import com.fazq.rimayalert.features.auth.views.ui.main.screen.RegisterScreen
 import com.fazq.rimayalert.features.splash.ui.SplashScreen
 
 @Composable
-fun NavGraph(navController: NavHostController = rememberNavController()){
+fun NavGraph(navController: NavHostController = rememberNavController()) {
     NavHost(
         navController = navController,
         startDestination = "splash"
-    ){
-        composable("splash"){ SplashScreen(navController) }
+    ) {
+        composable("splash") { SplashScreen(navController) }
 
-        composable("login"){ LoginScreen(
-            onRegisterClick = { navController.navigate("register")},
-            onLoginClick = { email, password ->},
-            onForgotPasswordClick = {}
-        ) }
-        composable("register"){ RegisterScreen (
-            onLoginClick = { navController.navigate("login")  },
-            onRegisterClick = {_ ->  },
-            onBackClick = {navController.popBackStack()},
-            onTermsClick = {}
-        )}
+        composable("login") {
+            LoginScreen(
+                onRegisterClick = { navController.navigate("register") },
+                onLoginClick = { email, password -> },
+                onForgotPasswordClick = {}
+            )
+        }
+        composable("register") {
+            RegisterScreen(
+                onRegisterSuccess = {
+                    navController.navigate("login?username=$it") {
+                        popUpTo("register") { inclusive = true }
+                    }
+                },
+                onLoginClick = { navController.navigate("login") },
+                onBackClick = { navController.popBackStack() },
+                onTermsClick = {}
+            )
+        }
     }
 
 }
