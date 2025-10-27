@@ -12,35 +12,20 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fazq.rimayalert.core.ui.theme.AuthColors
+import com.fazq.rimayalert.features.auth.domain.model.RegisterUserModel
 
 @Composable
 fun RegisterFormFields(
-    first_name : String,
-    onFirstNameChange: (String) -> Unit,
-    last_name : String,
-    onLastNameChange: (String) -> Unit,
-    dni : String,
-    onDniChange: (String) -> Unit,
-    username: String,
-    onUsernameChange: (String) -> Unit,
-    email: String,
-    onEmailChange: (String) -> Unit,
-    displayName: String,
-    onDisplayNameChange: (String) -> Unit,
-    phone: String,
-    onPhoneChange: (String) -> Unit,
-    password: String,
-    onPasswordChange: (String) -> Unit,
-    confirmPassword: String,
-    onConfirmPasswordChange: (String) -> Unit,
+    registerData: RegisterUserModel,
+    onDataChange: (RegisterUserModel) -> Unit,
     displayNameError: Boolean,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
 
         AuthTextField(
-            value = first_name,
-            onValueChange = onFirstNameChange,
+            value = registerData.firstName,
+            onValueChange = { onDataChange(registerData.copy(firstName = it)) },
             label = "Nombre",
             keyboardType = KeyboardType.Text
         )
@@ -49,8 +34,8 @@ fun RegisterFormFields(
 
 
         AuthTextField(
-            value = last_name,
-            onValueChange = onLastNameChange,
+            value = registerData.lastName,
+            onValueChange = { onDataChange(registerData.copy(lastName = it)) },
             label = "apellido",
             keyboardType = KeyboardType.Text
         )
@@ -58,8 +43,8 @@ fun RegisterFormFields(
         Spacer(modifier = Modifier.height(16.dp))
 
         AuthTextField(
-            value = dni,
-            onValueChange = onDniChange,
+            value = registerData.dni,
+            onValueChange = { onDataChange(registerData.copy(dni = it)) },
             label = "Dni",
             keyboardType = KeyboardType.Number
         )
@@ -68,8 +53,8 @@ fun RegisterFormFields(
 
 
         AuthTextField(
-            value = username,
-            onValueChange = onUsernameChange,
+            value = registerData.username,
+            onValueChange = { onDataChange(registerData.copy(username = it)) },
             label = "Nombre de usuario",
             keyboardType = KeyboardType.Text
         )
@@ -77,8 +62,8 @@ fun RegisterFormFields(
         Spacer(modifier = Modifier.height(16.dp))
 
         AuthTextField(
-            value = email,
-            onValueChange = onEmailChange,
+            value = registerData.email,
+            onValueChange = { onDataChange(registerData.copy(email = it)) },
             label = "Correo electrónico",
             keyboardType = KeyboardType.Email
         )
@@ -86,8 +71,8 @@ fun RegisterFormFields(
         Spacer(modifier = Modifier.height(16.dp))
 
         AuthTextField(
-            value = displayName,
-            onValueChange = onDisplayNameChange,
+            value = registerData.displayName,
+            onValueChange = { onDataChange(registerData.copy(displayName = it)) },
             label = "Nombre público (Alias)",
             keyboardType = KeyboardType.Text,
             isError = displayNameError,
@@ -99,8 +84,8 @@ fun RegisterFormFields(
         Spacer(modifier = Modifier.height(16.dp))
 
         AuthTextField(
-            value = phone,
-            onValueChange = onPhoneChange,
+            value = registerData.phone,
+            onValueChange = { onDataChange(registerData.copy(phone = it)) },
             label = "Teléfono (opcional)",
             keyboardType = KeyboardType.Phone
         )
@@ -108,8 +93,8 @@ fun RegisterFormFields(
         Spacer(modifier = Modifier.height(16.dp))
 
         AuthTextField(
-            value = password,
-            onValueChange = onPasswordChange,
+            value = registerData.password,
+            onValueChange = { onDataChange(registerData.copy(password = it)) },
             label = "Contraseña",
             isPassword = true,
             keyboardType = KeyboardType.Password
@@ -129,8 +114,8 @@ fun RegisterFormFields(
         Spacer(modifier = Modifier.height(16.dp))
 
         AuthTextField(
-            value = confirmPassword,
-            onValueChange = onConfirmPasswordChange,
+            value = registerData.confirmPassword,
+            onValueChange = { onDataChange(registerData.copy(confirmPassword = it)) },
             label = "Confirmar contraseña",
             isPassword = true,
             keyboardType = KeyboardType.Password
