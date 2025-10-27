@@ -1,5 +1,6 @@
 package com.fazq.rimayalert.features.auth.views.ui.main.screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,8 +13,11 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,30 +29,54 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.fazq.rimayalert.core.states.BaseUiState
 import com.fazq.rimayalert.core.ui.theme.AuthColors
-import com.fazq.rimayalert.features.auth.domain.model.RegisterModel
+import com.fazq.rimayalert.features.auth.domain.model.RegisterUserModel
 import com.fazq.rimayalert.features.auth.views.ui.main.components.AuthButton
 import com.fazq.rimayalert.features.auth.views.ui.main.components.AuthFooterText
 import com.fazq.rimayalert.features.auth.views.ui.main.components.AuthTopBar
 import com.fazq.rimayalert.features.auth.views.ui.main.components.RegisterCheckboxes
 import com.fazq.rimayalert.features.auth.views.ui.main.components.RegisterFormFields
-import com.fazq.rimayalert.features.auth.views.viewmodel.RegisterViewModel
+import com.fazq.rimayalert.features.auth.views.viewmodel.RegisterUserViewModel
+import kotlinx.coroutines.delay
 
 
 @Composable
 fun RegisterScreen(
-    onRegisterClick: (RegisterModel) -> Unit = {},
+    onRegisterSuccess: (String) -> Unit = {},
     onLoginClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
     onTermsClick: () -> Unit = {},
-    registerViewModel : RegisterViewModel = hiltViewModel()
+    registerUserViewModel: RegisterUserViewModel = hiltViewModel()
 ) {
-    var registerState by remember { mutableStateOf(RegisterModel()) }
+    var registerState by remember { mutableStateOf(RegisterUserModel()) }
     var displayNameError by remember { mutableStateOf(false) }
 
-    val registerUiState by registerViewModel.registerUiState.collectAsState()
+    val registerUserUiState by registerUserViewModel.registerUserUiState.collectAsState()
 
+    LaunchedEffect(registerUserUiState) {
+        when (registerUserUiState) {
+            is BaseUiState.SuccessState<*> -> {
+                val username = (registerUserUiState as BaseUiState.SuccessState<*>).data as String
+                Log.d("RegisterScreen", "Registration successful: $username")
+//                scope.launch {
+//                    snackbarHostState.showSnackbar(
+//                        message = "Usuario $username registrado con éxito",
+//                        duration = SnackbarDuration.Short
+//                    )
+//                }
+//                delay(1000)
+                onRegisterSuccess(username)
+            }
 
+            is BaseUiState.ErrorState -> {
+                val error = (registerUserUiState as BaseUiState.ErrorState).message
+                Log.d("RegisterScreen", "Registration error: $error")
+            }
+
+            else -> {}
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -82,13 +110,13 @@ fun RegisterScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         RegisterFormFields(
-                            first_name = registerState.first_name,
+                            first_name = registerState.firstName,
                             onFirstNameChange = {
-                                registerState = registerState.copy(first_name = it)
+                                registerState = registerState.copy(firstName = it)
                             },
-                            last_name = registerState.last_name,
+                            last_name = registerState.lastName,
                             onLastNameChange = {
-                                registerState = registerState.copy(last_name = it)
+                                registerState = registerState.copy(lastName = it)
                             },
                             dni = registerState.dni,
                             onDniChange = {
@@ -122,7 +150,9 @@ fun RegisterScreen(
 
                         RegisterCheckboxes(
                             acceptTerms = registerState.acceptTerms,
-                            onAcceptTermsChange = { registerState = registerState.copy(acceptTerms = it) },
+                            onAcceptTermsChange = {
+                                registerState = registerState.copy(acceptTerms = it)
+                            },
                             onTermsClick = onTermsClick
                         )
 
@@ -130,13 +160,21 @@ fun RegisterScreen(
 
                         AuthButton(
                             text = "Crear Cuenta",
-                            onClick = { onRegisterClick(registerState) },
+                            onClick = {
+                                registerUserViewModel.registerUser(registerState)
+                            },
                             enabled = registerState.username.isNotBlank() &&
                                     registerState.email.isNotBlank() &&
                                     registerState.displayName.isNotBlank() &&
                                     registerState.password.isNotBlank() &&
                                     registerState.confirmPassword.isNotBlank()
                         )
+
+                        if (registerUserUiState is BaseUiState.LoadingState) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.padding(top = 16.dp)
+                            )
+                        }
 
                         Spacer(modifier = Modifier.height(16.dp))
 
@@ -157,7 +195,7 @@ fun RegisterScreen(
 @Composable
 fun RegisterScreenPreview() {
     RegisterScreen(
-        onRegisterClick = {},
+        onRegisterSuccess = {},
         onLoginClick = {},
         onBackClick = {},
     )

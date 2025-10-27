@@ -1,4 +1,4 @@
-package com.fazq.rimayalert.core.singleton
+package com.fazq.rimayalert.core.connection.singleton
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
