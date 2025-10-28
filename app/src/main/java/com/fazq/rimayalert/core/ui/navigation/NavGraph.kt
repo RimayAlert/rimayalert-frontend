@@ -5,7 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.fazq.rimayalert.features.auth.ui.LoginScreen
+import com.fazq.rimayalert.features.auth.views.ui.main.screen.LoginScreen
 import com.fazq.rimayalert.features.auth.views.ui.main.screen.RegisterScreen
 import com.fazq.rimayalert.features.splash.ui.SplashScreen
 
@@ -19,6 +19,7 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
 
         composable("login") {
             LoginScreen(
+                navController = navController,
                 onRegisterClick = { navController.navigate("register") },
                 onLoginClick = { email, password -> },
                 onForgotPasswordClick = {}
@@ -26,12 +27,12 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
         }
         composable("register") {
             RegisterScreen(
+                navController = navController,
                 onRegisterSuccess = {
-                    navController.navigate("login?username=$it") {
+                    navController.navigate("login") {
                         popUpTo("register") { inclusive = true }
                     }
                 },
-                onLoginClick = { navController.navigate("login") },
                 onBackClick = { navController.popBackStack() },
                 onTermsClick = {}
             )
