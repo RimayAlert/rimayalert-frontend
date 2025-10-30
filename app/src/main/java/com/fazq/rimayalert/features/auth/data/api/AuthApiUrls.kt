@@ -4,9 +4,9 @@ object AuthApiUrls {
 
     private const val api = "api"
 
-    private const val auth = "api-auth"
+    private const val auth = "${api}/auth"
 
-    const val AUTH_URL = "${auth}-user"
+    const val AUTH_URL = "${auth}/user"
 
     const val REFRESH_TOKEN_URL = "${auth}-token/refresh"
 

@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,17 +12,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,33 +36,81 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.fazq.rimayalert.core.states.BaseUiState
 import com.fazq.rimayalert.core.ui.theme.AuthColors
-import com.fazq.rimayalert.features.auth.views.ui.main.components.AppLogo
+import com.fazq.rimayalert.features.auth.domain.model.AuthModel
 import com.fazq.rimayalert.features.auth.views.ui.main.components.AuthButton
+import com.fazq.rimayalert.features.auth.views.ui.main.components.AuthFooterText
 import com.fazq.rimayalert.features.auth.views.ui.main.components.AuthTextField
 import com.fazq.rimayalert.features.auth.views.ui.main.components.MascotPlaceholder
+import com.fazq.rimayalert.features.auth.views.ui.main.screen.states.LoginUiState
+import com.fazq.rimayalert.features.auth.views.viewmodel.AuthViewModel
 
 @Composable
 fun LoginScreen(
-    onLoginClick: (userName: String, password: String) -> Unit = { _, _ -> },
     onRegisterClick: () -> Unit = {},
-    onForgotPasswordClick: () -> Unit = {}
+    onForgotPasswordClick: () -> Unit = {},
+    onLoginSuccess: () -> Unit = {},
+    authViewModel: AuthViewModel = hiltViewModel()
 ) {
-    var userName by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var rememberMe by remember { mutableStateOf(false) }
-    var showWelcome by remember { mutableStateOf(false) }
+    val authUiState by authViewModel.authUiState.collectAsState()
+    var localUiState by remember { mutableStateOf(LoginUiState()) }
     val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(showWelcome) {
-        if (showWelcome) {
-            snackbarHostState.showSnackbar(
-                message = "¡Registro exitoso! Ahora inicia sesión con $userName",
-                duration = SnackbarDuration.Short
-            )
-            showWelcome = false
+    LaunchedEffect(authUiState) {
+        when (val state = authUiState) {
+            is BaseUiState.SuccessState<*> -> {
+                snackbarHostState.showSnackbar(
+                    message = "¡Inicio de sesión exitoso!",
+                    duration = SnackbarDuration.Short
+                )
+                onLoginSuccess()
+                authViewModel.resetState()
+            }
+            is BaseUiState.ErrorState -> {
+                snackbarHostState.showSnackbar(
+                    message = state.message,
+                    duration = SnackbarDuration.Long
+                )
+                authViewModel.resetState()
+            }
+            else -> {}
         }
     }
+    LoginContent(
+        uiState = localUiState,
+        authState = authUiState,
+        snackbarHostState = snackbarHostState,
+        onUserNameChange = { localUiState = localUiState.copy(userName = it) },
+        onPasswordChange = { localUiState = localUiState.copy(password = it) },
+        onRememberMeChange = { localUiState = localUiState.copy(rememberMe = it) },
+        onLoginClick = {
+            authViewModel.auth(
+                AuthModel(
+                    username = localUiState.userName.trim(),
+                    password = localUiState.password
+                )
+            )
+        },
+        onRegisterClick = onRegisterClick,
+        onForgotPasswordClick = onForgotPasswordClick
+    )
+}
+
+@Composable
+private fun LoginContent(
+    uiState: LoginUiState,
+    authState: BaseUiState,
+    snackbarHostState: SnackbarHostState,
+    onUserNameChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onRememberMeChange: (Boolean) -> Unit,
+    onLoginClick: () -> Unit,
+    onRegisterClick: () -> Unit,
+    onForgotPasswordClick: () -> Unit
+) {
+    val isLoading = authState is BaseUiState.LoadingState
 
     Box(
         modifier = Modifier
@@ -78,7 +126,7 @@ fun LoginScreen(
         ) {
             Spacer(modifier = Modifier.height(60.dp))
 
-            AppLogo()
+            MascotPlaceholder()
 
             Spacer(modifier = Modifier.height(40.dp))
 
@@ -86,7 +134,7 @@ fun LoginScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight(),
-                shape = RoundedCornerShape(16.dp),
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
                 color = Color.White,
                 shadowElevation = 4.dp
             ) {
@@ -94,10 +142,6 @@ fun LoginScreen(
                     modifier = Modifier.padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    MascotPlaceholder()
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
                     Text(
                         text = "Bienvenido de nuevo",
                         fontSize = 24.sp,
@@ -109,20 +153,22 @@ fun LoginScreen(
                     Spacer(modifier = Modifier.height(32.dp))
 
                     AuthTextField(
-                        value = userName,
-                        onValueChange = { userName = it },
-                        label = "nombre de usuario",
-                        keyboardType = KeyboardType.Email
+                        value = uiState.userName,
+                        onValueChange = onUserNameChange,
+                        label = "Nombre de usuario",
+                        keyboardType = KeyboardType.Email,
+                        enabled = !isLoading
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
                     AuthTextField(
-                        value = password,
-                        onValueChange = { password = it },
+                        value = uiState.password,
+                        onValueChange = onPasswordChange,
                         label = "Contraseña",
                         isPassword = true,
-                        keyboardType = KeyboardType.Password
+                        keyboardType = KeyboardType.Password,
+                        enabled = !isLoading
                     )
 
                     Spacer(modifier = Modifier.height(12.dp))
@@ -136,12 +182,13 @@ fun LoginScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Checkbox(
-                                checked = rememberMe,
-                                onCheckedChange = { rememberMe = it },
+                                checked = uiState.rememberMe,
+                                onCheckedChange = onRememberMeChange,
                                 colors = CheckboxDefaults.colors(
                                     checkedColor = AuthColors.Primary,
                                     uncheckedColor = AuthColors.BorderColor
-                                )
+                                ),
+                                enabled = !isLoading
                             )
                             Text(
                                 text = "Recordarme",
@@ -151,7 +198,8 @@ fun LoginScreen(
                         }
 
                         TextButton(
-                            onClick = onForgotPasswordClick
+                            onClick = onForgotPasswordClick,
+                            enabled = !isLoading
                         ) {
                             Text(
                                 text = "¿Olvidaste tu contraseña?",
@@ -164,38 +212,34 @@ fun LoginScreen(
                     Spacer(modifier = Modifier.height(24.dp))
 
                     AuthButton(
-                        text = "Iniciar Sesión",
-                        onClick = { onLoginClick(userName, password) },
-                        enabled = userName.isNotBlank() && password.isNotBlank()
+                        text = if (isLoading) "Iniciando sesión..." else "Iniciar Sesión",
+                        onClick = onLoginClick,
+                        enabled = uiState.userName.isNotBlank() &&
+                                uiState.password.isNotBlank() &&
+                                !isLoading
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "¿No tienes una cuenta? ",
-                            fontSize = 14.sp,
-                            color = AuthColors.TextSecondary
-                        )
-                        TextButton(
-                            onClick = onRegisterClick,
-                            contentPadding = PaddingValues(0.dp)
-                        ) {
-                            Text(
-                                text = "Regístrate aquí",
-                                fontSize = 14.sp,
-                                color = AuthColors.Primary,
-                                fontWeight = FontWeight.Medium
-                            )
-                        }
-                    }
+                    AuthFooterText(
+                        normalText = "¿No tienes una cuenta? ",
+                        clickableText = "Regístrate aquí",
+                        onClick = onRegisterClick,
+                        enabled = !isLoading
+                    )
                 }
             }
 
             Spacer(modifier = Modifier.height(40.dp))
         }
+
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(16.dp)
+        )
     }
+
 }
+
