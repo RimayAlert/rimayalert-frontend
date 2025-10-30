@@ -18,8 +18,8 @@ import javax.inject.Inject
 class AuthViewModel @Inject constructor(
     private val authUseCase: AuthUseCase,
 
-
     ) : ViewModel(){
+
     private val _authUiState = MutableStateFlow<BaseUiState>(BaseUiState.EmptyState)
     val authUiState: StateFlow<BaseUiState> = _authUiState.asStateFlow()
 
@@ -37,6 +37,10 @@ class AuthViewModel @Inject constructor(
             }
 
         }
+    }
+
+    fun resetState() {
+        _authUiState.value = BaseUiState.EmptyState
     }
 
 }
