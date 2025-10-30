@@ -15,4 +15,8 @@ object AuthApiModule {
     @Singleton
     @Provides
     fun provideRegisterDao(db: DatabaseManager) = db.registerUserDao()
+
+    @Singleton
+    @Provides
+    fun provideAuthDao(db: DatabaseManager) = db.userDao()
 }
