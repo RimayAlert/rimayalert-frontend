@@ -15,8 +15,9 @@ import com.fazq.rimayalert.core.ui.theme.AuthColors
 @Composable
 fun AuthFooterText(
     normalText: String,
-    linkText: String,
-    onLinkClick: () -> Unit
+    clickableText: String,
+    onClick: () -> Unit,
+    enabled: Boolean = true
 ) {
     Row(
         horizontalArrangement = Arrangement.Center,
@@ -28,11 +29,12 @@ fun AuthFooterText(
             color = AuthColors.TextSecondary
         )
         TextButton(
-            onClick = onLinkClick,
-            contentPadding = PaddingValues(0.dp)
+            onClick = onClick,
+            contentPadding = PaddingValues(0.dp),
+            enabled = enabled
         ) {
             Text(
-                text = linkText,
+                text = clickableText,
                 fontSize = 14.sp,
                 color = AuthColors.Primary,
                 fontWeight = FontWeight.Medium

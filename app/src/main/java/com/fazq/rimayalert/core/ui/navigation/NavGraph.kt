@@ -15,31 +15,50 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
         navController = navController,
         startDestination = "splash"
     ) {
-        composable("splash") { SplashScreen(navController) }
+        composable(Screen.Splash.route) {
+            SplashScreen(navController)
+        }
 
-        composable("login") {
+        composable(Screen.Login.route) {
             LoginScreen(
-                onRegisterClick = { navController.navigate("register") },
-                onLoginClick = { email, password -> },
-                onForgotPasswordClick = {}
+                onRegisterClick = {
+                    navController.navigate(Screen.Register.route)
+                },
+                onLoginSuccess = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Login.route) { inclusive = true }
+                    }
+                },
+                onForgotPasswordClick = {
+                    // TODO: navController.navigate(Screen.ForgotPassword.route)
+                }
             )
         }
-        composable("register") {
+
+        composable(Screen.Register.route) {
             RegisterScreen(
                 onRegisterSuccess = {
-                    navController.navigate("login") {
-                        popUpTo("register") { inclusive = true }
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(Screen.Register.route) { inclusive = true }
                     }
                 },
-                onBackClick = { navController.popBackStack() },
+                onBackClick = {
+                    navController.popBackStack()
+                },
                 onLoginClick = {
-                    navController.navigate("login") {
-                        popUpTo("register") { inclusive = true }
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(Screen.Register.route) { inclusive = true }
                     }
                 },
-                onTermsClick = {}
+                onTermsClick = {
+                    // TODO: Implementar
+                }
             )
         }
-    }
 
+        composable(Screen.Home.route) {
+            // TODO: HomeScreen cuando esté lista
+        }
+
+    }
 }

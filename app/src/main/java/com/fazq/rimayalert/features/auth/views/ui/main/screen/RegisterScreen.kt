@@ -145,8 +145,8 @@ fun RegisterScreen(
 
                         AuthFooterText(
                             normalText = "¿Ya tienes una cuenta? ",
-                            linkText = "Inicia sesión",
-                            onLinkClick = onLoginClick
+                            clickableText = "Inicia sesión",
+                            onClick = onLoginClick
                         )
                     }
                 }

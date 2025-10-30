@@ -39,4 +39,8 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    fun resetState() {
+        _authUiState.value = BaseUiState.EmptyState
+    }
+
 }
