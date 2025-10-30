@@ -7,6 +7,8 @@ import androidx.room.RoomDatabase
 import com.fazq.rimayalert.core.constants.AppStrings.DATABASE_NAME
 import com.fazq.rimayalert.features.auth.data.db.entities.RegisterUserEntity
 import com.fazq.rimayalert.features.auth.data.db.interfaces.RegisterDao
+import com.fazq.rimayalert.features.auth.data.db.interfaces.UserDao
+import com.fazq.rimayalert.features.auth.domain.entities.UserEntity
 import com.fazq.rimayalert.features.common.entities.ErrorEntity
 import com.fazq.rimayalert.features.common.interfaces.ErrorDao
 
@@ -16,7 +18,8 @@ import com.fazq.rimayalert.features.common.interfaces.ErrorDao
     exportSchema = true,
     entities = [
         ErrorEntity::class,
-        RegisterUserEntity::class
+        RegisterUserEntity::class,
+        UserEntity::class
     ],
 //    autoMigrations = [
 //        AutoMigration(from = 1, to = 2)
@@ -43,5 +46,7 @@ abstract class DatabaseManager : RoomDatabase() {
     abstract fun errorDao(): ErrorDao
 
     abstract fun registerUserDao(): RegisterDao
+
+    abstract fun userDao(): UserDao
 
 }

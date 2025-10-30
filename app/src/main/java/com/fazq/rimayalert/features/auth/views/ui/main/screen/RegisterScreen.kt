@@ -50,7 +50,6 @@ fun RegisterScreen(
     onLoginClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
     onTermsClick: () -> Unit = {},
-    navController : NavController,
     registerUserViewModel: RegisterUserViewModel = hiltViewModel()
 ) {
     var registerState by remember { mutableStateOf(RegisterUserModel()) }
@@ -61,8 +60,6 @@ fun RegisterScreen(
     LaunchedEffect(registerUserUiState) {
         when (registerUserUiState) {
             is BaseUiState.SuccessState<*> -> {
-                val username = (registerUserUiState as BaseUiState.SuccessState<*>).data as String
-                SavedStateUtils.save(navController, SavedStateKeys.USERNAME, username)
                 onRegisterSuccess()
             }
 
@@ -168,6 +165,5 @@ fun RegisterScreenPreview() {
         onLoginClick = {},
         onBackClick = {},
         onTermsClick = {},
-        navController = navController
     )
 }

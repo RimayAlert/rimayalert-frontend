@@ -6,7 +6,7 @@ object AuthApiUrls {
 
     private const val auth = "api-auth"
 
-    const val AUTH_URL = "${auth}-token"
+    const val AUTH_URL = "${auth}-user"
 
     const val REFRESH_TOKEN_URL = "${auth}-token/refresh"
 

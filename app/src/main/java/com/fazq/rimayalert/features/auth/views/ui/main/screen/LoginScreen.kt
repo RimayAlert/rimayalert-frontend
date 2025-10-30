@@ -36,10 +36,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import com.fazq.rimayalert.core.constants.SavedStateKeys
 import com.fazq.rimayalert.core.ui.theme.AuthColors
-import com.fazq.rimayalert.core.utils.SavedStateUtils
 import com.fazq.rimayalert.features.auth.views.ui.main.components.AppLogo
 import com.fazq.rimayalert.features.auth.views.ui.main.components.AuthButton
 import com.fazq.rimayalert.features.auth.views.ui.main.components.AuthTextField
@@ -47,26 +44,20 @@ import com.fazq.rimayalert.features.auth.views.ui.main.components.MascotPlacehol
 
 @Composable
 fun LoginScreen(
-    navController: NavController,
-    onLoginClick: (email: String, password: String) -> Unit = { _, _ -> },
+    onLoginClick: (userName: String, password: String) -> Unit = { _, _ -> },
     onRegisterClick: () -> Unit = {},
     onForgotPasswordClick: () -> Unit = {}
 ) {
-    var email by remember { mutableStateOf("") }
+    var userName by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var rememberMe by remember { mutableStateOf(false) }
     var showWelcome by remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
 
-    SavedStateUtils.read<String>(navController, SavedStateKeys.USERNAME) { username ->
-        email = username
-        showWelcome = true
-    }
-
     LaunchedEffect(showWelcome) {
         if (showWelcome) {
             snackbarHostState.showSnackbar(
-                message = "¡Registro exitoso! Ahora inicia sesión con $email",
+                message = "¡Registro exitoso! Ahora inicia sesión con $userName",
                 duration = SnackbarDuration.Short
             )
             showWelcome = false
@@ -87,12 +78,10 @@ fun LoginScreen(
         ) {
             Spacer(modifier = Modifier.height(60.dp))
 
-            // Logo de la app (muy tenue)
             AppLogo()
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            // Card principal
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -105,12 +94,10 @@ fun LoginScreen(
                     modifier = Modifier.padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Espacio para la mascota
                     MascotPlaceholder()
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // Título
                     Text(
                         text = "Bienvenido de nuevo",
                         fontSize = 24.sp,
@@ -121,17 +108,15 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(32.dp))
 
-                    // Campo de correo electrónico
                     AuthTextField(
-                        value = email,
-                        onValueChange = { email = it },
-                        label = "Correo electrónico o nombre de usuario",
+                        value = userName,
+                        onValueChange = { userName = it },
+                        label = "nombre de usuario",
                         keyboardType = KeyboardType.Email
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Campo de contraseña
                     AuthTextField(
                         value = password,
                         onValueChange = { password = it },
@@ -142,7 +127,6 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // Recordarme y olvidaste contraseña
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -179,16 +163,14 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // Botón de inicio de sesión
                     AuthButton(
                         text = "Iniciar Sesión",
-                        onClick = { onLoginClick(email, password) },
-                        enabled = email.isNotBlank() && password.isNotBlank()
+                        onClick = { onLoginClick(userName, password) },
+                        enabled = userName.isNotBlank() && password.isNotBlank()
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Registro
                     Row(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically

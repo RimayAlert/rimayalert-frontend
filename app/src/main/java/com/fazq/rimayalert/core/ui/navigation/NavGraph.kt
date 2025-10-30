@@ -19,7 +19,6 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
 
         composable("login") {
             LoginScreen(
-                navController = navController,
                 onRegisterClick = { navController.navigate("register") },
                 onLoginClick = { email, password -> },
                 onForgotPasswordClick = {}
@@ -27,13 +26,17 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
         }
         composable("register") {
             RegisterScreen(
-                navController = navController,
                 onRegisterSuccess = {
                     navController.navigate("login") {
                         popUpTo("register") { inclusive = true }
                     }
                 },
                 onBackClick = { navController.popBackStack() },
+                onLoginClick = {
+                    navController.navigate("login") {
+                        popUpTo("register") { inclusive = true }
+                    }
+                },
                 onTermsClick = {}
             )
         }
