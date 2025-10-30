@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.fazq.rimayalert.features.auth.views.ui.main.screen.LoginScreen
 import com.fazq.rimayalert.features.auth.views.ui.main.screen.RegisterScreen
+import com.fazq.rimayalert.features.home.views.ui.screen.HomeScreen
 import com.fazq.rimayalert.features.splash.ui.SplashScreen
 
 @Composable
@@ -57,7 +58,23 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
         }
 
         composable(Screen.Home.route) {
-            // TODO: HomeScreen cuando esté lista
+            HomeScreen(
+                onCreateAlertClick = {
+                    // TODO: navController.navigate(Screen.CreateAlert.route)
+                },
+                onAlertClick = { alertId ->
+                    // TODO: navController.navigate("${Screen.AlertDetail.route}/$alertId")
+                },
+                onNavigateToAlerts = {
+                    // TODO: navController.navigate(Screen.Alerts.route)
+                },
+                onNavigateToMap = {
+                    // TODO: navController.navigate(Screen.Map.route)
+                },
+                onNavigateToProfile = {
+                    // TODO: navController.navigate(Screen.Profile.route)
+                }
+            )
         }
 
     }
