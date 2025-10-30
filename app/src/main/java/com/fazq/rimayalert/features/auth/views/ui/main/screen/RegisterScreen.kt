@@ -28,9 +28,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.fazq.rimayalert.core.constants.SavedStateKeys
 import com.fazq.rimayalert.core.states.BaseUiState
 import com.fazq.rimayalert.core.ui.theme.AuthColors
 import com.fazq.rimayalert.core.ui.theme.Dimensions
+import com.fazq.rimayalert.core.utils.SavedStateUtils
 import com.fazq.rimayalert.features.auth.domain.model.RegisterUserModel
 import com.fazq.rimayalert.features.auth.views.ui.main.components.AuthButton
 import com.fazq.rimayalert.features.auth.views.ui.main.components.AuthFooterText
@@ -42,7 +46,7 @@ import com.fazq.rimayalert.features.auth.views.viewmodel.RegisterUserViewModel
 
 @Composable
 fun RegisterScreen(
-    onRegisterSuccess: (String) -> Unit = {},
+    onRegisterSuccess: () -> Unit = {},
     onLoginClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
     onTermsClick: () -> Unit = {},
@@ -56,16 +60,7 @@ fun RegisterScreen(
     LaunchedEffect(registerUserUiState) {
         when (registerUserUiState) {
             is BaseUiState.SuccessState<*> -> {
-                val username = (registerUserUiState as BaseUiState.SuccessState<*>).data as String
-                Log.d("RegisterScreen", "Registration successful: $username")
-//                scope.launch {
-//                    snackbarHostState.showSnackbar(
-//                        message = "Usuario $username registrado con éxito",
-//                        duration = SnackbarDuration.Short
-//                    )
-//                }
-//                delay(1000)
-                onRegisterSuccess(username)
+                onRegisterSuccess()
             }
 
             is BaseUiState.ErrorState -> {
@@ -164,9 +159,11 @@ fun RegisterScreen(
 @Preview(showBackground = true, showSystemUi = false)
 @Composable
 fun RegisterScreenPreview() {
+    val navController = rememberNavController()
     RegisterScreen(
         onRegisterSuccess = {},
         onLoginClick = {},
         onBackClick = {},
+        onTermsClick = {},
     )
 }
