@@ -136,8 +136,12 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.appcompat)
 
+//    Compose Icons
+    implementation(libs.androidx.compose.material.icons.extended)
+
     // Room
     implementation(libs.room.ktx)
+    implementation(libs.androidx.ui)
     kapt(libs.room.compiler)
 
     // Utils

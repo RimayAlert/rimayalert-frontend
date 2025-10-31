@@ -7,12 +7,22 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.PendingActions
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -28,10 +38,11 @@ fun WeeklySummaryCard(
     lastDays: Int
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(4.dp, RoundedCornerShape(20.dp)),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column(
             modifier = Modifier.padding(20.dp)
@@ -43,40 +54,54 @@ fun WeeklySummaryCard(
             ) {
                 Text(
                     text = "Resumen semanal",
-                    fontSize = 18.sp,
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = TextPrimary
+                    color = Color(0xFF1E293B)
                 )
-                Text(
-                    text = "📅 Últimos $lastDays días",
-                    fontSize = 12.sp,
-                    color = Color.Gray
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.CalendarMonth,
+                        contentDescription = null,
+                        tint = Color(0xFF64748B),
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Text(
+                        text = "Últimos $lastDays días",
+                        fontSize = 12.sp,
+                        color = Color(0xFF64748B)
+                    )
+                }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 StatisticCard(
+                    icon = Icons.Default.Notifications,
                     title = "Alertas",
                     value = alerts.toString(),
                     modifier = Modifier.weight(1f),
-                    backgroundColor = Color(0xFFE3F2FD)
+                    backgroundColor = Color(0xFFDCFCE7),
+                    iconColor = Color(0xFF16A34A),
+                    iconBackground = Color(0xFFF0FDF4)
                 )
 
                 StatisticCard(
+                    icon = Icons.Default.CheckCircle,
                     title = "Resueltas",
                     value = resolved.toString(),
                     modifier = Modifier.weight(1f),
-                    backgroundColor = Color(0xFFE8F5E9)
+                    backgroundColor = Color(0xFFDCFCE7),
+                    iconColor = Color(0xFF16A34A),
+                    iconBackground = Color(0xFFF0FDF4)
                 )
             }
-
 
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -85,16 +110,22 @@ fun WeeklySummaryCard(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 StatisticCard(
+                    icon = Icons.Default.PendingActions,
                     title = "Pendientes",
                     value = pending.toString(),
                     modifier = Modifier.weight(1f),
-                    backgroundColor = Color(0xFFFFF3E0)
+                    backgroundColor = Color(0xFFFEF3C7),
+                    iconColor = Color(0xFFEAB308),
+                    iconBackground = Color(0xFFFEFCE8)
                 )
                 StatisticCard(
+                    icon = Icons.Default.AccessTime,
                     title = "Tiempo medio",
                     value = averageTime,
                     modifier = Modifier.weight(1f),
-                    backgroundColor = Color(0xFFF3E5F5)
+                    backgroundColor = Color(0xFFE9D5FF),
+                    iconColor = Color(0xFF9333EA),
+                    iconBackground = Color(0xFFFAF5FF)
                 )
             }
         }
