@@ -7,6 +7,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.fazq.rimayalert.core.states.BaseUiState
@@ -31,7 +32,6 @@ fun HomeScreen(
     LaunchedEffect(homeState) {
         when (val state = homeState) {
             is BaseUiState.SuccessState<*> -> {
-                // Actualizar UI con datos
                 homeViewModel.resetState()
             }
             is BaseUiState.ErrorState -> {
@@ -88,51 +88,43 @@ private fun HomeContent(
                 onProfileClick = onNavigateToProfile
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        containerColor = Color(0xFFF8F9FA)
     ) { paddingValues ->
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .background(BackgroundLight)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 16.dp)
-            ) {
-                Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-                // Resumen semanal
-                WeeklySummaryCard(
-                    alerts = uiState.weeklySummary.alerts,
-                    resolved = uiState.weeklySummary.resolved,
-                    pending = uiState.weeklySummary.pending,
-                    averageTime = uiState.weeklySummary.averageTime,
-                    lastDays = 7
-                )
+            WeeklySummaryCard(
+                alerts = uiState.weeklySummary.alerts,
+                resolved = uiState.weeklySummary.resolved,
+                pending = uiState.weeklySummary.pending,
+                averageTime = uiState.weeklySummary.averageTime,
+                lastDays = 7
+            )
 
-                Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-                // Botón crear alerta
-                CreateAlertButton(
-                    onClick = onCreateAlertClick,
-                    enabled = !isLoading
-                )
+            CreateAlertButton(
+                onClick = onCreateAlertClick,
+                enabled = !isLoading
+            )
 
-                Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-                // Actividad reciente
-                RecentActivitySection(
-                    activities = uiState.recentActivities,
-                    onActivityClick = onAlertClick,
-                    onRefresh = onRefresh,
-                    isRefreshing = isLoading
-                )
+            RecentActivitySection(
+                activities = uiState.recentActivities,
+                onActivityClick = onAlertClick,
+                onRefresh = onRefresh,
+                isRefreshing = isLoading
+            )
 
-                Spacer(modifier = Modifier.height(80.dp))
-            }
+            Spacer(modifier = Modifier.height(80.dp))
         }
     }
 }

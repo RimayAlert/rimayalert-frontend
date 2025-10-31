@@ -5,10 +5,12 @@ data class ActivityItemModel(
     val title: String,
     val subtitle: String,
     val time: String,
-    val status: AlertStatus
+    val status: ActivityStatus,
 )
 
 
-enum class AlertStatus {
-    EMERGENCY, WARNING, SUCCESS
+enum class ActivityStatus {
+    ACTIVE,
+    IN_PROGRESS,
+    RESOLVED
 }
