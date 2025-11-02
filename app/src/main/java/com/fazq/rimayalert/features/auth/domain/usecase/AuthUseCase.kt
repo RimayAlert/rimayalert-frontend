@@ -1,6 +1,6 @@
 package com.fazq.rimayalert.features.auth.domain.usecase
 
-import com.fazq.rimayalert.core.connection.singleton.IoDispatcher
+import com.fazq.rimayalert.core.di.IoDispatcher
 import com.fazq.rimayalert.core.functions.NetworkFunction
 import com.fazq.rimayalert.core.states.DataState
 import com.fazq.rimayalert.core.utils.TokenManager

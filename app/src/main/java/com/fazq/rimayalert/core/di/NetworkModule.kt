@@ -1,4 +1,4 @@
-package com.fazq.rimayalert.core.connection.singleton
+package com.fazq.rimayalert.core.di
 
 import com.fazq.rimayalert.BuildConfig
 import com.fazq.rimayalert.core.connection.request.HeaderInterceptor
@@ -15,7 +15,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
-
 
 @Module
 @InstallIn(SingletonComponent::class)

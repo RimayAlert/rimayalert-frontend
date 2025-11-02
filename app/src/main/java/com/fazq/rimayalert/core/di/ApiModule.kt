@@ -1,4 +1,4 @@
-package com.fazq.rimayalert.core.connection.singleton
+package com.fazq.rimayalert.core.di
 
 import com.fazq.rimayalert.features.auth.data.api.AuthApiClient
 import com.fazq.rimayalert.features.auth.data.api.RegisterUserApiClient
@@ -9,7 +9,6 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import javax.inject.Singleton
-
 
 @Module
 @InstallIn(SingletonComponent::class)

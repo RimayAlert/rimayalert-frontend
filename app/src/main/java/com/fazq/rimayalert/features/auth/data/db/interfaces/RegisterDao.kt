@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
-import com.fazq.rimayalert.features.auth.data.db.entities.RegisterUserEntity
+import com.fazq.rimayalert.features.auth.domain.entities.RegisterUserEntity
 
 @Dao
 interface RegisterDao {

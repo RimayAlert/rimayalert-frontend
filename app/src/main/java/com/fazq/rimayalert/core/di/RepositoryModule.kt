@@ -1,4 +1,4 @@
-package com.fazq.rimayalert.core.connection.singleton
+package com.fazq.rimayalert.core.di
 
 import android.app.Application
 import com.fazq.rimayalert.core.functions.NetworkFunction
