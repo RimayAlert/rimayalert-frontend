@@ -1,14 +1,16 @@
 package com.fazq.rimayalert.features.auth.data.mapper
 
 import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
 
-
+@Serializable
 data class AuthResponseDTO(
     val token: String,
     @SerializedName("user")
     val user: UserDataDTO
 )
 
+@Serializable
 data class UserDataDTO(
     @SerializedName("id")
     val id: Int,

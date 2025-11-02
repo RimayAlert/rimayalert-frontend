@@ -4,6 +4,7 @@ import com.fazq.rimayalert.core.states.DataState
 import com.fazq.rimayalert.core.utils.StringUtils
 import com.fazq.rimayalert.core.utils.TokenManager
 import com.fazq.rimayalert.features.auth.data.db.interfaces.UserDao
+import com.fazq.rimayalert.features.auth.data.mapper.AuthResponseDTO
 import com.fazq.rimayalert.features.auth.data.mapper.toModel
 import com.fazq.rimayalert.features.auth.data.repository.interfaces.AuthInterface
 import com.fazq.rimayalert.features.auth.data.service.AuthService
@@ -23,9 +24,9 @@ class AuthRepository @Inject constructor(
     ): AuthInterface{
 
 
-        override suspend fun authenticationFromApi(authParam: AuthModel): DataState<String> {
+        override suspend fun authenticationFromApi(authParam: AuthModel): DataState<AuthResponseDTO> {
             val response = api.authentication(authParam.toModel())
-            var dataState: DataState<String> = DataState.error("")
+            var dataState: DataState<AuthResponseDTO> = DataState.error("")
             response
                 .catch { dataState = DataState.error(it.message ?: "Error") }
                 .flowOn(Dispatchers.IO)
@@ -35,7 +36,7 @@ class AuthRepository @Inject constructor(
                             val userDto = responseState.data.user
                             val userEntity = userDto.toEntity(responseState.data.token)
                             userDao.insertUser(userEntity)
-                            DataState.success(responseState.data.token)
+                            DataState.success(responseState.data)
                         }
                         is DataState.Error -> {
                             val data = authenticationFromDataBase(authParam.username)
