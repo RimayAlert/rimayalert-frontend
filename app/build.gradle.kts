@@ -94,7 +94,7 @@ android {
                 "BASE_URL_DEV",
                 "BASE_URL_SOCKET_DEV",
                 "com.hey.inplanet.biolunch.dev.fileprovider",
-                "Hey Biometric Dev"
+                "Rimay Alert"
             )
         }
         create("prod") {
@@ -135,6 +135,10 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.appcompat)
+
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.datastore.core)
+    implementation(libs.kotlinx.serialization.json)
 
 //    Compose Icons
     implementation(libs.androidx.compose.material.icons.extended)
