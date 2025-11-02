@@ -88,8 +88,8 @@ fun LoginScreen(
         onLoginClick = {
             authViewModel.auth(
                 AuthModel(
-                    username = localUiState.userName.trim(),
-                    password = localUiState.password
+                    username =  "dev-test",
+                    password = "devtest"
                 )
             )
         },
@@ -153,7 +153,7 @@ private fun LoginContent(
                     Spacer(modifier = Modifier.height(32.dp))
 
                     AuthTextField(
-                        value = uiState.userName,
+                        value = "dev-test",
                         onValueChange = onUserNameChange,
                         label = "Nombre de usuario",
                         keyboardType = KeyboardType.Email,
@@ -163,7 +163,7 @@ private fun LoginContent(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     AuthTextField(
-                        value = uiState.password,
+                        value = "devtest",
                         onValueChange = onPasswordChange,
                         label = "Contraseña",
                         isPassword = true,
@@ -214,9 +214,7 @@ private fun LoginContent(
                     AuthButton(
                         text = if (isLoading) "Iniciando sesión..." else "Iniciar Sesión",
                         onClick = onLoginClick,
-                        enabled = uiState.userName.isNotBlank() &&
-                                uiState.password.isNotBlank() &&
-                                !isLoading
+                        enabled = true
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))

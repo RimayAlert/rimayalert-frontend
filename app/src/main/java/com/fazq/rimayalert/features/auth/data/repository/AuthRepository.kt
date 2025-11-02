@@ -8,6 +8,7 @@ import com.fazq.rimayalert.features.auth.data.mapper.toModel
 import com.fazq.rimayalert.features.auth.data.repository.interfaces.AuthInterface
 import com.fazq.rimayalert.features.auth.data.service.AuthService
 import com.fazq.rimayalert.features.auth.domain.entities.UserEntity
+import com.fazq.rimayalert.features.auth.domain.entities.toEntity
 import com.fazq.rimayalert.features.auth.domain.model.AuthModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -30,7 +31,12 @@ class AuthRepository @Inject constructor(
                 .flowOn(Dispatchers.IO)
                 .collect { responseState ->
                     dataState = when (responseState) {
-                        is DataState.Success -> DataState.success(responseState.data.token)
+                        is DataState.Success -> {
+                            val userDto = responseState.data.user
+                            val userEntity = userDto.toEntity(responseState.data.token)
+                            userDao.insertUser(userEntity)
+                            DataState.success(responseState.data.token)
+                        }
                         is DataState.Error -> {
                             val data = authenticationFromDataBase(authParam.username)
                             if (data is DataState.Success) {
