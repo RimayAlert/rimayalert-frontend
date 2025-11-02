@@ -1,9 +1,9 @@
-package com.fazq.rimayalert.core.connection.singleton
+package com.fazq.rimayalert.core.di
 
 import android.content.Context
 import androidx.room.Room
 import com.fazq.rimayalert.core.connection.database.DatabaseManager
-import com.fazq.rimayalert.core.constants.AppStrings.DATABASE_NAME
+import com.fazq.rimayalert.core.constants.AppStrings
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,9 +13,9 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object RoomModule {
+object DatabaseModule {
     @Singleton
     @Provides
     fun provideRoom(@ApplicationContext context: Context) =
-        Room.databaseBuilder(context, DatabaseManager::class.java, DATABASE_NAME).build()
+        Room.databaseBuilder(context, DatabaseManager::class.java, AppStrings.DATABASE_NAME).build()
 }

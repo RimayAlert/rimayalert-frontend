@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.fazq.rimayalert.core.constants.AppStrings.DATABASE_NAME
-import com.fazq.rimayalert.features.auth.data.db.entities.RegisterUserEntity
+import com.fazq.rimayalert.features.auth.domain.entities.RegisterUserEntity
 import com.fazq.rimayalert.features.auth.data.db.interfaces.RegisterDao
 import com.fazq.rimayalert.features.auth.data.db.interfaces.UserDao
 import com.fazq.rimayalert.features.auth.domain.entities.UserEntity

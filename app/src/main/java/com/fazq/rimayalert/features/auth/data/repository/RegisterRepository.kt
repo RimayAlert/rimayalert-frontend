@@ -1,8 +1,8 @@
 package com.fazq.rimayalert.features.auth.data.repository
 
-import com.fazq.rimayalert.core.connection.singleton.IoDispatcher
+import com.fazq.rimayalert.core.di.IoDispatcher
 import com.fazq.rimayalert.core.states.DataState
-import com.fazq.rimayalert.features.auth.data.db.entities.RegisterUserEntity
+import com.fazq.rimayalert.features.auth.domain.entities.RegisterUserEntity
 import com.fazq.rimayalert.features.auth.data.db.interfaces.RegisterDao
 import com.fazq.rimayalert.features.auth.data.repository.interfaces.RegisterInterface
 import com.fazq.rimayalert.features.auth.data.service.RegisterUserService
