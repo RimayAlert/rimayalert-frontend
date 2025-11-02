@@ -5,10 +5,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.fazq.rimayalert.features.auth.views.ui.main.screen.LoginScreen
-import com.fazq.rimayalert.features.auth.views.ui.main.screen.RegisterScreen
-import com.fazq.rimayalert.features.home.views.ui.screen.HomeScreen
-import com.fazq.rimayalert.features.splash.ui.SplashScreen
+import com.fazq.rimayalert.features.auth.ui.screens.LoginScreen
+import com.fazq.rimayalert.features.auth.ui.screens.RegisterScreen
+import com.fazq.rimayalert.features.home.ui.screen.HomeScreen
+import com.fazq.rimayalert.features.splash.ui.screen.SplashScreen
 
 @Composable
 fun NavGraph(navController: NavHostController = rememberNavController()) {
