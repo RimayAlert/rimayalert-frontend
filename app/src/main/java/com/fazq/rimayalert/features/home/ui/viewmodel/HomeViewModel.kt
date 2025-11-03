@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fazq.rimayalert.core.preferences.UserPreferencesManager
 import com.fazq.rimayalert.core.states.BaseUiState
-import com.fazq.rimayalert.features.auth.domain.model.User
+import com.fazq.rimayalert.features.auth.domain.model.UserModel
 import com.fazq.rimayalert.features.auth.domain.usecase.AuthUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +24,7 @@ class HomeViewModel @Inject constructor(
     private val _homeUiState = MutableStateFlow<BaseUiState>(BaseUiState.EmptyState)
     val homeUiState: StateFlow<BaseUiState> = _homeUiState.asStateFlow()
 
-    val user: StateFlow<User?> = userPreferencesManager.user
+    val user: StateFlow<UserModel?> = userPreferencesManager.user
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),

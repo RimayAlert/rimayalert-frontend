@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.fazq.rimayalert.features.auth.data.mapper.UserDataDTO
-import com.fazq.rimayalert.features.auth.domain.model.User
+import com.fazq.rimayalert.features.auth.domain.model.UserModel
 
 @Entity(
     tableName = "user_table",
@@ -26,7 +26,7 @@ data class UserEntity(
     @ColumnInfo(name = "active") val active: Boolean = false,
 )
 
-fun User.toDatabase(token: String) = UserEntity(
+fun UserModel.toDatabase(token: String) = UserEntity(
     id,
     username,
     firstName,
