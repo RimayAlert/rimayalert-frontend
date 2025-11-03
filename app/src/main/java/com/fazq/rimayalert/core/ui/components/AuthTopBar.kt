@@ -1,4 +1,4 @@
-package com.fazq.rimayalert.features.auth.ui.components
+package com.fazq.rimayalert.core.ui.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack

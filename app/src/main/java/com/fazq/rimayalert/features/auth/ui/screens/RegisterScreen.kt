@@ -35,7 +35,7 @@ import com.fazq.rimayalert.core.ui.theme.Dimensions
 import com.fazq.rimayalert.features.auth.domain.model.RegisterUserModel
 import com.fazq.rimayalert.features.auth.ui.components.AuthButton
 import com.fazq.rimayalert.features.auth.ui.components.AuthFooterText
-import com.fazq.rimayalert.features.auth.ui.components.AuthTopBar
+import com.fazq.rimayalert.core.ui.components.AuthTopBar
 import com.fazq.rimayalert.features.auth.ui.components.RegisterCheckboxes
 import com.fazq.rimayalert.features.auth.ui.components.RegisterFormFields
 import com.fazq.rimayalert.features.auth.ui.viewmodel.RegisterUserViewModel
