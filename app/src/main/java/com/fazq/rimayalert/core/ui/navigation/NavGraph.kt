@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.fazq.rimayalert.features.alerts.ui.screen.AlertsScreen
 import com.fazq.rimayalert.features.auth.ui.screens.LoginScreen
 import com.fazq.rimayalert.features.auth.ui.screens.RegisterScreen
 import com.fazq.rimayalert.features.home.ui.screen.HomeScreen
@@ -63,11 +64,12 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
                     // TODO: navController.navigate(Screen.CreateAlert.route)
                 },
                 onAlertClick = {
-
                     // TODO: navController.navigate("${Screen.AlertDetail.route}/$alertId")
                 },
                 onNavigateToAlerts = {
-                    // TODO: navController.navigate(Screen.Alerts.route)
+                    navController.navigate(Screen.Alerts.route) {
+                        popUpTo(Screen.Alerts.route) { inclusive = true }
+                    }
                 },
                 onNavigateToMap = {
                     // TODO: navController.navigate(Screen.Map.route)
@@ -75,6 +77,14 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
                 onNavigateToProfile = {
                     // TODO: navController.navigate(Screen.Profile.route)
                 }
+            )
+        }
+        composable(Screen.Alerts.route) {
+            AlertsScreen(
+                onNavigateToAlerts = {},
+                onNavigateToMap = {},
+                onNavigateToProfile = {},
+                onNotificationClick = {}
             )
         }
 

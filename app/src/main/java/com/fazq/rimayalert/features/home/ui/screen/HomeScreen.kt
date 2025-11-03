@@ -12,6 +12,10 @@ import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fazq.rimayalert.core.states.BaseUiState
+import com.fazq.rimayalert.core.ui.components.scaffold.AppBottomNavigation
+import com.fazq.rimayalert.core.ui.components.scaffold.AppScaffold
+import com.fazq.rimayalert.core.ui.components.topBar.HomeTopBar
+import com.fazq.rimayalert.core.ui.extensions.getDisplayName
 import com.fazq.rimayalert.features.home.ui.components.HomeContent
 import com.fazq.rimayalert.features.home.ui.states.HomeUiState
 import com.fazq.rimayalert.features.home.ui.viewmodel.HomeViewModel
@@ -23,21 +27,18 @@ fun HomeScreen(
     onNavigateToAlerts: () -> Unit = {},
     onNavigateToMap: () -> Unit = {},
     onNavigateToProfile: () -> Unit = {},
+    onNotificationClick: () -> Unit = {},
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     val homeState by homeViewModel.homeUiState.collectAsState()
     val user by homeViewModel.user.collectAsStateWithLifecycle()
-    var localUiState by remember { mutableStateOf(HomeUiState()) }
     val snackbarHostState = remember { SnackbarHostState() }
+    var localUiState by remember { mutableStateOf(HomeUiState()) }
+    val isLoading = homeState is BaseUiState.LoadingState
 
     LaunchedEffect(user) {
         user?.let { userData ->
-            val displayName = userData.aliasName?.takeIf { it.isNotEmpty() }
-                ?: userData.fullName?.takeIf { it.isNotEmpty() }
-                ?: userData.username
-                ?: "Usuario"
-
-            localUiState = localUiState.copy(userName = displayName)
+            localUiState = localUiState.copy(userName = userData.getDisplayName())
         }
     }
 
@@ -59,16 +60,29 @@ fun HomeScreen(
         }
     }
 
-    HomeContent(
-        uiState = localUiState,
-        homeState = homeState,
-        snackbarHostState = snackbarHostState,
-        onCreateAlertClick = onCreateAlertClick,
-        onAlertClick = onAlertClick,
-        onNavigateToAlerts = onNavigateToAlerts,
-        onNavigateToMap = onNavigateToMap,
-        onNavigateToProfile = onNavigateToProfile,
-        onRefresh = { homeViewModel.loadHomeData() }
-    )
+    AppScaffold(
+        topBar = {
+            HomeTopBar(localUiState.userName, onNotificationClick)
+        },
+        bottomBar = {
+            AppBottomNavigation(
+                currentRoute = 0,
+                onHomeClick = {},
+                onAlertsClick = onNavigateToAlerts,
+                onMapClick = onNavigateToMap,
+                onProfileClick = onNavigateToProfile
+            )
+        },
+        snackbarHostState = snackbarHostState
+    ) { paddingValues ->
+        HomeContent(
+            paddingValues = paddingValues,
+            uiState = localUiState,
+            isLoading = isLoading,
+            onCreateAlertClick = onCreateAlertClick,
+            onAlertClick = onAlertClick,
+            onRefresh = { homeViewModel.loadHomeData() }
+        )
+    }
 }
 
