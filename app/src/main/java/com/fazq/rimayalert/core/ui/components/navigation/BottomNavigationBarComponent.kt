@@ -1,4 +1,4 @@
-package com.fazq.rimayalert.features.home.ui.components
+package com.fazq.rimayalert.core.ui.components.navigation
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun BottomNavigationBar(
+fun BottomNavigationBarComponent(
     selectedTab: Int,
     onHomeClick: () -> Unit,
     onAlertsClick: () -> Unit,

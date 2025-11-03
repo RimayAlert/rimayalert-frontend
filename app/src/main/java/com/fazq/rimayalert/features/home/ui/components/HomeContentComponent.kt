@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.fazq.rimayalert.core.states.BaseUiState
+import com.fazq.rimayalert.core.ui.components.navigation.BottomNavigationBarComponent
 import com.fazq.rimayalert.features.home.ui.states.HomeUiState
 
 @Composable
@@ -39,7 +40,7 @@ fun HomeContent(
             )
         },
         bottomBar = {
-            BottomNavigationBar(
+            BottomNavigationBarComponent(
                 selectedTab = 0,
                 onHomeClick = { },
                 onAlertsClick = onNavigateToAlerts,
