@@ -3,7 +3,7 @@ package com.fazq.rimayalert.features.auth.domain.model
 import com.fazq.rimayalert.features.auth.data.mapper.UserDataDTO
 import com.fazq.rimayalert.features.auth.domain.entities.UserEntity
 
-data class User(
+data class UserModel(
     val id: Int,
     val username: String?,
     val firstName : String? = null,
@@ -17,7 +17,7 @@ data class User(
     val active: Boolean = false,
 )
 
-fun UserEntity.toDomain() = User(
+fun UserEntity.toDomain() = UserModel(
     id = id,
     username = username,
     firstName = firstName,
@@ -31,7 +31,7 @@ fun UserEntity.toDomain() = User(
     active = active
 )
 
-fun UserDataDTO.toUser() = User(
+fun UserDataDTO.toUser() = UserModel(
     id = id,
     username = username,
     email = email,

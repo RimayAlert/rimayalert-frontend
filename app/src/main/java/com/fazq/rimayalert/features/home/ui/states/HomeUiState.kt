@@ -3,7 +3,7 @@ package com.fazq.rimayalert.features.home.ui.states
 import com.fazq.rimayalert.features.home.domain.model.ActivityItemModel
 
 data class HomeUiState(
-    val userName: String = "Jayden",
+    val userName: String = "",
     val weeklySummary: WeeklySummaryUiState = WeeklySummaryUiState(),
     val recentActivities: List<ActivityItemModel> = emptyList(),
     val isRefreshing: Boolean = false

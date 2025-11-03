@@ -8,7 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.fazq.rimayalert.features.auth.domain.model.User
+import com.fazq.rimayalert.features.auth.domain.model.UserModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -29,7 +29,7 @@ class UserPreferencesManager(private val context: Context) {
         private val IS_ACTIVE = booleanPreferencesKey("is_active")
     }
 
-    suspend fun saveUser(user: User) {
+    suspend fun saveUser(user: UserModel) {
         context.dataStore.edit { prefs ->
             prefs[USER_ID] = user.id
             prefs[USERNAME] = user.username ?: ""
@@ -44,10 +44,10 @@ class UserPreferencesManager(private val context: Context) {
         }
     }
 
-    val user: Flow<User?> = context.dataStore.data.map { prefs ->
+    val user: Flow<UserModel?> = context.dataStore.data.map { prefs ->
         val userId = prefs[USER_ID]
         if (userId != null && userId > 0) {
-            User(
+            UserModel(
                 id = userId,
                 username = prefs[USERNAME],
                 email = prefs[EMAIL] ?: "",
