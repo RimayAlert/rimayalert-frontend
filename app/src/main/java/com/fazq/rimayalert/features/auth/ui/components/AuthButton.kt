@@ -12,8 +12,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.fazq.rimayalert.core.ui.theme.AuthColors.Primary
-import com.fazq.rimayalert.core.ui.theme.SurfaceLight
+import com.fazq.rimayalert.core.ui.theme.AppColors
+import com.fazq.rimayalert.core.ui.theme.Dimensions
 
 @Composable
 fun AuthButton(
@@ -27,26 +27,26 @@ fun AuthButton(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .height(56.dp),
+            .height(Dimensions.buttonHeightDefault),
         enabled = enabled && !isLoading,
         colors = ButtonDefaults.buttonColors(
-            containerColor = Primary,
-            contentColor = SurfaceLight,
-            disabledContainerColor = Primary.copy(alpha = 0.5f),
-            disabledContentColor = SurfaceLight.copy(alpha = 0.7f)
+            containerColor = AppColors.primary,
+            contentColor = AppColors.surfaceLight,
+            disabledContainerColor = AppColors.primary.copy(alpha = 0.5f),
+            disabledContentColor = AppColors.surfaceLight.copy(alpha = 0.7f)
         ),
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(Dimensions.cornerRadiusSmall),
         elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = 0.dp,
-            pressedElevation = 2.dp,
-            disabledElevation = 0.dp
+            defaultElevation = Dimensions.elevationNone,
+            pressedElevation = Dimensions.elevationLow,
+            disabledElevation = Dimensions.elevationNone
         )
     ) {
         if (isLoading) {
             CircularProgressIndicator(
-                modifier = Modifier.size(24.dp),
-                color = SurfaceLight,
-                strokeWidth = 2.dp
+                modifier = Modifier.size(Dimensions.iconSizeMedium),
+                color = AppColors.surfaceLight,
+                strokeWidth = Dimensions.strokeWidthThin
             )
         } else {
             Text(

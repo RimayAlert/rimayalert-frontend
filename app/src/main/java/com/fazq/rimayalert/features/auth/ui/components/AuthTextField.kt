@@ -6,6 +6,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -21,11 +25,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.fazq.rimayalert.core.ui.theme.AuthColors.BorderColor
-import com.fazq.rimayalert.core.ui.theme.AuthColors.ErrorColor
-import com.fazq.rimayalert.core.ui.theme.AuthColors.Primary
-import com.fazq.rimayalert.core.ui.theme.AuthColors.TextHint
-import com.fazq.rimayalert.core.ui.theme.SurfaceLight
+import com.fazq.rimayalert.core.ui.theme.AppColors
+import com.fazq.rimayalert.core.ui.theme.Dimensions
 
 @Composable
 fun AuthTextField(
@@ -63,34 +64,33 @@ fun AuthTextField(
                     IconButton(
                         onClick = { passwordVisible = !passwordVisible }
                     ) {
-//                        Icon(
-//                            imageVector = if (passwordVisible)
-//                                Icons.Default.Visibility
-//                            else
-//                                Icons.Default.VisibilityOff,
-//                            contentDescription = if (passwordVisible)
-//                                "Ocultar contraseña"
-//                            else
-//                                "Mostrar contraseña",
-//                            tint = TextHint
-//                        )
+                        Icon(
+                            imageVector = if (passwordVisible)
+                                Icons.Default.Visibility
+                            else
+                                Icons.Default.VisibilityOff,
+                            contentDescription = if (passwordVisible)
+                                "Ocultar contraseña"
+                            else
+                                "Mostrar contraseña",
+                        )
                     }
                 }
             },
             isError = isError,
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Primary,
-                unfocusedBorderColor = BorderColor,
-                errorBorderColor = ErrorColor,
-                focusedLabelColor = Primary,
-                unfocusedLabelColor = TextHint,
-                errorLabelColor = ErrorColor,
-                cursorColor = Primary,
-                focusedContainerColor = SurfaceLight,
-                unfocusedContainerColor = SurfaceLight,
-                errorContainerColor = SurfaceLight
+                focusedBorderColor = AppColors.primary,
+                unfocusedBorderColor = AppColors.borderColor,
+                errorBorderColor = AppColors.errorColor,
+                focusedLabelColor = AppColors.primary,
+                unfocusedLabelColor = AppColors.textHint,
+                errorLabelColor = AppColors.errorColor,
+                cursorColor = AppColors.primary,
+                focusedContainerColor = AppColors.surfaceLight,
+                unfocusedContainerColor = AppColors.surfaceLight,
+                errorContainerColor = AppColors.surfaceLight
             ),
-            shape = RoundedCornerShape(8.dp),
+            shape = RoundedCornerShape(Dimensions.cornerRadiusSmall),
             singleLine = true
         )
 
@@ -98,7 +98,7 @@ fun AuthTextField(
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = errorMessage,
-                color = ErrorColor,
+                color = AppColors.errorColor,
                 style = MaterialTheme.typography.bodySmall
             )
         }

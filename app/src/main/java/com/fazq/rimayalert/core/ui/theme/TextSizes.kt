@@ -11,4 +11,5 @@ object TextSizes {
     val title: TextUnit = 20.sp
     val headline: TextUnit = 24.sp
     val display: TextUnit = 32.sp
+    val jumbo: TextUnit = 40.sp
 }

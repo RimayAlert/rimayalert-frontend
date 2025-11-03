@@ -30,4 +30,7 @@ object AppColors {
     val infoBackground = Color(0xFFE9D5FF)
     val infoIcon = Color(0xFF9333EA)
     val infoIconBackground = Color(0xFFFAF5FF)
+
+    val checkboxChecked = primary
+    val checkboxUnchecked = borderColor
 }

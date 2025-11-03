@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.fazq.rimayalert.core.ui.theme.AuthColors
 import com.fazq.rimayalert.features.auth.domain.model.RegisterUserModel
 
 @Composable
