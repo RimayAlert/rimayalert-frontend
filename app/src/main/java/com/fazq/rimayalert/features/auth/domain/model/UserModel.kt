@@ -1,5 +1,6 @@
 package com.fazq.rimayalert.features.auth.domain.model
 
+import com.fazq.rimayalert.features.auth.data.mapper.UserDataDTO
 import com.fazq.rimayalert.features.auth.domain.entities.UserEntity
 
 data class User(
@@ -28,4 +29,18 @@ fun UserEntity.toDomain() = User(
     email = "",
     aliasName = aliasName,
     active = active
+)
+
+fun UserDataDTO.toUser() = User(
+    id = id,
+    username = username,
+    email = email,
+    phone = "",
+    dni = dni,
+    firstName = firstName,
+    lastName = lastName,
+    fullName = fullName,
+    aliasName = aliasName,
+    token = null,
+    active = isActive
 )
