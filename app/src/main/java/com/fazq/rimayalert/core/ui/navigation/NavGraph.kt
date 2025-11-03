@@ -62,7 +62,8 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
                 onCreateAlertClick = {
                     // TODO: navController.navigate(Screen.CreateAlert.route)
                 },
-                onAlertClick = { alertId ->
+                onAlertClick = {
+
                     // TODO: navController.navigate("${Screen.AlertDetail.route}/$alertId")
                 },
                 onNavigateToAlerts = {
