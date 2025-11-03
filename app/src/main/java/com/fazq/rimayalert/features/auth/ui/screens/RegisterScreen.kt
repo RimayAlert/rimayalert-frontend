@@ -35,6 +35,7 @@ import com.fazq.rimayalert.features.auth.domain.model.RegisterUserModel
 import com.fazq.rimayalert.features.auth.ui.components.AuthButton
 import com.fazq.rimayalert.features.auth.ui.components.AuthFooterText
 import com.fazq.rimayalert.core.ui.components.AuthTopBar
+import com.fazq.rimayalert.core.ui.theme.AppColors
 import com.fazq.rimayalert.features.auth.ui.components.RegisterCheckboxes
 import com.fazq.rimayalert.features.auth.ui.components.RegisterFormFields
 import com.fazq.rimayalert.features.auth.ui.viewmodel.RegisterUserViewModel
@@ -71,7 +72,7 @@ fun RegisterScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(AuthColors.Background)
+            .background(AppColors.backgroundLight)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             AuthTopBar(
