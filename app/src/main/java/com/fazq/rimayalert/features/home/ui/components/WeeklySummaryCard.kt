@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import com.fazq.rimayalert.core.ui.theme.AppColors
 import com.fazq.rimayalert.core.ui.theme.Dimensions
 import com.fazq.rimayalert.core.ui.theme.FontWeights
 import com.fazq.rimayalert.core.ui.theme.TextSizes
@@ -44,7 +45,7 @@ fun WeeklySummaryCard(
                 RoundedCornerShape(Dimensions.cornerRadiusExtraLarge)
             ),
         shape = RoundedCornerShape(Dimensions.cornerRadiusExtraLarge),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = AppColors.surfaceLight)
     ) {
         Column(
             modifier = Modifier.padding(Dimensions.paddingMediumLarge)
@@ -58,7 +59,7 @@ fun WeeklySummaryCard(
                     text = "Resumen semanal",
                     fontSize = TextSizes.title,
                     fontWeight = FontWeights.bold,
-                    color = Color(0xFF1E293B)
+                    color = AppColors.textPrimary
                 )
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -67,13 +68,13 @@ fun WeeklySummaryCard(
                     Icon(
                         imageVector = Icons.Default.CalendarMonth,
                         contentDescription = null,
-                        tint = Color(0xFF64748B),
+                        tint = AppColors.textSecondary,
                         modifier = Modifier.size(Dimensions.iconSizeSmall)
                     )
                     Text(
                         text = "Últimos $lastDays días",
                         fontSize = TextSizes.small,
-                        color = Color(0xFF64748B)
+                        color = AppColors.textSecondary
                     )
                 }
             }
@@ -89,9 +90,9 @@ fun WeeklySummaryCard(
                     title = "Alertas",
                     value = alerts.toString(),
                     modifier = Modifier.weight(1f),
-                    backgroundColor = Color(0xFFDCFCE7),
-                    iconColor = Color(0xFF16A34A),
-                    iconBackground = Color(0xFFF0FDF4)
+                    backgroundColor = AppColors.successBackground,
+                    iconColor = AppColors.successIcon,
+                    iconBackground = AppColors.successIconBackground
                 )
 
                 StatisticCard(
@@ -99,9 +100,9 @@ fun WeeklySummaryCard(
                     title = "Resueltas",
                     value = resolved.toString(),
                     modifier = Modifier.weight(1f),
-                    backgroundColor = Color(0xFFDCFCE7),
-                    iconColor = Color(0xFF16A34A),
-                    iconBackground = Color(0xFFF0FDF4)
+                    backgroundColor = AppColors.successBackground,
+                    iconColor = AppColors.successIcon,
+                    iconBackground = AppColors.successIconBackground
                 )
             }
 
@@ -125,9 +126,9 @@ fun WeeklySummaryCard(
                     title = "Tiempo medio",
                     value = averageTime,
                     modifier = Modifier.weight(1f),
-                    backgroundColor = Color(0xFFE9D5FF),
-                    iconColor = Color(0xFF9333EA),
-                    iconBackground = Color(0xFFFAF5FF)
+                    backgroundColor = AppColors.warningBackground,
+                    iconColor = AppColors.warningIcon,
+                    iconBackground = AppColors.warningIconBackground,
                 )
             }
         }
