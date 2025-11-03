@@ -1,4 +1,4 @@
-package com.fazq.rimayalert.features.home.ui.screen.states
+package com.fazq.rimayalert.features.home.ui.states
 
 import com.fazq.rimayalert.features.home.domain.model.ActivityItemModel
 
