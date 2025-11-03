@@ -5,6 +5,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AuthResponseDTO(
+    @SerializedName("message")
+    val message: String,
+    @SerializedName("token")
     val token: String,
     @SerializedName("user")
     val user: UserDataDTO

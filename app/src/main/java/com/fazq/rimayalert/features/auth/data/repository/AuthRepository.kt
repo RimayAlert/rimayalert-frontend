@@ -1,16 +1,17 @@
 package com.fazq.rimayalert.features.auth.data.repository
 
+import com.fazq.rimayalert.core.preferences.UserPreferencesManager
 import com.fazq.rimayalert.core.states.DataState
 import com.fazq.rimayalert.core.utils.StringUtils
 import com.fazq.rimayalert.core.utils.TokenManager
 import com.fazq.rimayalert.features.auth.data.db.interfaces.UserDao
-import com.fazq.rimayalert.features.auth.data.mapper.AuthResponseDTO
 import com.fazq.rimayalert.features.auth.data.mapper.toModel
 import com.fazq.rimayalert.features.auth.data.repository.interfaces.AuthInterface
 import com.fazq.rimayalert.features.auth.data.service.AuthService
 import com.fazq.rimayalert.features.auth.domain.entities.UserEntity
 import com.fazq.rimayalert.features.auth.domain.entities.toEntity
 import com.fazq.rimayalert.features.auth.domain.model.AuthModel
+import com.fazq.rimayalert.features.auth.domain.model.toUser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
@@ -21,36 +22,44 @@ class AuthRepository @Inject constructor(
     private val userDao: UserDao,
     private val tokenManager: TokenManager,
     private val stringUtils: StringUtils,
-    ): AuthInterface{
+    private val userPreferencesManager: UserPreferencesManager
+) : AuthInterface {
 
 
-        override suspend fun authenticationFromApi(authParam: AuthModel): DataState<AuthResponseDTO> {
-            val response = api.authentication(authParam.toModel())
-            var dataState: DataState<AuthResponseDTO> = DataState.error("")
-            response
-                .catch { dataState = DataState.error(it.message ?: "Error") }
-                .flowOn(Dispatchers.IO)
-                .collect { responseState ->
-                    dataState = when (responseState) {
-                        is DataState.Success -> {
-                            val userDto = responseState.data.user
-                            val userEntity = userDto.toEntity(responseState.data.token)
-                            userDao.insertUser(userEntity)
-                            DataState.success(responseState.data)
+    override suspend fun authenticationFromApi(authParam: AuthModel): DataState<String> {
+        val response = api.authentication(authParam.toModel())
+        var dataState: DataState<String> = DataState.error("")
+        response
+            .catch { dataState = DataState.error(it.message ?: "Error") }
+            .flowOn(Dispatchers.IO)
+            .collect { responseState ->
+                dataState = when (responseState) {
+                    is DataState.Success -> {
+                        val token = if ("Token" in responseState.data.token) {
+                            responseState.data.token
+                        } else {
+                            "Token ${responseState.data.token}"
                         }
-                        is DataState.Error -> {
-                            val data = authenticationFromDataBase(authParam.username)
-                            if (data is DataState.Success) {
-                                DataState.success(data.data)
-                            } else {
-                                DataState.error(responseState.message)
-                            }
-                        }
+                        val userEntity = responseState.data.user.toEntity(token)
+                        userDao.insertUser(userEntity)
+                        tokenManager.saveToken(token)
+                        val user = responseState.data.user.toUser()
+                        userPreferencesManager.saveUser(user)
+                        DataState.success(responseState.data.message)
                     }
 
+                    is DataState.Error -> {
+                        val data = authenticationFromDataBase(authParam.username)
+                        if (data is DataState.Success) {
+                            DataState.success(data.data)
+                        } else {
+                            DataState.error(responseState.message)
+                        }
+                    }
                 }
-            return dataState
-        }
+            }
+        return dataState
+    }
 
 
     override suspend fun authenticationFromDataBase(username: String): DataState<String> {
