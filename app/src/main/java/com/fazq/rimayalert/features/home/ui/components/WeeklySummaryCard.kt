@@ -24,9 +24,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.fazq.rimayalert.core.ui.theme.Dimensions
+import com.fazq.rimayalert.core.ui.theme.FontWeights
+import com.fazq.rimayalert.core.ui.theme.TextSizes
 
 @Composable
 fun WeeklySummaryCard(
@@ -39,12 +39,15 @@ fun WeeklySummaryCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .shadow(4.dp, RoundedCornerShape(20.dp)),
-        shape = RoundedCornerShape(20.dp),
+            .shadow(
+                Dimensions.elevationMedium,
+                RoundedCornerShape(Dimensions.cornerRadiusExtraLarge)
+            ),
+        shape = RoundedCornerShape(Dimensions.cornerRadiusExtraLarge),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column(
-            modifier = Modifier.padding(20.dp)
+            modifier = Modifier.padding(Dimensions.paddingMediumLarge)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -53,33 +56,33 @@ fun WeeklySummaryCard(
             ) {
                 Text(
                     text = "Resumen semanal",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontSize = TextSizes.title,
+                    fontWeight = FontWeights.bold,
                     color = Color(0xFF1E293B)
                 )
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    horizontalArrangement = Arrangement.spacedBy(Dimensions.gapTiny)
                 ) {
                     Icon(
                         imageVector = Icons.Default.CalendarMonth,
                         contentDescription = null,
                         tint = Color(0xFF64748B),
-                        modifier = Modifier.size(16.dp)
+                        modifier = Modifier.size(Dimensions.iconSizeSmall)
                     )
                     Text(
                         text = "Últimos $lastDays días",
-                        fontSize = 12.sp,
+                        fontSize = TextSizes.small,
                         color = Color(0xFF64748B)
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(Dimensions.gapMediumLarge))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(Dimensions.gapCompact)
             ) {
                 StatisticCard(
                     icon = Icons.Default.Notifications,
@@ -102,11 +105,11 @@ fun WeeklySummaryCard(
                 )
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(Dimensions.gapMediumLarge))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(Dimensions.gapCompact)
             ) {
                 StatisticCard(
                     icon = Icons.Default.PendingActions,

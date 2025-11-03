@@ -81,6 +81,11 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
         }
         composable(Screen.Alerts.route) {
             AlertsScreen(
+                onNavigateToHome = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Home.route) { inclusive = true }
+                    }
+                },
                 onNavigateToAlerts = {},
                 onNavigateToMap = {},
                 onNavigateToProfile = {},
