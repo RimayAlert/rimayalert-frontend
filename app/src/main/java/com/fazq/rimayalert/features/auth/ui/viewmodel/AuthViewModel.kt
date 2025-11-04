@@ -2,8 +2,10 @@ package com.fazq.rimayalert.features.auth.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fazq.rimayalert.core.preferences.UserPreferencesManager
 import com.fazq.rimayalert.core.states.BaseUiState
 import com.fazq.rimayalert.core.states.DataState
+import com.fazq.rimayalert.core.utils.TokenManager
 import com.fazq.rimayalert.features.auth.domain.model.AuthModel
 import com.fazq.rimayalert.features.auth.domain.usecase.AuthUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,12 +19,13 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val authUseCase: AuthUseCase,
+    private val tokenManager: TokenManager,
+    private val userPreferencesManager: UserPreferencesManager
 
-    ) : ViewModel(){
+) : ViewModel() {
 
     private val _authUiState = MutableStateFlow<BaseUiState>(BaseUiState.EmptyState)
     val authUiState: StateFlow<BaseUiState> = _authUiState.asStateFlow()
-
 
 
     fun auth(authParam: AuthModel) {
@@ -36,6 +39,14 @@ class AuthViewModel @Inject constructor(
                     BaseUiState.ErrorState(responseState.message)
             }
 
+        }
+    }
+
+    fun logout() {
+        viewModelScope.launch {
+            tokenManager.clearToken()
+            userPreferencesManager.clearUser()
+            _authUiState.value = BaseUiState.EmptyState
         }
     }
 
