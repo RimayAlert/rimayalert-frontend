@@ -23,8 +23,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.fazq.rimayalert.core.ui.theme.AuthColors.TextPrimary
-
+import com.fazq.rimayalert.core.ui.theme.Dimensions.paddingDefault
 
 
 @Composable
@@ -43,7 +42,7 @@ fun StatisticCard(
         colors = CardDefaults.cardColors(containerColor = backgroundColor)
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(paddingDefault),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Box(

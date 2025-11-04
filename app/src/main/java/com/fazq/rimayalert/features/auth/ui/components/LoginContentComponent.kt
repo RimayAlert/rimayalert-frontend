@@ -24,14 +24,13 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.fazq.rimayalert.core.states.BaseUiState
-import com.fazq.rimayalert.core.ui.theme.AuthColors
+import com.fazq.rimayalert.core.ui.theme.AppColors
+import com.fazq.rimayalert.core.ui.theme.Dimensions
+import com.fazq.rimayalert.core.ui.theme.TextSizes
 import com.fazq.rimayalert.features.auth.ui.state.LoginUiState
 
 
@@ -52,55 +51,57 @@ fun LoginContentComponent(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(AuthColors.Background)
+            .background(AppColors.backgroundLight)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 24.dp),
+                .padding(horizontal = Dimensions.paddingComfortable),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(60.dp))
+            Spacer(modifier = Modifier.height(Dimensions.gapHuge))
 
             MascotPlaceholder()
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(Dimensions.gapXXLarge))
 
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight(),
-                shape = RoundedCornerShape(16.dp),
-                color = Color.White,
-                shadowElevation = 4.dp
+                shape = RoundedCornerShape(Dimensions.cornerRadiusLarge),
+                color = AppColors.surfaceLight,
+                shadowElevation = Dimensions.elevationMedium
             ) {
                 Column(
-                    modifier = Modifier.padding(24.dp),
+                    modifier = Modifier.padding(Dimensions.paddingComfortable),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
                         text = "Bienvenido de nuevo",
-                        fontSize = 24.sp,
+                        fontSize = TextSizes.headline,
                         fontWeight = FontWeight.Bold,
-                        color = AuthColors.TextPrimary,
+                        color = AppColors.textPrimary,
                         textAlign = TextAlign.Center
                     )
 
-                    Spacer(modifier = Modifier.height(32.dp))
+                    Spacer(modifier = Modifier.height(Dimensions.gapXLarge))
 
                     AuthTextField(
                         value = "dev-test",
+//                        value = uiState.userName,
                         onValueChange = onUserNameChange,
                         label = "Nombre de usuario",
                         keyboardType = KeyboardType.Email,
                         enabled = !isLoading
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(Dimensions.gapMedium))
 
                     AuthTextField(
                         value = "devtest",
+//                        value = uiState.password,
                         onValueChange = onPasswordChange,
                         label = "Contraseña",
                         isPassword = true,
@@ -108,7 +109,7 @@ fun LoginContentComponent(
                         enabled = !isLoading
                     )
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(Dimensions.gapCompact))
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -122,15 +123,15 @@ fun LoginContentComponent(
                                 checked = uiState.rememberMe,
                                 onCheckedChange = onRememberMeChange,
                                 colors = CheckboxDefaults.colors(
-                                    checkedColor = AuthColors.Primary,
-                                    uncheckedColor = AuthColors.BorderColor
+                                    checkedColor = AppColors.checkboxChecked,
+                                    uncheckedColor = AppColors.checkboxUnchecked
                                 ),
                                 enabled = !isLoading
                             )
                             Text(
                                 text = "Recordarme",
-                                fontSize = 14.sp,
-                                color = AuthColors.TextSecondary
+                                fontSize = TextSizes.medium,
+                                color = AppColors.secondary
                             )
                         }
 
@@ -140,13 +141,13 @@ fun LoginContentComponent(
                         ) {
                             Text(
                                 text = "¿Olvidaste tu contraseña?",
-                                fontSize = 14.sp,
-                                color = AuthColors.Primary
+                                fontSize = TextSizes.medium,
+                                color = AppColors.primary
                             )
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(Dimensions.gapLarge))
 
                     AuthButton(
                         text = if (isLoading) "Iniciando sesión..." else "Iniciar Sesión",
@@ -154,7 +155,7 @@ fun LoginContentComponent(
                         enabled = true
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(Dimensions.gapMedium))
 
                     AuthFooterText(
                         normalText = "¿No tienes una cuenta? ",
@@ -165,14 +166,14 @@ fun LoginContentComponent(
                 }
             }
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(Dimensions.gapXXLarge))
         }
 
         SnackbarHost(
             hostState = snackbarHostState,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(16.dp)
+                .padding(Dimensions.paddingDefault)
         )
     }
 

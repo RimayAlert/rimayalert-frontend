@@ -30,12 +30,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.fazq.rimayalert.core.states.BaseUiState
-import com.fazq.rimayalert.core.ui.theme.AuthColors
 import com.fazq.rimayalert.core.ui.theme.Dimensions
 import com.fazq.rimayalert.features.auth.domain.model.RegisterUserModel
 import com.fazq.rimayalert.features.auth.ui.components.AuthButton
 import com.fazq.rimayalert.features.auth.ui.components.AuthFooterText
 import com.fazq.rimayalert.core.ui.components.AuthTopBar
+import com.fazq.rimayalert.core.ui.theme.AppColors
 import com.fazq.rimayalert.features.auth.ui.components.RegisterCheckboxes
 import com.fazq.rimayalert.features.auth.ui.components.RegisterFormFields
 import com.fazq.rimayalert.features.auth.ui.viewmodel.RegisterUserViewModel
@@ -72,7 +72,7 @@ fun RegisterScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(AuthColors.Background)
+            .background(AppColors.backgroundLight)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             AuthTopBar(
@@ -84,8 +84,8 @@ fun RegisterScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
-                    .padding(horizontal = Dimensions.spacingMedium)
-                    .padding(top = Dimensions.spacingMedium, bottom = Dimensions.spacingXXLarge),
+                    .padding(horizontal = Dimensions.paddingDefault)
+                    .padding(top = Dimensions.paddingDefault, bottom = Dimensions.paddingExtraSpacious),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Surface(
@@ -94,10 +94,10 @@ fun RegisterScreen(
                         .wrapContentHeight(),
                     shape = RoundedCornerShape(16.dp),
                     color = Color.White,
-                    shadowElevation = Dimensions.spacingSmall
+                    shadowElevation = Dimensions.gapTiny
                 ) {
                     Column(
-                        modifier = Modifier.padding(Dimensions.spacingMedium),
+                        modifier = Modifier.padding(Dimensions.paddingDefault),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         RegisterFormFields(
@@ -109,7 +109,7 @@ fun RegisterScreen(
                             displayNameError = displayNameError
                         )
 
-                        Spacer(modifier = Modifier.height(Dimensions.spacingMedium))
+                        Spacer(modifier = Modifier.height(Dimensions.gapMedium))
 
                         RegisterCheckboxes(
                             acceptTerms = registerState.acceptTerms,
@@ -119,7 +119,7 @@ fun RegisterScreen(
                             onTermsClick = onTermsClick
                         )
 
-                        Spacer(modifier = Modifier.height(Dimensions.spacingXLarge))
+                        Spacer(modifier = Modifier.height(Dimensions.gapXLarge))
 
                         AuthButton(
                             text = "Crear Cuenta",

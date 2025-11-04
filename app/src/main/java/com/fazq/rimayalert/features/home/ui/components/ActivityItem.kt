@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.fazq.rimayalert.core.ui.theme.Dimensions.paddingDefault
 import com.fazq.rimayalert.features.home.domain.model.ActivityItemModel
 import com.fazq.rimayalert.features.home.domain.model.ActivityStatus
 import com.fazq.rimayalert.features.home.domain.model.ActivityStyleModel
@@ -74,7 +75,7 @@ fun ActivityItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(paddingDefault),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {

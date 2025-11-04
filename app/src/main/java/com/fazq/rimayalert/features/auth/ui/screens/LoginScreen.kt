@@ -40,10 +40,7 @@ fun LoginScreen(
             }
 
             is BaseUiState.ErrorState -> {
-                snackbarHostState.showSnackbar(
-                    message = state.message,
-                    duration = SnackbarDuration.Long
-                )
+
                 authViewModel.resetState()
             }
 

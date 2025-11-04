@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.fazq.rimayalert.core.ui.theme.AuthColors
+import com.fazq.rimayalert.core.ui.theme.AppColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,7 +26,7 @@ fun AuthTopBar(
                 text = title,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Medium,
-                color = AuthColors.TextPrimary
+                color = AppColors.primary
             )
         },
         navigationIcon = {
@@ -34,7 +34,7 @@ fun AuthTopBar(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Volver",
-                    tint = AuthColors.TextPrimary
+                    tint = AppColors.textHint
                 )
             }
         },
