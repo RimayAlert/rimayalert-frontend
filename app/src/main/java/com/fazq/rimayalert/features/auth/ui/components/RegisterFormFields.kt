@@ -10,8 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.fazq.rimayalert.core.ui.theme.AppColors
+import com.fazq.rimayalert.core.ui.theme.TextSizes
 import com.fazq.rimayalert.features.auth.domain.model.RegisterUserModel
 
 @Composable
@@ -104,7 +104,7 @@ fun RegisterFormFields(
 
         Text(
             text = "Mínimo 8 caracteres, incluyendo números y símbolos.",
-            fontSize = 12.sp,
+            fontSize = TextSizes.small,
             color = AppColors.textHint,
             modifier = Modifier
                 .fillMaxWidth()
