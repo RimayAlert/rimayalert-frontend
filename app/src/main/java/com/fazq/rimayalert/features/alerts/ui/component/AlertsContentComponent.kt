@@ -38,6 +38,7 @@ fun AlertsContentComponent(
     onUploadImage: () -> Unit,
     onOpenCamera: () -> Unit,
     onSendAlert: () -> Unit,
+    onRemoveImage: (() -> Unit)? = null
 ) {
     Box(
         modifier = modifier
@@ -87,7 +88,8 @@ fun AlertsContentComponent(
                     ImageUploadSectionComponent(
                         imageUri = uiState.imageUri,
                         onUpload = onUploadImage,
-                        onCamera = onOpenCamera
+                        onCamera = onOpenCamera,
+                        onRemoveImage = onRemoveImage
                     )
                 }
 

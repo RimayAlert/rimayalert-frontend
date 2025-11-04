@@ -35,14 +35,6 @@ class AlertViewModel @Inject constructor(
         _alertUiState.update { it.copy(description = desc) }
     }
 
-    fun onUploadImage() {
-        // Lógica para subir imagen o abrir cámara
-    }
-
-    fun onOpenCamera() {
-        // Lógica para abrir cámara
-    }
-
     fun onLocationEdit() {
 
     }
@@ -62,6 +54,11 @@ class AlertViewModel @Inject constructor(
     fun updateImageUri(uri: String?) {
         _alertUiState.value = _alertUiState.value.copy(imageUri = uri)
     }
+
+    fun removeImage() {
+        _alertUiState.update { it.copy(imageUri = null) }
+    }
+
 
     fun sendAlert() {
         val currentState = _alertUiState.value

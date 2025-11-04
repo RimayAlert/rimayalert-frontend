@@ -1,6 +1,7 @@
 package com.fazq.rimayalert.core.di
 
 import android.content.Context
+import com.fazq.rimayalert.core.preferences.PermissionsManager
 import com.fazq.rimayalert.core.preferences.UserPreferencesManager
 import com.fazq.rimayalert.core.utils.TokenManager
 import dagger.Module
@@ -28,5 +29,13 @@ object PreferencesModule {
         @ApplicationContext context: Context
     ): TokenManager {
         return TokenManager(context)
+    }
+
+    @Provides
+    @Singleton
+    fun providePermissionsManager(
+        @ApplicationContext context: Context
+    ): PermissionsManager {
+        return PermissionsManager(context)
     }
 }
