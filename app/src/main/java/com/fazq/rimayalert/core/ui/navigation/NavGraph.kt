@@ -9,6 +9,7 @@ import com.fazq.rimayalert.features.alerts.ui.screen.AlertsScreen
 import com.fazq.rimayalert.features.auth.ui.screens.LoginScreen
 import com.fazq.rimayalert.features.auth.ui.screens.RegisterScreen
 import com.fazq.rimayalert.features.home.ui.screen.HomeScreen
+import com.fazq.rimayalert.features.maps.ui.states.MapScreen
 import com.fazq.rimayalert.features.splash.ui.screen.SplashScreen
 
 @Composable
@@ -61,7 +62,9 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
         composable(Screen.Home.route) {
             HomeScreen(
                 onCreateAlertClick = {
-                    // TODO: navController.navigate(Screen.CreateAlert.route)
+                    navController.navigate(Screen.Alerts.route) {
+                        popUpTo(Screen.Home.route) { inclusive = true }
+                    }
                 },
                 onAlertClick = {
                     // TODO: navController.navigate("${Screen.AlertDetail.route}/$alertId")
@@ -72,7 +75,9 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
                     }
                 },
                 onNavigateToMap = {
-                    // TODO: navController.navigate(Screen.Map.route)
+                    navController.navigate(Screen.Map.route) {
+                        popUpTo(Screen.Map.route) { inclusive = true }
+                    }
                 },
                 onNavigateToProfile = {
                     // TODO: navController.navigate(Screen.Profile.route)
@@ -87,7 +92,28 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
                     }
                 },
                 onNavigateToAlerts = {},
-                onNavigateToMap = {},
+                onNavigateToMap = {
+                    navController.navigate(Screen.Map.route) {
+                        popUpTo(Screen.Map.route) { inclusive = true }
+                    }
+                },
+                onNavigateToProfile = {},
+                onNotificationClick = {}
+            )
+        }
+
+        composable(Screen.Map.route) {
+            MapScreen(
+                onNavigateToHome = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Home.route) { inclusive = true }
+                    }
+                },
+                onNavigateToAlerts = {
+                    navController.navigate(Screen.Alerts.route) {
+                        popUpTo(Screen.Alerts.route) { inclusive = true }
+                    }
+                },
                 onNavigateToProfile = {},
                 onNotificationClick = {}
             )
