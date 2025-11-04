@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,7 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.fazq.rimayalert.core.ui.theme.AppColors
 import com.fazq.rimayalert.core.ui.theme.Dimensions
+import com.fazq.rimayalert.core.ui.theme.TextSizes
 import com.fazq.rimayalert.features.alerts.ui.state.AlertUiState
 
 
@@ -50,61 +51,68 @@ fun AlertsContentComponent(
                 containerColor = Color.White
             ),
             elevation = CardDefaults.cardElevation(
-                defaultElevation = 2.dp
+                defaultElevation = Dimensions.elevationLow
             )
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 20.dp)
-                    .padding(top = 20.dp, bottom = 88.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp)
-            ) {
-                AlertHeaderComponent()
+            Box(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = Dimensions.paddingMediumLarge)
+                        .padding(
+                            top = Dimensions.paddingMediumLarge,
+                            bottom = 88.dp
+                        ),
+                    verticalArrangement = Arrangement.spacedBy(Dimensions.paddingMediumLarge)
+                ) {
+                    AlertHeaderComponent()
 
-                AlertTypeSelectorComponent(
-                    selectedType = uiState.selectedType,
-                    onTypeSelected = onTypeSelected
-                )
+                    AlertTypeSelectorComponent(
+                        selectedType = uiState.selectedType,
+                        onTypeSelected = onTypeSelected
+                    )
 
-                LocationSectionComponent(
-                    location = uiState.location,
-                    onEdit = onLocationEdit,
-                    onUseMap = onUseMap
-                )
+                    LocationSectionComponent(
+                        location = uiState.location,
+                        onEdit = onLocationEdit,
+                        onUseMap = onUseMap
+                    )
 
-                DescriptionInputComponent(
-                    description = uiState.description,
-                    onDescriptionChange = onDescriptionChanged
-                )
+                    DescriptionInputComponent(
+                        description = uiState.description,
+                        onDescriptionChange = onDescriptionChanged
+                    )
 
-                ImageUploadSectionComponent(
-                    imageUri = uiState.imageUri,
-                    onUpload = onUploadImage,
-                    onCamera = onOpenCamera
-                )
-            }
+                    ImageUploadSectionComponent(
+                        imageUri = uiState.imageUri,
+                        onUpload = onUploadImage,
+                        onCamera = onOpenCamera
+                    )
+                }
 
-            Button(
-                onClick = onSendAlert,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp)
-                    .height(56.dp)
-                    .align(Alignment.CenterHorizontally),
-                shape = RoundedCornerShape(16.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF2962FF)
-                )
-            ) {
-                Text(
-                    text = "Enviar alerta",
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        fontWeight = FontWeight.SemiBold
+                Button(
+                    onClick = onSendAlert,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(Dimensions.paddingMediumLarge)
+                        .align(Alignment.BottomCenter),
+                    shape = RoundedCornerShape(Dimensions.cornerRadiusLarge),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = AppColors.primary
                     ),
-                    color = Color.White
-                )
+                    enabled = !uiState.isLoading
+                ) {
+                    Text(
+                        text = if (uiState.isLoading) "Enviando..." else "Enviar alerta",
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = TextSizes.body
+                        ),
+                        color = Color.White,
+                        modifier = Modifier.padding(vertical = Dimensions.paddingCompact)
+                    )
+                }
             }
         }
     }

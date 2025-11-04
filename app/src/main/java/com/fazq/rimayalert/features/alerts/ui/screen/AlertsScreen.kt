@@ -1,6 +1,7 @@
 package com.fazq.rimayalert.features.alerts.ui.screen
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -11,6 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.fazq.rimayalert.core.states.BaseUiState
 import com.fazq.rimayalert.core.ui.components.scaffold.AppBottomNavigation
 import com.fazq.rimayalert.core.ui.components.scaffold.AppScaffold
 import com.fazq.rimayalert.core.ui.components.topBar.HomeTopBar
@@ -33,7 +35,7 @@ fun AlertsScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val user by homeViewModel.user.collectAsStateWithLifecycle()
     val alertUiState by alertViewModel.alertUiState.collectAsStateWithLifecycle()
-
+    val sendAlertState by alertViewModel.sendAlertState.collectAsStateWithLifecycle()
     var localUiState by remember { mutableStateOf(HomeUiState()) }
 
 
@@ -44,6 +46,32 @@ fun AlertsScreen(
         }
     }
 
+    LaunchedEffect(sendAlertState) {
+        when (sendAlertState) {
+            is BaseUiState.SuccessState<*> -> {
+                val message = (sendAlertState as BaseUiState.SuccessState<*>).data as? String
+                    ?: "Alerta enviada exitosamente"
+                snackbarHostState.showSnackbar(
+                    message = message,
+                    withDismissAction = true
+                )
+                alertViewModel.resetState()
+                onNavigateToHome()
+            }
+
+            is BaseUiState.ErrorState -> {
+                snackbarHostState.showSnackbar(
+                    message = (sendAlertState as BaseUiState.ErrorState).message,
+                    duration = SnackbarDuration.Long
+                )
+                alertViewModel.resetState()
+            }
+
+            is BaseUiState.LoadingState -> {}
+            is BaseUiState.EmptyState -> {}
+        }
+    }
+
 
     AppScaffold(
         topBar = {
@@ -51,8 +79,8 @@ fun AlertsScreen(
         },
         bottomBar = {
             AppBottomNavigation(
-                currentRoute = 0,
-                onHomeClick = {},
+                currentRoute = 1,
+                onHomeClick = onNavigateToHome,
                 onAlertsClick = onNavigateToAlerts,
                 onMapClick = onNavigateToMap,
                 onProfileClick = onNavigateToProfile
