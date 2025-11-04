@@ -1,7 +1,6 @@
 package com.fazq.rimayalert.features.alerts.ui.screen
 
 import android.Manifest
-import android.net.Uri
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -24,13 +23,13 @@ import com.fazq.rimayalert.core.ui.components.scaffold.AppBottomNavigation
 import com.fazq.rimayalert.core.ui.components.scaffold.AppScaffold
 import com.fazq.rimayalert.core.ui.components.topBar.HomeTopBar
 import com.fazq.rimayalert.core.ui.extensions.getDisplayName
-import com.fazq.rimayalert.core.utils.ImageUtils
+import com.fazq.rimayalert.core.utils.ImagePickerManager
 import com.fazq.rimayalert.features.alerts.ui.component.AlertsContentComponent
 import com.fazq.rimayalert.features.alerts.ui.viewmodel.AlertViewModel
 import com.fazq.rimayalert.features.home.ui.states.HomeUiState
 import com.fazq.rimayalert.features.home.ui.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
-import java.io.File
+
 
 @Composable
 fun AlertsScreen(
@@ -50,64 +49,41 @@ fun AlertsScreen(
     val alertUiState by alertViewModel.alertUiState.collectAsStateWithLifecycle()
     val sendAlertState by alertViewModel.sendAlertState.collectAsStateWithLifecycle()
     var localUiState by remember { mutableStateOf(HomeUiState()) }
-    var currentPhotoFile by remember { mutableStateOf<File?>(null) }
+
+    val imagePickerManager = remember {
+        ImagePickerManager(
+            context = context,
+            onImageSelected = { uri -> alertViewModel.updateImageUri(uri) },
+            onError = { message ->
+                scope.launch {
+                    snackbarHostState.showSnackbar(message)
+                }
+            }
+        )
+    }
 
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        uri?.let {
-            alertViewModel.updateImageUri(it.toString())
-        }
+    ) { uri ->
+        imagePickerManager.handleGalleryResult(uri)
     }
 
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture()
     ) { success ->
-        if (success && currentPhotoFile != null) {
-            val uri = Uri.fromFile(currentPhotoFile)
-            alertViewModel.updateImageUri(uri.toString())
-        } else {
-            ImageUtils.deleteImageFile(currentPhotoFile)
-            currentPhotoFile = null
-        }
+        imagePickerManager.handleCameraResult(success)
     }
-
 
     val cameraPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
-        if (isGranted) {
-            val photoFile = ImageUtils.createImageFile(context)
-            photoFile?.let {
-                currentPhotoFile = it
-                val photoUri = ImageUtils.getImageUri(context, it)
-                cameraLauncher.launch(photoUri)
-            } ?: run {
-                scope.launch {
-                    snackbarHostState.showSnackbar("Error al crear archivo de imagen")
-                }
-            }
-        } else {
-            scope.launch {
-                snackbarHostState.showSnackbar(
-                    "Permiso de cámara denegado. Ve a configuración para habilitarlo."
-                )
-            }
-        }
+        imagePickerManager.handleCameraPermission(isGranted, cameraLauncher)
     }
 
     val storagePermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
-        if (isGranted) {
-            galleryLauncher.launch("image/*")
-        } else {
-            scope.launch {
-                snackbarHostState.showSnackbar(
-                    "Permiso de almacenamiento denegado. Ve a configuración para habilitarlo."
-                )
-            }
-        }
+        imagePickerManager.handleStoragePermission(isGranted, galleryLauncher)
     }
 
     LaunchedEffect(user) {
