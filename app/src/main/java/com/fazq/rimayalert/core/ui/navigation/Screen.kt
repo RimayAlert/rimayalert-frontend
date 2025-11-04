@@ -9,5 +9,4 @@ sealed class Screen(val route: String) {
     data object Map : Screen("map")
     data object Alerts : Screen("alerts")
     data object ForgotPassword : Screen("forgot_password")
-
 }
