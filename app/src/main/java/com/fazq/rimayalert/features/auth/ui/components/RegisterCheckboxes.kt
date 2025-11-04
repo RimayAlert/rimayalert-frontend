@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.fazq.rimayalert.core.ui.theme.AuthColors
+import com.fazq.rimayalert.core.ui.theme.AppColors
 
 @Composable
 fun RegisterCheckboxes(
@@ -34,8 +34,8 @@ fun RegisterCheckboxes(
                 checked = acceptTerms,
                 onCheckedChange = onAcceptTermsChange,
                 colors = CheckboxDefaults.colors(
-                    checkedColor = AuthColors.Primary,
-                    uncheckedColor = AuthColors.BorderColor
+                    checkedColor = AppColors.checkboxChecked,
+                    uncheckedColor = AppColors.checkboxUnchecked,
                 )
             )
             Row(
@@ -45,7 +45,7 @@ fun RegisterCheckboxes(
                 Text(
                     text = "Acepto los ",
                     fontSize = 14.sp,
-                    color = AuthColors.TextSecondary
+                    color = AppColors.secondary
                 )
                 TextButton(
                     onClick = onTermsClick,
@@ -55,7 +55,7 @@ fun RegisterCheckboxes(
                     Text(
                         text = "términos de uso",
                         fontSize = 14.sp,
-                        color = AuthColors.Primary,
+                        color = AppColors.primary,
                         fontWeight = FontWeight.Medium
                     )
                 }

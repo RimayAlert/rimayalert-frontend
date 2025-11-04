@@ -7,10 +7,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.fazq.rimayalert.core.ui.theme.AuthColors
+import com.fazq.rimayalert.core.ui.theme.AppColors
+import com.fazq.rimayalert.core.ui.theme.Dimensions
+import com.fazq.rimayalert.core.ui.theme.FontWeights
+import com.fazq.rimayalert.core.ui.theme.TextSizes
 
 @Composable
 fun AuthFooterText(
@@ -25,19 +25,19 @@ fun AuthFooterText(
     ) {
         Text(
             text = normalText,
-            fontSize = 14.sp,
-            color = AuthColors.TextSecondary
+            fontSize = TextSizes.medium,
+            color = AppColors.secondary
         )
         TextButton(
             onClick = onClick,
-            contentPadding = PaddingValues(0.dp),
+            contentPadding = PaddingValues(Dimensions.paddingNone),
             enabled = enabled
         ) {
             Text(
                 text = clickableText,
-                fontSize = 14.sp,
-                color = AuthColors.Primary,
-                fontWeight = FontWeight.Medium
+                fontSize = TextSizes.medium,
+                color = AppColors.primary,
+                fontWeight = FontWeights.medium
             )
         }
     }
