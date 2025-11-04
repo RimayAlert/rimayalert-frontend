@@ -16,10 +16,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -29,26 +31,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.fazq.rimayalert.core.ui.theme.AppColors
+import com.fazq.rimayalert.core.ui.theme.Dimensions
 
 @Composable
 fun ImageUploadSectionComponent(
     imageUri: String?,
     onUpload: () -> Unit,
-    onCamera: () -> Unit
+    onCamera: () -> Unit,
+    onRemoveImage: (() -> Unit)? = null
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(Dimensions.gapMedium),
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
             text = "Adjuntar imagen (opcional)",
             style = MaterialTheme.typography.bodyMedium.copy(
                 fontWeight = FontWeight.Medium,
-                color = Color(0xFF424242)
+                color = AppColors.textPrimary
             ),
             modifier = Modifier.align(Alignment.Start)
         )
@@ -57,20 +66,20 @@ fun ImageUploadSectionComponent(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(180.dp)
-                .clip(RoundedCornerShape(12.dp))
+                .clip(RoundedCornerShape(Dimensions.cornerRadiusMedium))
                 .background(Color(0xFFF5F5F5))
                 .border(
                     width = 1.dp,
-                    color = Color(0xFFE0E0E0),
-                    shape = RoundedCornerShape(12.dp)
+                    color = AppColors.borderColor,
+                    shape = RoundedCornerShape(Dimensions.cornerRadiusMedium)
                 ),
             contentAlignment = Alignment.Center
         ) {
             if (imageUri == null) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.padding(24.dp)
+                    verticalArrangement = Arrangement.spacedBy(Dimensions.gapCompact),
+                    modifier = Modifier.padding(Dimensions.paddingComfortable)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Image,
@@ -82,48 +91,74 @@ fun ImageUploadSectionComponent(
                         text = "Espacio para imagen",
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontWeight = FontWeight.Medium,
-                            color = Color(0xFF757575)
+                            color = AppColors.textSecondary
                         )
                     )
                     Text(
                         text = "Sube evidencia si es seguro hacerlo.",
                         style = MaterialTheme.typography.bodySmall.copy(
-                            color = Color(0xFF9E9E9E)
+                            color = AppColors.textHint
                         ),
                         textAlign = TextAlign.Center
                     )
                 }
             } else {
-                AsyncImage(
-                    model = imageUri,
-                    contentDescription = "Imagen adjunta",
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
+                Box(modifier = Modifier.fillMaxSize()) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(imageUri.toUri())
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = "Imagen adjunta",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+
+                    onRemoveImage?.let { removeAction ->
+                        IconButton(
+                            onClick = removeAction,
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .padding(Dimensions.paddingCompact)
+                                .size(32.dp)
+                                .background(
+                                    color = Color.Black.copy(alpha = 0.5f),
+                                    shape = RoundedCornerShape(16.dp)
+                                )
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Eliminar imagen",
+                                tint = Color.White,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
+                    }
+                }
             }
         }
 
         Row(
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(Dimensions.gapMedium),
             modifier = Modifier.fillMaxWidth()
         ) {
             OutlinedButton(
                 onClick = onUpload,
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = Color(0xFF424242)
+                    contentColor = AppColors.textPrimary
                 ),
-                border = BorderStroke(1.dp, Color(0xFFE0E0E0)),
-                contentPadding = PaddingValues(vertical = 12.dp)
+                border = BorderStroke(1.dp, AppColors.borderColor),
+                contentPadding = PaddingValues(vertical = Dimensions.gapMedium)
             ) {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(Dimensions.gapCompact),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
                         imageVector = Icons.Default.Upload,
                         contentDescription = null,
-                        modifier = Modifier.size(18.dp)
+                        modifier = Modifier.size(Dimensions.iconSizeSmall)
                     )
                     Text("Subir")
                 }
@@ -133,33 +168,23 @@ fun ImageUploadSectionComponent(
                 onClick = onCamera,
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = Color(0xFF424242)
+                    contentColor = AppColors.textPrimary
                 ),
-                border = BorderStroke(1.dp, Color(0xFFE0E0E0)),
-                contentPadding = PaddingValues(vertical = 12.dp)
+                border = BorderStroke(1.dp, AppColors.borderColor),
+                contentPadding = PaddingValues(vertical = Dimensions.gapMedium)
             ) {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(Dimensions.gapCompact),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
                         imageVector = Icons.Default.CameraAlt,
                         contentDescription = null,
-                        modifier = Modifier.size(18.dp)
+                        modifier = Modifier.size(Dimensions.iconSizeSmall)
                     )
                     Text("Cámara")
                 }
             }
         }
     }
-}
-
-@Composable
-fun AsyncImage(
-    model: String,
-    contentDescription: String,
-    modifier: Modifier,
-    contentScale: ContentScale
-) {
-    TODO("Not yet implemented")
 }
