@@ -10,6 +10,7 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.fazq.rimayalert.core.preferences.PermissionsManager
 import com.fazq.rimayalert.core.states.BaseUiState
 import com.fazq.rimayalert.core.ui.components.scaffold.AppBottomNavigation
 import com.fazq.rimayalert.core.ui.components.scaffold.AppScaffold
@@ -47,7 +47,9 @@ fun AlertsScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    val permissionsManager = remember { PermissionsManager(context) }
+    val permissionsManager = homeViewModel.permissionsManager
+    val isCameraGranted by homeViewModel.isCameraGranted.collectAsState(initial = false)
+    val isStorageGranted by homeViewModel.isStorageGranted.collectAsState(initial = false)
 
     val user by homeViewModel.user.collectAsStateWithLifecycle()
     val alertUiState by alertViewModel.alertUiState.collectAsStateWithLifecycle()

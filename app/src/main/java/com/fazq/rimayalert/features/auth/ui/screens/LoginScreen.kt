@@ -1,6 +1,7 @@
 package com.fazq.rimayalert.features.auth.ui.screens
 
 import android.Manifest
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.SnackbarDuration
@@ -72,6 +73,12 @@ fun LoginScreen(
                     locationPermissionLauncher.launch(permissionsToRequest)
                 } else if (authViewModel.hasAnyLocationPermission()) {
                     onLoginSuccess()
+                } else {
+                    Toast.makeText(
+                        context,
+                        "Se requieren permisos de ubicación para continuar.",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
                 authViewModel.resetState()
             }
