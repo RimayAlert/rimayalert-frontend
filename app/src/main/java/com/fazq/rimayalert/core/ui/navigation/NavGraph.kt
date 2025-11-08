@@ -14,9 +14,10 @@ import com.fazq.rimayalert.features.splash.ui.screen.SplashScreen
 
 @Composable
 fun NavGraph(navController: NavHostController = rememberNavController()) {
+
     NavHost(
         navController = navController,
-        startDestination = "splash"
+        startDestination = Screen.Splash.route
     ) {
         composable(Screen.Splash.route) {
             SplashScreen(navController)
@@ -24,100 +25,72 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
 
         composable(Screen.Login.route) {
             LoginScreen(
-                onRegisterClick = {
-                    navController.navigate(Screen.Register.route)
-                },
+                onRegisterClick = { navController.navigateSingleTop(Screen.Register) },
                 onLoginSuccess = {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Login.route) { inclusive = true }
-                    }
+                    navController.navigateAndClearBackStackTo(
+                        screen = Screen.Home,
+                        popUpToRoute = Screen.Login.route
+                    )
                 },
-                onForgotPasswordClick = {
-                    // TODO: navController.navigate(Screen.ForgotPassword.route)
-                }
+                onForgotPasswordClick = { navController.navigateSingleTop(Screen.ForgotPassword) }
             )
         }
 
         composable(Screen.Register.route) {
             RegisterScreen(
                 onRegisterSuccess = {
-                    navController.navigate(Screen.Login.route) {
-                        popUpTo(Screen.Register.route) { inclusive = true }
-                    }
+                    navController.navigateAndClearBackStackTo(
+                        screen = Screen.Login,
+                        popUpToRoute = Screen.Register.route
+                    )
                 },
-                onBackClick = {
-                    navController.popBackStack()
-                },
+                onBackClick = { navController.popBackStack() },
                 onLoginClick = {
-                    navController.navigate(Screen.Login.route) {
-                        popUpTo(Screen.Register.route) { inclusive = true }
-                    }
+                    navController.navigateAndClearBackStackTo(
+                        screen = Screen.Login,
+                        popUpToRoute = Screen.Register.route
+                    )
                 },
                 onTermsClick = {
-                    // TODO: Implementar
+                    // TODO: navController.navigateSingleTop(Screen.Terms)
                 }
             )
         }
 
         composable(Screen.Home.route) {
             HomeScreen(
-                onCreateAlertClick = {
-                    navController.navigate(Screen.Alerts.route) {
-                        popUpTo(Screen.Home.route) { inclusive = true }
-                    }
+                onCreateAlertClick = { navController.navigateToScreen(Screen.Alerts) },
+                onAlertClick = { alertId ->
+                    // TODO: navController.navigate("alert_detail/$alertId")
                 },
-                onAlertClick = {
-                    // TODO: navController.navigate("${Screen.AlertDetail.route}/$alertId")
-                },
-                onNavigateToAlerts = {
-                    navController.navigate(Screen.Alerts.route) {
-                        popUpTo(Screen.Alerts.route) { inclusive = true }
-                    }
-                },
-                onNavigateToMap = {
-                    navController.navigate(Screen.Map.route) {
-                        popUpTo(Screen.Map.route) { inclusive = true }
-                    }
-                },
-                onNavigateToProfile = {
-                    // TODO: navController.navigate(Screen.Profile.route)
-                }
+                onNavigateToAlerts = { navController.navigateToScreen(Screen.Alerts) },
+                onNavigateToMap = { navController.navigateToScreen(Screen.Map) },
+                onNavigateToProfile = { navController.navigateToScreen(Screen.Profile) }
             )
         }
+
         composable(Screen.Alerts.route) {
             AlertsScreen(
-                onNavigateToHome = {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Home.route) { inclusive = true }
-                    }
-                },
+                onNavigateToHome = { navController.navigateToScreen(Screen.Home) },
                 onNavigateToAlerts = {},
-                onNavigateToMap = {
-                    navController.navigate(Screen.Map.route) {
-                        popUpTo(Screen.Map.route) { inclusive = true }
-                    }
-                },
-                onNavigateToProfile = {},
+                onNavigateToMap = { navController.navigateToScreen(Screen.Map) },
+                onNavigateToProfile = { navController.navigateToScreen(Screen.Profile) },
                 onNotificationClick = {}
             )
         }
 
         composable(Screen.Map.route) {
             MapScreen(
-                onNavigateToHome = {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Home.route) { inclusive = true }
-                    }
-                },
-                onNavigateToAlerts = {
-                    navController.navigate(Screen.Alerts.route) {
-                        popUpTo(Screen.Alerts.route) { inclusive = true }
-                    }
-                },
-                onNavigateToProfile = {},
+                onNavigateToHome = { navController.navigateToScreen(Screen.Home) },
+                onNavigateToAlerts = { navController.navigateToScreen(Screen.Alerts) },
+                onNavigateToMap = {},
+                onNavigateToProfile = { navController.navigateToScreen(Screen.Profile) },
                 onNotificationClick = {}
             )
         }
 
+        composable(Screen.Profile.route) {
+
+        }
     }
 }
