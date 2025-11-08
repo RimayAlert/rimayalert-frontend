@@ -16,7 +16,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.fazq.rimayalert.core.preferences.LocationPermissionsManager
 import com.fazq.rimayalert.core.states.BaseUiState
 import com.fazq.rimayalert.features.auth.domain.model.AuthModel
 import com.fazq.rimayalert.features.auth.ui.components.LoginContentComponent
@@ -38,9 +37,9 @@ fun LoginScreen(
     var localUiState by remember { mutableStateOf(LoginUiState()) }
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val locationPermissionsManager = remember { LocationPermissionsManager(context) }
-    val wasLocationRequested by locationPermissionsManager.wasLocationPermissionRequested
-        .collectAsStateWithLifecycle(initialValue = false)
+    val wasLocationRequested by authViewModel.wasLocationRequested.collectAsStateWithLifecycle(
+        initialValue = false
+    )
 
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
@@ -48,24 +47,14 @@ fun LoginScreen(
         scope.launch {
             val fineGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
             val coarseGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
-
             val shouldShowRationale = !fineGranted && !coarseGranted
 
-            locationPermissionsManager.handleLocationPermissionsResult(
-                permissions = permissions,
-                shouldShowRationale = shouldShowRationale
-            )
+            authViewModel.handleLocationPermissionsResult(permissions, shouldShowRationale)
 
             if (fineGranted || coarseGranted) {
-                snackbarHostState.showSnackbar(
-                    message = "Permisos de ubicación concedidos",
-                    duration = SnackbarDuration.Short
-                )
+                snackbarHostState.showSnackbar("Permisos de ubicación concedidos")
             } else {
-                snackbarHostState.showSnackbar(
-                    message = "Permisos de ubicación denegados. Algunas funciones pueden no estar disponibles.",
-                    duration = SnackbarDuration.Long
-                )
+                snackbarHostState.showSnackbar("Permisos de ubicación denegados. Algunas funciones pueden no estar disponibles.")
             }
         }
     }
@@ -73,27 +62,22 @@ fun LoginScreen(
     LaunchedEffect(authUiState) {
         when (val state = authUiState) {
             is BaseUiState.SuccessState<*> -> {
-                val message = (state.data as? String) ?: "¡Inicio de sesión exitoso!"
                 snackbarHostState.showSnackbar(
-                    message = message,
+                    "¡Inicio de sesión exitoso!",
                     duration = SnackbarDuration.Short
                 )
-                locationPermissionsManager.syncPermissionsWithSystem()
-                if (!wasLocationRequested && !locationPermissionsManager.hasAnyLocationPermission()) {
-                    val permissionsToRequest =
-                        locationPermissionsManager.getRequiredLocationPermissions()
+                authViewModel.syncLocationPermissions()
+                if (!wasLocationRequested && !authViewModel.hasAnyLocationPermission()) {
+                    val permissionsToRequest = authViewModel.getRequiredLocationPermissions()
                     locationPermissionLauncher.launch(permissionsToRequest)
-                } else if (locationPermissionsManager.hasAnyLocationPermission()) {
+                } else if (authViewModel.hasAnyLocationPermission()) {
                     onLoginSuccess()
                 }
                 authViewModel.resetState()
             }
 
             is BaseUiState.ErrorState -> {
-                snackbarHostState.showSnackbar(
-                    message = state.message,
-                    duration = SnackbarDuration.Long
-                )
+                snackbarHostState.showSnackbar(state.message, duration = SnackbarDuration.Long)
                 authViewModel.resetState()
             }
 
