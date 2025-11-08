@@ -9,6 +9,8 @@ import com.fazq.rimayalert.features.alerts.data.mapper.AlertRequestDTO
 import com.fazq.rimayalert.features.alerts.data.mapper.AlertResponseDTO
 import com.fazq.rimayalert.features.common.interfaces.ErrorDao
 import kotlinx.coroutines.flow.Flow
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import javax.inject.Inject
 
 class AlertService @Inject constructor(
@@ -17,7 +19,7 @@ class AlertService @Inject constructor(
     private val errorDao: ErrorDao
 ) {
     @WorkerThread
-    suspend fun createAlert(data: AlertRequestDTO): Flow<DataState<AlertResponseDTO>> =
-        flowResponse(apiAlert.createAlert(data), "createAlert", errorDao, stringUtils)
+    suspend fun createAlert(data: RequestBody, image: MultipartBody.Part?): Flow<DataState<AlertResponseDTO>> =
+        flowResponse(apiAlert.createAlert(data, image), "createAlert", errorDao, stringUtils)
 
 }

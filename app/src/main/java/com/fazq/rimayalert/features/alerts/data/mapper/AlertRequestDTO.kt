@@ -3,24 +3,27 @@ package com.fazq.rimayalert.features.alerts.data.mapper
 import com.fazq.rimayalert.core.ui.navigation.Screen
 import com.fazq.rimayalert.features.alerts.domain.model.AlertModel
 import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class AlertRequestDTO(
-    @SerializedName("type")
+    @SerialName("type")
     val type: String,
 
-    @SerializedName("description")
+    @SerialName("description")
     val description: String,
 
-    @SerializedName("location")
+    @SerialName("location")
     val location: String,
 
-    @SerializedName("latitude")
+    @SerialName("latitude")
     val latitude: Double? = null,
 
-    @SerializedName("longitude")
+    @SerialName("longitude")
     val longitude: Double? = null,
 
-    @SerializedName("image")
+    @SerialName("image")
     val image: String? = null
 )
 
