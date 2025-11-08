@@ -1,5 +1,6 @@
 package com.fazq.rimayalert.features.alerts.ui.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fazq.rimayalert.core.states.BaseUiState
@@ -51,8 +52,8 @@ class AlertViewModel @Inject constructor(
         )
     }
 
-    fun updateImageUri(uri: String?) {
-        _alertUiState.value = _alertUiState.value.copy(imageUri = uri)
+    fun updateImageUri(uri: Uri?) {
+        _alertUiState.value = _alertUiState.value.copy(imageUri = uri?.toString())
     }
 
     fun removeImage() {
