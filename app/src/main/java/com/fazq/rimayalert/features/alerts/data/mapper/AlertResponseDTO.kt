@@ -6,12 +6,6 @@ data class AlertResponseDTO(
     @SerializedName("message")
     val message: String,
 
-    @SerializedName("alert_id")
-    val alertId: String? = null,
-
-    @SerializedName("status")
-    val status: String? = null,
-
-    @SerializedName("created_at")
-    val createdAt: String? = null
+    @SerializedName("incident_id")
+    val incidentId: String? = null,
 )

@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt.android)
+    alias(libs.plugins.kotlin.serialization)
     id("kotlin-kapt")
 }
 
@@ -140,12 +141,16 @@ dependencies {
     implementation(libs.androidx.datastore.core)
     implementation(libs.kotlinx.serialization.json)
 
+    implementation(libs.accompanist.permissions)
+    implementation(libs.coil.compose)
+
 //    Compose Icons
     implementation(libs.androidx.compose.material.icons.extended)
 
     // Room
     implementation(libs.room.ktx)
     implementation(libs.androidx.ui)
+    implementation(libs.volley)
     kapt(libs.room.compiler)
 
     // Utils
