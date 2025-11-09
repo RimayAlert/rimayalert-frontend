@@ -13,6 +13,7 @@ import com.fazq.rimayalert.core.states.BaseUiState
 import com.fazq.rimayalert.core.ui.extensions.getDisplayName
 import com.fazq.rimayalert.features.auth.domain.model.UserModel
 import com.fazq.rimayalert.features.home.domain.model.CommunityValidationResponseModel
+import com.fazq.rimayalert.features.home.domain.model.IncidentModel
 import com.fazq.rimayalert.features.home.ui.viewmodel.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -183,6 +184,13 @@ class HomeScreenState(
             snapshotFlow { homeState }.collect { state ->
                 when (state) {
                     is BaseUiState.SuccessState<*> -> {
+                        val incident = state.data as? List<IncidentModel>
+                        incident?.let {
+                            localUiState = localUiState.copy(
+                                recentActivities = it,
+                                isRefreshing = false
+                            )
+                        }
                         viewModel.resetState()
                     }
 
@@ -249,7 +257,9 @@ class HomeScreenState(
     }
 
     fun onRefresh() {
-        viewModel.loadHomeData()
+        scope.launch {
+            viewModel.loadHomeData()
+        }
     }
 }
 
