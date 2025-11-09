@@ -11,7 +11,6 @@ import com.fazq.rimayalert.features.alerts.data.repository.interfaces.AlertInter
 import com.fazq.rimayalert.features.alerts.data.service.AlertService
 import com.fazq.rimayalert.features.alerts.domain.model.AlertModel
 import com.fazq.rimayalert.features.alerts.domain.model.toRequestDTO
-import com.google.gson.Gson
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch

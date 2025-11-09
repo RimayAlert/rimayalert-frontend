@@ -1,9 +1,12 @@
 package com.fazq.rimayalert.core.di
 
 import android.content.Context
+import com.fazq.rimayalert.core.preferences.LocationPermissionsManager
 import com.fazq.rimayalert.core.preferences.PermissionsManager
 import com.fazq.rimayalert.core.preferences.UserPreferencesManager
 import com.fazq.rimayalert.core.utils.TokenManager
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,4 +41,21 @@ object PreferencesModule {
     ): PermissionsManager {
         return PermissionsManager(context)
     }
+
+    @Provides
+    @Singleton
+    fun provideLocationPermissionsManager(
+        @ApplicationContext context: Context
+    ): LocationPermissionsManager {
+        return LocationPermissionsManager(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideFusedLocationProviderClient(
+        @ApplicationContext context: Context
+    ): FusedLocationProviderClient {
+        return LocationServices.getFusedLocationProviderClient(context)
+    }
+
 }

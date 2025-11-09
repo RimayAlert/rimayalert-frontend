@@ -2,6 +2,7 @@ package com.fazq.rimayalert.features.alerts.ui.screen
 
 import android.Manifest
 import android.os.Build
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
@@ -9,6 +10,7 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,6 +47,10 @@ fun AlertsScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
+    val permissionsManager = homeViewModel.permissionsManager
+    val isCameraGranted by homeViewModel.isCameraGranted.collectAsState(initial = false)
+    val isStorageGranted by homeViewModel.isStorageGranted.collectAsState(initial = false)
+
     val user by homeViewModel.user.collectAsStateWithLifecycle()
     val alertUiState by alertViewModel.alertUiState.collectAsStateWithLifecycle()
     val sendAlertState by alertViewModel.sendAlertState.collectAsStateWithLifecycle()
@@ -53,6 +59,8 @@ fun AlertsScreen(
     val imagePickerManager = remember {
         ImagePickerManager(
             context = context,
+            permissionsManager = permissionsManager,
+            scope = scope,
             onImageSelected = { uri -> alertViewModel.updateImageUri(uri) },
             onError = { message ->
                 scope.launch {
@@ -77,13 +85,35 @@ fun AlertsScreen(
     val cameraPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
-        imagePickerManager.handleCameraPermission(isGranted, cameraLauncher)
+        val activity = context as? ComponentActivity
+        val shouldShowRationale = activity?.shouldShowRequestPermissionRationale(
+            Manifest.permission.CAMERA
+        ) ?: false
+
+        imagePickerManager.handleCameraPermissionResult(
+            isGranted = isGranted,
+            shouldShowRationale = shouldShowRationale,
+            cameraLauncher = cameraLauncher
+        )
     }
 
     val storagePermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
-        imagePickerManager.handleStoragePermission(isGranted, galleryLauncher)
+        val activity = context as? ComponentActivity
+        val shouldShowRationale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            false
+        } else {
+            activity?.shouldShowRequestPermissionRationale(
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) ?: false
+        }
+
+        imagePickerManager.handleStoragePermissionResult(
+            isGranted = isGranted,
+            shouldShowRationale = shouldShowRationale,
+            galleryLauncher = galleryLauncher
+        )
     }
 
     LaunchedEffect(user) {

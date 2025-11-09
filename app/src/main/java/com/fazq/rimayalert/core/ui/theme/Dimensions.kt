@@ -3,55 +3,45 @@ package com.fazq.rimayalert.core.ui.theme
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+
 object Dimensions {
-    // Gaps - espacios entre elementos (como Spacer)
-    val gapTiny: Dp = 4.dp
-    val gapSmall: Dp = 8.dp
-    val gapCompact: Dp = 12.dp
-    val gapMedium: Dp = 16.dp
-    val gapMediumLarge: Dp = 20.dp
-    val gapLarge: Dp = 24.dp
-    val gapXLarge: Dp = 32.dp
-    val gapXXLarge: Dp = 40.dp
-    val gapHuge: Dp = 60.dp
+    // Espaciados (gap)
+    val gapTiny = 4.dp
+    val gapSmall = 8.dp
+    val gapCompact = 12.dp
+    val gapMedium = 16.dp
+    val gapLarge = 24.dp
+    val gapXLarge = 32.dp
+    val gapHuge = 60.dp
 
-    // Padding - espacios internos de componentes
-    val paddingNone: Dp = 0.dp
-    val paddingExtraTiny: Dp = 2.dp
-    val paddingTiny: Dp = 4.dp
-    val paddingCompact: Dp = 8.dp
-    val paddingDefault: Dp = 16.dp
-    val paddingMediumLarge: Dp = 20.dp
-    val paddingComfortable: Dp = 24.dp
-    val paddingSpacious: Dp = 32.dp
-    val paddingExtraSpacious: Dp = 40.dp
-    val paddingHuge: Dp = 48.dp
-    val paddingExtraHuge: Dp = 64.dp
-    val paddingMassive: Dp = 80.dp
+    // Padding
+    val paddingTiny = 4.dp
+    val paddingSmall = 8.dp
+    val paddingMedium = 16.dp
+    val paddingLarge = 24.dp
+    val paddingXLarge = 32.dp
+    val paddingHuge = 48.dp
 
-    // Corner Radius - radios para esquinas
-    val cornerRadiusSmall: Dp = 8.dp
-    val cornerRadiusMedium: Dp = 12.dp
-    val cornerRadiusLarge: Dp = 16.dp
-    val cornerRadiusExtraLarge: Dp = 20.dp
+    // Radio de esquinas
+    val cornerSmall = 8.dp
+    val cornerMedium = 12.dp
+    val cornerLarge = 16.dp
 
-    // Elevation - niveles de sombra/elevación
-    val elevationNone: Dp = 0.dp
-    val elevationLow: Dp = 2.dp
-    val elevationMedium: Dp = 4.dp
-    val elevationHigh: Dp = 8.dp
+    // Elevación
+    val elevationLow = 2.dp
+    val elevationMedium = 4.dp
+    val elevationHigh = 8.dp
 
-    //    Icons sizes
-    val iconSizeSmall: Dp = 16.dp
-    val iconSizeMedium: Dp = 24.dp
-    val iconSizeLarge: Dp = 32.dp
+    // Tamaños de íconos
+    val iconSmall = 16.dp
+    val iconMedium = 24.dp
+    val iconLarge = 32.dp
 
-    // Box sizes grandes
-    val boxSizeExtraLarge: Dp = 120.dp
+    // Botones
+    val buttonHeight = 56.dp
 
-    // Button heights
-    val buttonHeightDefault: Dp = 56.dp
-
-    // Stroke widths
-    val strokeWidthThin: Dp = 2.dp
+    // Grosores de líneas / bordes / indicadores
+    val strokeWidthThin = 2.dp
+    val strokeWidthMedium = 3.dp
+    val strokeWidthThick = 4.dp
 }

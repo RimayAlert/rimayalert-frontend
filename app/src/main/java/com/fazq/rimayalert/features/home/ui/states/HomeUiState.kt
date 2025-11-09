@@ -6,7 +6,9 @@ data class HomeUiState(
     val userName: String = "",
     val weeklySummary: WeeklySummaryUiState = WeeklySummaryUiState(),
     val recentActivities: List<ActivityItemModel> = emptyList(),
-    val isRefreshing: Boolean = false
+    val isRefreshing: Boolean = false,
+    val hasCommunity: Boolean = false,
+    val communityName: String? = null
 )
 
 data class WeeklySummaryUiState(
