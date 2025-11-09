@@ -21,7 +21,7 @@ data class CommunityDTO(
 
 @Serializable
 data class CommunityValidationResponseDTO(
-    @SerialName("")
+    @SerialName("has_community")
     val hasCommunity: Boolean,
     @SerialName("community")
     val community: CommunityDTO? = null,

@@ -1,11 +1,13 @@
 package com.fazq.rimayalert.features.alerts.data.mapper
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class AlertResponseDTO(
-    @SerializedName("message")
+    @SerialName("message")
     val message: String,
 
-    @SerializedName("incident_id")
+    @SerialName("incident_id")
     val incidentId: String? = null,
 )
