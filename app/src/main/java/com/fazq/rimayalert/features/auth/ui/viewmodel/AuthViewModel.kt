@@ -2,7 +2,6 @@ package com.fazq.rimayalert.features.auth.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.fazq.rimayalert.core.preferences.LocationPermissionsManager
 import com.fazq.rimayalert.core.preferences.UserPreferencesManager
 import com.fazq.rimayalert.core.states.BaseUiState
 import com.fazq.rimayalert.core.states.DataState
@@ -22,16 +21,10 @@ class AuthViewModel @Inject constructor(
     private val authUseCase: AuthUseCase,
     private val tokenManager: TokenManager,
     private val userPreferencesManager: UserPreferencesManager,
-    private val locationPermissionsManager: LocationPermissionsManager
 ) : ViewModel() {
 
     private val _authUiState = MutableStateFlow<BaseUiState>(BaseUiState.EmptyState)
     val authUiState: StateFlow<BaseUiState> = _authUiState.asStateFlow()
-
-    val wasLocationRequested = locationPermissionsManager.wasLocationPermissionRequested
-    val isFineLocationGranted = locationPermissionsManager.isFineLocationGranted
-    val isCoarseLocationGranted = locationPermissionsManager.isCoarseLocationGranted
-    val isLocationDeniedPermanently = locationPermissionsManager.isLocationDeniedPermanently
 
 
     fun auth(authParam: AuthModel) {
@@ -59,32 +52,4 @@ class AuthViewModel @Inject constructor(
     fun resetState() {
         _authUiState.value = BaseUiState.EmptyState
     }
-
-
-    fun syncLocationPermissions() {
-        viewModelScope.launch {
-            locationPermissionsManager.syncPermissionsWithSystem()
-        }
-    }
-
-    fun handleLocationPermissionsResult(
-        permissions: Map<String, Boolean>,
-        shouldShowRationale: Boolean
-    ) {
-        viewModelScope.launch {
-            locationPermissionsManager.handleLocationPermissionsResult(
-                permissions = permissions,
-                shouldShowRationale = shouldShowRationale
-            )
-        }
-    }
-
-    fun getRequiredLocationPermissions(): Array<String> {
-        return locationPermissionsManager.getRequiredLocationPermissions()
-    }
-
-    fun hasAnyLocationPermission(): Boolean {
-        return locationPermissionsManager.hasAnyLocationPermission()
-    }
-
 }
