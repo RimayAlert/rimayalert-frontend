@@ -18,15 +18,16 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.fazq.rimayalert.features.home.domain.model.ActivityItemModel
+import com.fazq.rimayalert.core.ui.theme.AppColors
+import com.fazq.rimayalert.core.ui.theme.Dimensions
+import com.fazq.rimayalert.features.home.domain.model.IncidentModel
 
 @Composable
 fun RecentActivitySection(
-    activities: List<ActivityItemModel>,
+    activities: List<IncidentModel>,
     onActivityClick: (String) -> Unit,
     onRefresh: () -> Unit,
     isRefreshing: Boolean
@@ -41,7 +42,7 @@ fun RecentActivitySection(
                 text = "Actividad reciente",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = AppColors.textPrimary
             )
 
             TextButton(
@@ -51,20 +52,20 @@ fun RecentActivitySection(
                 Icon(
                     imageVector = Icons.Default.Refresh,
                     contentDescription = null,
-                    tint = Color(0xFF6366F1),
-                    modifier = Modifier.size(18.dp)
+                    tint = AppColors.primary,
+                    modifier = Modifier.size(Dimensions.iconSizeSmall)
                 )
-                Spacer(modifier = Modifier.width(4.dp))
+                Spacer(modifier = Modifier.width(Dimensions.gapTiny))
                 Text(
                     text = if (isRefreshing) "Actualizando..." else "Actualizado",
                     fontSize = 13.sp,
-                    color = Color(0xFF6366F1),
+                    color = AppColors.primary,
                     fontWeight = FontWeight.Medium
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(Dimensions.gapMedium))
 
         if (isRefreshing) {
             Box(
@@ -74,20 +75,20 @@ fun RecentActivitySection(
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator(
-                    color = Color(0xFF6366F1),
-                    strokeWidth = 3.dp
+                    color = AppColors.primary,
+                    strokeWidth = Dimensions.strokeWidthThin
                 )
             }
         } else {
             if (activities.isEmpty()) {
                 EmptyActivityState()
             } else {
-                activities.forEach { activity ->
-                    ActivityItem(
-                        activity = activity,
-                        onClick = { onActivityClick(activity.id) }
+                activities.forEach { incident ->
+                    IncidentActivityItemComponent(
+                        incident = incident,
+                        onClick = { onActivityClick(incident.id.toString()) }
                     )
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(Dimensions.gapCompact))
                 }
             }
         }
