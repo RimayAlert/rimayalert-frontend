@@ -20,7 +20,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val userPreferencesManager: UserPreferencesManager,
     private val authUseCase: AuthUseCase,
-    val permissionsManager : PermissionsManager
+    val permissionsManager: PermissionsManager
 ) : ViewModel() {
 
     private val _homeUiState = MutableStateFlow<BaseUiState>(BaseUiState.EmptyState)
