@@ -1,8 +1,6 @@
 package com.fazq.rimayalert.features.alerts.data.mapper
 
-import com.fazq.rimayalert.core.ui.navigation.Screen
 import com.fazq.rimayalert.features.alerts.domain.model.AlertModel
-import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
