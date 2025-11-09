@@ -22,7 +22,6 @@ class PermissionsManager(private val context: Context) {
             booleanPreferencesKey("storage_denied_permanently")
     }
 
-    // Camera permissions
     suspend fun setCameraPermissionGranted(granted: Boolean) {
         context.permissionsDataStore.edit { prefs ->
             prefs[CAMERA_PERMISSION_GRANTED] = granted
