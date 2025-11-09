@@ -81,6 +81,10 @@ junitVersion = "1.3.0"
 espressoCore = "3.7.0"
 
 
+playServicesLocation = "21.3.0"
+
+
+
 ###################################################
 # 📦 Dependencias agrupadas por categorías
 ###################################################
@@ -150,6 +154,8 @@ volley = { group = "com.android.volley", name = "volley", version.ref = "volley"
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+
+google-play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 
 
 ##########################################

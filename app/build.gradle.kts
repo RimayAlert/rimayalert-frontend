@@ -136,6 +136,8 @@ dependencies {
     implementation(libs.accompanist.permissions)
     implementation(libs.coil.compose)
 
+    implementation(libs.google.play.services.location)
+
 //    Compose Icons
     implementation(libs.androidx.compose.material.icons.extended)
 
