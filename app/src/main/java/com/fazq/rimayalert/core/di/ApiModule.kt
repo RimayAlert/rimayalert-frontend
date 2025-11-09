@@ -4,6 +4,7 @@ import com.fazq.rimayalert.features.alerts.data.api.AlertApiClient
 import com.fazq.rimayalert.features.auth.data.api.AuthApiClient
 import com.fazq.rimayalert.features.auth.data.api.RegisterUserApiClient
 import com.fazq.rimayalert.features.home.data.api.CommunityApiClient
+import com.fazq.rimayalert.features.home.data.api.HomeApiClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -55,6 +56,16 @@ object ApiModule {
         .client(okHttpClient)
         .build()
         .create(CommunityApiClient::class.java)
+
+    @Singleton
+    @Provides
+    fun provideHomeApiClient(
+        retrofitBuilder: Retrofit.Builder,
+        okHttpClient: OkHttpClient,
+    ): HomeApiClient = retrofitBuilder
+        .client(okHttpClient)
+        .build()
+        .create(HomeApiClient::class.java)
 
 
 }

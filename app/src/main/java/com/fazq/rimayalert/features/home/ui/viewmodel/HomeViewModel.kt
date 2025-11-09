@@ -8,8 +8,8 @@ import com.fazq.rimayalert.core.preferences.UserPreferencesManager
 import com.fazq.rimayalert.core.states.BaseUiState
 import com.fazq.rimayalert.core.states.DataState
 import com.fazq.rimayalert.features.auth.domain.model.UserModel
-import com.fazq.rimayalert.features.auth.domain.usecase.AuthUseCase
 import com.fazq.rimayalert.features.home.domain.usecase.CommunityUseCase
+import com.fazq.rimayalert.features.home.domain.usecase.HomeUseCase
 import com.google.android.gms.location.FusedLocationProviderClient
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,8 +23,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val userPreferencesManager: UserPreferencesManager,
-    private val authUseCase: AuthUseCase,
     private val communityUseCase: CommunityUseCase,
+    private val homeUseCase: HomeUseCase,
     val permissionsManager: PermissionsManager,
     private val locationPermissionsManager: LocationPermissionsManager,
     private val fusedLocationClient: FusedLocationProviderClient
@@ -151,11 +151,15 @@ class HomeViewModel @Inject constructor(
         return locationPermissionsManager.hasAnyLocationPermission()
     }
 
-    fun loadHomeData() {
-        viewModelScope.launch {
-            _homeUiState.value = BaseUiState.LoadingState
-            // TODO: Cargar datos reales del home
-            _homeUiState.value = BaseUiState.SuccessState(data = "Home Data Loaded")
+    suspend fun loadHomeData() {
+        when (val responseState = homeUseCase()) {
+            is DataState.Success -> {
+                _homeUiState.value = BaseUiState.SuccessState(responseState.data)
+            }
+
+            is DataState.Error -> {
+                _homeUiState.value = BaseUiState.ErrorState(responseState.message)
+            }
         }
     }
 

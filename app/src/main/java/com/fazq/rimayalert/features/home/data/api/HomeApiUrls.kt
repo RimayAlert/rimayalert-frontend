@@ -12,4 +12,11 @@ object HomeApiUrls {
 
     const val CHECK_COMMUNITY_STATUS = "${community}/check"
     const val ASSIGN_COMMUNITY = "${community}/assign"
+
+//    Incident
+
+    private const val incident = "incidents/${api}"
+    private const val alert = "${incident}/alert"
+    const val GET_INCIDENT_INFO = "${alert}/list"
+
 }
