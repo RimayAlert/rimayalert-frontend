@@ -25,8 +25,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import com.fazq.rimayalert.core.ui.theme.Dimensions
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun CommunityCheckLoader() {
@@ -60,14 +62,14 @@ fun CommunityCheckLoader() {
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(Dimensions.gapLarge),
-            modifier = Modifier.padding(Dimensions.paddingLarge)
+            verticalArrangement = Arrangement.spacedBy(24.dp),
+            modifier = Modifier.padding(32.dp)
         ) {
             Icon(
                 imageVector = Icons.Default.LocationOn,
                 contentDescription = null,
                 modifier = Modifier
-                    .size(Dimensions.iconLarge * 3)
+                    .size(80.dp)
                     .scale(scale)
                     .alpha(alpha),
                 tint = MaterialTheme.colorScheme.primary
@@ -75,29 +77,28 @@ fun CommunityCheckLoader() {
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(Dimensions.gapSmall)
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
                     text = "Verificando comunidad",
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        color = MaterialTheme.colorScheme.onBackground
-                    ),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground,
                     textAlign = TextAlign.Center
                 )
 
                 Text(
                     text = "Estamos buscando tu comunidad...",
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    ),
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
                 )
             }
 
             CircularProgressIndicator(
-                modifier = Modifier.size(Dimensions.iconLarge * 1.5f),
+                modifier = Modifier.size(40.dp),
                 color = MaterialTheme.colorScheme.primary,
-                strokeWidth = Dimensions.strokeWidthThin
+                strokeWidth = 3.dp
             )
         }
     }
