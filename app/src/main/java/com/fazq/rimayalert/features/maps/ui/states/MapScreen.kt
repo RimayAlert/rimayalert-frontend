@@ -9,9 +9,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.fazq.rimayalert.core.ui.components.scaffold.AppBottomNavigation
-import com.fazq.rimayalert.core.ui.components.scaffold.AppScaffold
-import com.fazq.rimayalert.core.ui.components.topBar.HomeTopBar
+import com.fazq.rimayalert.core.ui.components.scaffold.AppBottomNavigationComponent
+import com.fazq.rimayalert.core.ui.components.scaffold.AppScaffoldComponent
+import com.fazq.rimayalert.core.ui.components.topBar.HomeTopBarComponent
 import com.fazq.rimayalert.core.ui.extensions.getDisplayName
 import com.fazq.rimayalert.features.home.ui.states.HomeUiState
 import com.fazq.rimayalert.features.home.ui.viewmodel.HomeViewModel
@@ -41,12 +41,12 @@ fun MapScreen(
     }
 
 
-    AppScaffold(
+    AppScaffoldComponent(
         topBar = {
-            HomeTopBar(localUiState.userName, onNotificationClick)
+            HomeTopBarComponent(localUiState.userName, onNotificationClick)
         },
         bottomBar = {
-            AppBottomNavigation(
+            AppBottomNavigationComponent(
                 currentRoute = 2,
                 onHomeClick = onNavigateToHome,
                 onAlertsClick = onNavigateToAlerts,

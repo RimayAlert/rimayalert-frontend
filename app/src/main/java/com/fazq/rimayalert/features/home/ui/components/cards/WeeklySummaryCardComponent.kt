@@ -1,4 +1,4 @@
-package com.fazq.rimayalert.features.home.ui.components
+package com.fazq.rimayalert.features.home.ui.components.cards
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,7 +30,7 @@ import com.fazq.rimayalert.core.ui.theme.FontWeights
 import com.fazq.rimayalert.core.ui.theme.TextSizes
 
 @Composable
-fun WeeklySummaryCard(
+fun WeeklySummaryCardComponent(
     alerts: Int,
     resolved: Int,
     pending: Int,
@@ -85,7 +85,7 @@ fun WeeklySummaryCard(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(Dimensions.gapCompact)
             ) {
-                StatisticCard(
+                StatisticCardComponent(
                     icon = Icons.Default.Notifications,
                     title = "Alertas",
                     value = alerts.toString(),
@@ -95,7 +95,7 @@ fun WeeklySummaryCard(
                     iconBackground = AppColors.successIconBackground
                 )
 
-                StatisticCard(
+                StatisticCardComponent(
                     icon = Icons.Default.CheckCircle,
                     title = "Resueltas",
                     value = resolved.toString(),
@@ -112,7 +112,7 @@ fun WeeklySummaryCard(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(Dimensions.gapCompact)
             ) {
-                StatisticCard(
+                StatisticCardComponent(
                     icon = Icons.Default.PendingActions,
                     title = "Pendientes",
                     value = pending.toString(),
@@ -121,7 +121,7 @@ fun WeeklySummaryCard(
                     iconColor = Color(0xFFEAB308),
                     iconBackground = Color(0xFFFEFCE8)
                 )
-                StatisticCard(
+                StatisticCardComponent(
                     icon = Icons.Default.AccessTime,
                     title = "Tiempo medio",
                     value = averageTime,

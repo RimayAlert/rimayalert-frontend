@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 import com.fazq.rimayalert.core.ui.theme.AppColors
 
 @Composable
-fun RegisterCheckboxes(
+fun RegisterCheckboxesComponent(
     acceptTerms: Boolean,
     onAcceptTermsChange: (Boolean) -> Unit,
     onTermsClick: () -> Unit,

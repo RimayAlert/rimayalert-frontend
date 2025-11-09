@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import com.fazq.rimayalert.core.ui.components.navigation.BottomNavigationBarComponent
 
 @Composable
-fun AppBottomNavigation(
+fun AppBottomNavigationComponent(
     currentRoute: Int,
     onHomeClick: () -> Unit,
     onAlertsClick: () -> Unit,

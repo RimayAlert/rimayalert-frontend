@@ -1,11 +1,9 @@
-package com.fazq.rimayalert.features.home.ui.components
+package com.fazq.rimayalert.features.home.ui.components.cards
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -27,7 +25,7 @@ import com.fazq.rimayalert.core.ui.theme.Dimensions.paddingDefault
 
 
 @Composable
-fun StatisticCard(
+fun StatisticCardComponent(
     icon: ImageVector,
     title: String,
     value: String,

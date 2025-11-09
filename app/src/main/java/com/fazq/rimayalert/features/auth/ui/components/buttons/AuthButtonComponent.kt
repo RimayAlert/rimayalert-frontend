@@ -1,4 +1,4 @@
-package com.fazq.rimayalert.features.auth.ui.components
+package com.fazq.rimayalert.features.auth.ui.components.buttons
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -11,12 +11,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.fazq.rimayalert.core.ui.theme.AppColors
 import com.fazq.rimayalert.core.ui.theme.Dimensions
 
 @Composable
-fun AuthButton(
+fun AuthButtonComponent(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,

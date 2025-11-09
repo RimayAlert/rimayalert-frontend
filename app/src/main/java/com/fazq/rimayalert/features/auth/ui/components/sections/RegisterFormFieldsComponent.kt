@@ -1,4 +1,4 @@
-package com.fazq.rimayalert.features.auth.ui.components
+package com.fazq.rimayalert.features.auth.ui.components.sections
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,9 +13,10 @@ import androidx.compose.ui.unit.dp
 import com.fazq.rimayalert.core.ui.theme.AppColors
 import com.fazq.rimayalert.core.ui.theme.TextSizes
 import com.fazq.rimayalert.features.auth.domain.model.RegisterUserModel
+import com.fazq.rimayalert.features.auth.ui.components.AuthTextFieldComponent
 
 @Composable
-fun RegisterFormFields(
+fun RegisterFormFieldsComponent(
     registerData: RegisterUserModel,
     onDataChange: (RegisterUserModel) -> Unit,
     displayNameError: Boolean,
@@ -23,7 +24,7 @@ fun RegisterFormFields(
 ) {
     Column(modifier = modifier) {
 
-        AuthTextField(
+        AuthTextFieldComponent(
             value = registerData.firstName,
             onValueChange = { onDataChange(registerData.copy(firstName = it)) },
             label = "Nombre",
@@ -33,7 +34,7 @@ fun RegisterFormFields(
         Spacer(modifier = Modifier.height(16.dp))
 
 
-        AuthTextField(
+        AuthTextFieldComponent(
             value = registerData.lastName,
             onValueChange = { onDataChange(registerData.copy(lastName = it)) },
             label = "apellido",
@@ -42,7 +43,7 @@ fun RegisterFormFields(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        AuthTextField(
+        AuthTextFieldComponent(
             value = registerData.dni,
             onValueChange = { onDataChange(registerData.copy(dni = it)) },
             label = "Dni",
@@ -52,7 +53,7 @@ fun RegisterFormFields(
         Spacer(modifier = Modifier.height(16.dp))
 
 
-        AuthTextField(
+        AuthTextFieldComponent(
             value = registerData.username,
             onValueChange = { onDataChange(registerData.copy(username = it)) },
             label = "Nombre de usuario",
@@ -61,7 +62,7 @@ fun RegisterFormFields(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        AuthTextField(
+        AuthTextFieldComponent(
             value = registerData.email,
             onValueChange = { onDataChange(registerData.copy(email = it)) },
             label = "Correo electrónico",
@@ -70,7 +71,7 @@ fun RegisterFormFields(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        AuthTextField(
+        AuthTextFieldComponent(
             value = registerData.displayName,
             onValueChange = { onDataChange(registerData.copy(displayName = it)) },
             label = "Nombre público (Alias)",
@@ -83,7 +84,7 @@ fun RegisterFormFields(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        AuthTextField(
+        AuthTextFieldComponent(
             value = registerData.phone,
             onValueChange = { onDataChange(registerData.copy(phone = it)) },
             label = "Teléfono (opcional)",
@@ -92,7 +93,7 @@ fun RegisterFormFields(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        AuthTextField(
+        AuthTextFieldComponent(
             value = registerData.password,
             onValueChange = { onDataChange(registerData.copy(password = it)) },
             label = "Contraseña",
@@ -113,7 +114,7 @@ fun RegisterFormFields(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        AuthTextField(
+        AuthTextFieldComponent(
             value = registerData.confirmPassword,
             onValueChange = { onDataChange(registerData.copy(confirmPassword = it)) },
             label = "Confirmar contraseña",

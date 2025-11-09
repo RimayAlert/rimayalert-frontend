@@ -14,7 +14,7 @@ import com.fazq.rimayalert.core.ui.theme.Dimensions
 import com.fazq.rimayalert.core.ui.theme.TextSizes
 
 @Composable
-fun MascotPlaceholder(
+fun MascotPlaceholderComponent(
     modifier: Modifier = Modifier
 ) {
     Box(

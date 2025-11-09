@@ -3,11 +3,11 @@ package com.fazq.rimayalert.features.home.ui.screen
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.fazq.rimayalert.core.ui.components.scaffold.AppBottomNavigation
-import com.fazq.rimayalert.core.ui.components.scaffold.AppScaffold
-import com.fazq.rimayalert.core.ui.components.topBar.HomeTopBar
-import com.fazq.rimayalert.features.home.ui.components.HomeContent
-import com.fazq.rimayalert.features.home.ui.components.LocationPermissionDialog
+import com.fazq.rimayalert.core.ui.components.scaffold.AppBottomNavigationComponent
+import com.fazq.rimayalert.core.ui.components.scaffold.AppScaffoldComponent
+import com.fazq.rimayalert.core.ui.components.topBar.HomeTopBarComponent
+import com.fazq.rimayalert.features.home.ui.components.sections.HomeContent
+import com.fazq.rimayalert.features.home.ui.components.dialogs.LocationPermissionDialogComponent
 import com.fazq.rimayalert.features.home.ui.states.rememberHomeScreenState
 import com.fazq.rimayalert.features.home.ui.viewmodel.HomeViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -46,7 +46,7 @@ fun HomeScreen(
     }
 
     if (screenState.showLocationDialog) {
-        LocationPermissionDialog(
+        LocationPermissionDialogComponent(
             onAllowClick = {
                 locationPermissionsState.launchMultiplePermissionRequest()
             },
@@ -54,15 +54,15 @@ fun HomeScreen(
         )
     }
 
-    AppScaffold(
+    AppScaffoldComponent(
         topBar = {
-            HomeTopBar(
+            HomeTopBarComponent(
                 userName = screenState.localUiState.userName,
                 onNotificationClick = onNotificationClick
             )
         },
         bottomBar = {
-            AppBottomNavigation(
+            AppBottomNavigationComponent(
                 currentRoute = 0,
                 onHomeClick = {},
                 onAlertsClick = onNavigateToAlerts,

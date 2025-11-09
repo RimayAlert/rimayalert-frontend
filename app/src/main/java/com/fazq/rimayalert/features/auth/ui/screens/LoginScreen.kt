@@ -19,7 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fazq.rimayalert.core.states.BaseUiState
 import com.fazq.rimayalert.features.auth.domain.model.AuthModel
-import com.fazq.rimayalert.features.auth.ui.components.LoginContentComponent
+import com.fazq.rimayalert.features.auth.ui.components.sections.LoginContentComponent
 import com.fazq.rimayalert.features.auth.ui.state.LoginUiState
 import com.fazq.rimayalert.features.auth.ui.viewmodel.AuthViewModel
 import kotlinx.coroutines.launch

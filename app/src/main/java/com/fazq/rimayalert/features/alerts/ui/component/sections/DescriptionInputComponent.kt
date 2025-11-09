@@ -1,4 +1,4 @@
-package com.fazq.rimayalert.features.alerts.ui.component
+package com.fazq.rimayalert.features.alerts.ui.component.sections
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
