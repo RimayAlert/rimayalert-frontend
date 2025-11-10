@@ -93,8 +93,8 @@ fun LoginContentComponent(
                     Spacer(modifier = Modifier.height(Dimensions.gapXLarge))
 
                     AuthTextFieldComponent(
-                        value = "dev-test",
-//                        value = uiState.userName,
+//                        value = "dev-test",
+                        value = uiState.userName,
                         onValueChange = onUserNameChange,
                         label = "Nombre de usuario",
                         keyboardType = KeyboardType.Email,
@@ -104,8 +104,8 @@ fun LoginContentComponent(
                     Spacer(modifier = Modifier.height(Dimensions.gapMedium))
 
                     AuthTextFieldComponent(
-                        value = "devtest",
-//                        value = uiState.password,
+//                        value = "devtest",
+                        value = uiState.password,
                         onValueChange = onPasswordChange,
                         label = "Contraseña",
                         isPassword = true,
