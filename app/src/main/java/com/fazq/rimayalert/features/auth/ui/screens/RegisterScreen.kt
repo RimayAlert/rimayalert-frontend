@@ -32,12 +32,12 @@ import androidx.navigation.compose.rememberNavController
 import com.fazq.rimayalert.core.states.BaseUiState
 import com.fazq.rimayalert.core.ui.theme.Dimensions
 import com.fazq.rimayalert.features.auth.domain.model.RegisterUserModel
-import com.fazq.rimayalert.features.auth.ui.components.AuthButton
-import com.fazq.rimayalert.features.auth.ui.components.AuthFooterText
-import com.fazq.rimayalert.core.ui.components.AuthTopBar
+import com.fazq.rimayalert.features.auth.ui.components.buttons.AuthButtonComponent
+import com.fazq.rimayalert.features.auth.ui.components.AuthFooterTextComponent
+import com.fazq.rimayalert.core.ui.components.AuthTopBarComponent
 import com.fazq.rimayalert.core.ui.theme.AppColors
-import com.fazq.rimayalert.features.auth.ui.components.RegisterCheckboxes
-import com.fazq.rimayalert.features.auth.ui.components.RegisterFormFields
+import com.fazq.rimayalert.features.auth.ui.components.RegisterCheckboxesComponent
+import com.fazq.rimayalert.features.auth.ui.components.sections.RegisterFormFieldsComponent
 import com.fazq.rimayalert.features.auth.ui.viewmodel.RegisterUserViewModel
 
 
@@ -75,7 +75,7 @@ fun RegisterScreen(
             .background(AppColors.backgroundLight)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            AuthTopBar(
+            AuthTopBarComponent(
                 title = "Crear cuenta",
                 onBackClick = onBackClick
             )
@@ -100,7 +100,7 @@ fun RegisterScreen(
                         modifier = Modifier.padding(Dimensions.paddingDefault),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        RegisterFormFields(
+                        RegisterFormFieldsComponent(
                             registerData = registerState,
                             onDataChange = {
                                 registerState = it
@@ -111,7 +111,7 @@ fun RegisterScreen(
 
                         Spacer(modifier = Modifier.height(Dimensions.gapMedium))
 
-                        RegisterCheckboxes(
+                        RegisterCheckboxesComponent(
                             acceptTerms = registerState.acceptTerms,
                             onAcceptTermsChange = {
                                 registerState = registerState.copy(acceptTerms = it)
@@ -121,7 +121,7 @@ fun RegisterScreen(
 
                         Spacer(modifier = Modifier.height(Dimensions.gapXLarge))
 
-                        AuthButton(
+                        AuthButtonComponent(
                             text = "Crear Cuenta",
                             onClick = {
                                 registerUserViewModel.registerUser(registerState)
@@ -140,7 +140,7 @@ fun RegisterScreen(
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        AuthFooterText(
+                        AuthFooterTextComponent(
                             normalText = "¿Ya tienes una cuenta? ",
                             clickableText = "Inicia sesión",
                             onClick = onLoginClick

@@ -16,7 +16,7 @@ import com.fazq.rimayalert.core.ui.theme.AppColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AuthTopBar(
+fun AuthTopBarComponent(
     title: String,
     onBackClick: () -> Unit
 ) {

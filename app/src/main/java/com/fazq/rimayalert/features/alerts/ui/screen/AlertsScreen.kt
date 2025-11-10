@@ -21,12 +21,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fazq.rimayalert.core.states.BaseUiState
-import com.fazq.rimayalert.core.ui.components.scaffold.AppBottomNavigation
-import com.fazq.rimayalert.core.ui.components.scaffold.AppScaffold
-import com.fazq.rimayalert.core.ui.components.topBar.HomeTopBar
+import com.fazq.rimayalert.core.ui.components.scaffold.AppBottomNavigationComponent
+import com.fazq.rimayalert.core.ui.components.scaffold.AppScaffoldComponent
+import com.fazq.rimayalert.core.ui.components.topBar.HomeTopBarComponent
 import com.fazq.rimayalert.core.ui.extensions.getDisplayName
 import com.fazq.rimayalert.core.utils.ImagePickerManager
-import com.fazq.rimayalert.features.alerts.ui.component.AlertsContentComponent
+import com.fazq.rimayalert.features.alerts.ui.component.sections.AlertsContentComponent
 import com.fazq.rimayalert.features.alerts.ui.viewmodel.AlertViewModel
 import com.fazq.rimayalert.features.home.ui.states.HomeUiState
 import com.fazq.rimayalert.features.home.ui.viewmodel.HomeViewModel
@@ -149,12 +149,12 @@ fun AlertsScreen(
     }
 
 
-    AppScaffold(
+    AppScaffoldComponent(
         topBar = {
-            HomeTopBar(localUiState.userName, onNotificationClick)
+            HomeTopBarComponent(localUiState.userName, onNotificationClick)
         },
         bottomBar = {
-            AppBottomNavigation(
+            AppBottomNavigationComponent(
                 currentRoute = 1,
                 onHomeClick = onNavigateToHome,
                 onAlertsClick = onNavigateToAlerts,
@@ -193,12 +193,12 @@ fun AlertsScreen(
 //fun AlertsScreenPreview() {
 //    RimayAlertTheme {
 //        val fakeUiState = HomeUiState(userName = "Dev")
-//        AppScaffold(
+//        AppScaffoldComponent(
 //            topBar = {
-//                HomeTopBar(fakeUiState.userName, onNotificationClick = {})
+//                HomeTopBarComponent(fakeUiState.userName, onNotificationClick = {})
 //            },
 //            bottomBar = {
-//                AppBottomNavigation(
+//                AppBottomNavigationComponent(
 //                    currentRoute = 1,
 //                    onHomeClick = {},
 //                    onAlertsClick = {},

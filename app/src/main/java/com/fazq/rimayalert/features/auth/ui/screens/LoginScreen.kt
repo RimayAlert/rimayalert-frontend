@@ -1,9 +1,6 @@
 package com.fazq.rimayalert.features.auth.ui.screens
 
-import android.Manifest
 import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -16,10 +13,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fazq.rimayalert.core.states.BaseUiState
 import com.fazq.rimayalert.features.auth.domain.model.AuthModel
-import com.fazq.rimayalert.features.auth.ui.components.LoginContentComponent
+import com.fazq.rimayalert.features.auth.ui.components.sections.LoginContentComponent
 import com.fazq.rimayalert.features.auth.ui.state.LoginUiState
 import com.fazq.rimayalert.features.auth.ui.viewmodel.AuthViewModel
 import kotlinx.coroutines.launch
@@ -37,28 +33,6 @@ fun LoginScreen(
     val authUiState by authViewModel.authUiState.collectAsState()
     var localUiState by remember { mutableStateOf(LoginUiState()) }
     val snackbarHostState = remember { SnackbarHostState() }
-
-    val wasLocationRequested by authViewModel.wasLocationRequested.collectAsStateWithLifecycle(
-        initialValue = false
-    )
-
-    val locationPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        scope.launch {
-            val fineGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
-            val coarseGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
-            val shouldShowRationale = !fineGranted && !coarseGranted
-
-            authViewModel.handleLocationPermissionsResult(permissions, shouldShowRationale)
-
-            if (fineGranted || coarseGranted) {
-                snackbarHostState.showSnackbar("Permisos de ubicación concedidos")
-            } else {
-                snackbarHostState.showSnackbar("Permisos de ubicación denegados. Algunas funciones pueden no estar disponibles.")
-            }
-        }
-    }
 
     LaunchedEffect(authUiState) {
         when (val state = authUiState) {
@@ -90,10 +64,6 @@ fun LoginScreen(
 
             else -> {}
         }
-    }
-
-    LaunchedEffect(wasLocationRequested, authUiState) {
-        if (wasLocationRequested && authUiState is BaseUiState.SuccessState<*>) onLoginSuccess()
     }
 
     LoginContentComponent(

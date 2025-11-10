@@ -29,7 +29,7 @@ import com.fazq.rimayalert.core.ui.theme.AppColors
 import com.fazq.rimayalert.core.ui.theme.Dimensions
 
 @Composable
-fun AuthTextField(
+fun AuthTextFieldComponent(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,

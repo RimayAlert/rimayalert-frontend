@@ -1,4 +1,4 @@
-package com.fazq.rimayalert.features.home.ui.components
+package com.fazq.rimayalert.features.home.ui.components.dialogs
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 
 @Composable
-fun LocationPermissionDialog(
+fun LocationPermissionDialogComponent(
     onAllowClick: () -> Unit,
     onDismiss: () -> Unit
 ) {

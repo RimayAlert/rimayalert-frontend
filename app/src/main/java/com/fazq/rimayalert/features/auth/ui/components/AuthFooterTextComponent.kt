@@ -13,7 +13,7 @@ import com.fazq.rimayalert.core.ui.theme.FontWeights
 import com.fazq.rimayalert.core.ui.theme.TextSizes
 
 @Composable
-fun AuthFooterText(
+fun AuthFooterTextComponent(
     normalText: String,
     clickableText: String,
     onClick: () -> Unit,

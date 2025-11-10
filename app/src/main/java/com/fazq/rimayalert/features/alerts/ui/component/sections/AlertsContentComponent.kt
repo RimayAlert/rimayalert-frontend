@@ -1,4 +1,4 @@
-package com.fazq.rimayalert.features.alerts.ui.component
+package com.fazq.rimayalert.features.alerts.ui.component.sections
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import com.fazq.rimayalert.core.ui.theme.AppColors
 import com.fazq.rimayalert.core.ui.theme.Dimensions
 import com.fazq.rimayalert.core.ui.theme.TextSizes
+import com.fazq.rimayalert.features.alerts.ui.component.AlertHeaderComponent
+import com.fazq.rimayalert.features.alerts.ui.component.AlertTypeSelectorComponent
 import com.fazq.rimayalert.features.alerts.ui.state.AlertUiState
 
 

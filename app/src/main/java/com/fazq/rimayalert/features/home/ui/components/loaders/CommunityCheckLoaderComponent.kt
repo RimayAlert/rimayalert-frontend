@@ -1,4 +1,4 @@
-package com.fazq.rimayalert.features.home.ui.components
+package com.fazq.rimayalert.features.home.ui.components.loaders
 
 import androidx.compose.animation.core.EaseInOutCubic
 import androidx.compose.animation.core.RepeatMode
@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun CommunityCheckLoader() {
+fun CommunityCheckLoaderComponent() {
     val infiniteTransition = rememberInfiniteTransition(label = "pulse")
 
     val scale by infiniteTransition.animateFloat(

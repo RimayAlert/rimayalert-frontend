@@ -1,4 +1,4 @@
-package com.fazq.rimayalert.features.home.ui.components
+package com.fazq.rimayalert.features.home.ui.components.sections
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,9 +24,11 @@ import androidx.compose.ui.unit.sp
 import com.fazq.rimayalert.core.ui.theme.AppColors
 import com.fazq.rimayalert.core.ui.theme.Dimensions
 import com.fazq.rimayalert.features.home.domain.model.IncidentModel
+import com.fazq.rimayalert.features.home.ui.components.empty.EmptyActivityStateComponent
+import com.fazq.rimayalert.features.home.ui.components.items.IncidentActivityItemComponent
 
 @Composable
-fun RecentActivitySection(
+fun RecentActivitySectionComponent(
     activities: List<IncidentModel>,
     onActivityClick: (String) -> Unit,
     onRefresh: () -> Unit,
@@ -81,7 +83,7 @@ fun RecentActivitySection(
             }
         } else {
             if (activities.isEmpty()) {
-                EmptyActivityState()
+                EmptyActivityStateComponent()
             } else {
                 activities.forEach { incident ->
                     IncidentActivityItemComponent(

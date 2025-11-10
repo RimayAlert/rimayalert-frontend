@@ -1,4 +1,4 @@
-package com.fazq.rimayalert.features.auth.ui.components
+package com.fazq.rimayalert.features.auth.ui.components.sections
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +31,10 @@ import com.fazq.rimayalert.core.states.BaseUiState
 import com.fazq.rimayalert.core.ui.theme.AppColors
 import com.fazq.rimayalert.core.ui.theme.Dimensions
 import com.fazq.rimayalert.core.ui.theme.TextSizes
+import com.fazq.rimayalert.features.auth.ui.components.buttons.AuthButtonComponent
+import com.fazq.rimayalert.features.auth.ui.components.AuthFooterTextComponent
+import com.fazq.rimayalert.features.auth.ui.components.AuthTextFieldComponent
+import com.fazq.rimayalert.features.auth.ui.components.MascotPlaceholderComponent
 import com.fazq.rimayalert.features.auth.ui.state.LoginUiState
 
 
@@ -62,7 +66,7 @@ fun LoginContentComponent(
         ) {
             Spacer(modifier = Modifier.height(Dimensions.gapHuge))
 
-            MascotPlaceholder()
+            MascotPlaceholderComponent()
 
             Spacer(modifier = Modifier.height(Dimensions.gapXXLarge))
 
@@ -88,7 +92,7 @@ fun LoginContentComponent(
 
                     Spacer(modifier = Modifier.height(Dimensions.gapXLarge))
 
-                    AuthTextField(
+                    AuthTextFieldComponent(
                         value = "dev-test",
 //                        value = uiState.userName,
                         onValueChange = onUserNameChange,
@@ -99,7 +103,7 @@ fun LoginContentComponent(
 
                     Spacer(modifier = Modifier.height(Dimensions.gapMedium))
 
-                    AuthTextField(
+                    AuthTextFieldComponent(
                         value = "devtest",
 //                        value = uiState.password,
                         onValueChange = onPasswordChange,
@@ -149,7 +153,7 @@ fun LoginContentComponent(
 
                     Spacer(modifier = Modifier.height(Dimensions.gapLarge))
 
-                    AuthButton(
+                    AuthButtonComponent(
                         text = if (isLoading) "Iniciando sesión..." else "Iniciar Sesión",
                         onClick = onLoginClick,
                         enabled = true
@@ -157,7 +161,7 @@ fun LoginContentComponent(
 
                     Spacer(modifier = Modifier.height(Dimensions.gapMedium))
 
-                    AuthFooterText(
+                    AuthFooterTextComponent(
                         normalText = "¿No tienes una cuenta? ",
                         clickableText = "Regístrate aquí",
                         onClick = onRegisterClick,

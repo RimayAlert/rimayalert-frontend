@@ -1,4 +1,4 @@
-package com.fazq.rimayalert.features.home.ui.components
+package com.fazq.rimayalert.features.home.ui.components.sections
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,6 +11,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.fazq.rimayalert.features.home.ui.components.buttons.CreateAlertButtonComponent
+import com.fazq.rimayalert.features.home.ui.components.cards.WeeklySummaryCardComponent
 import com.fazq.rimayalert.features.home.ui.states.HomeUiState
 
 @Composable
@@ -31,7 +33,7 @@ fun HomeContent(
     ) {
         Spacer(modifier = Modifier.height(16.dp))
 
-        WeeklySummaryCard(
+        WeeklySummaryCardComponent(
             alerts = uiState.weeklySummary.alerts,
             resolved = uiState.weeklySummary.resolved,
             pending = uiState.weeklySummary.pending,
@@ -41,14 +43,14 @@ fun HomeContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        CreateAlertButton(
+        CreateAlertButtonComponent(
             onClick = onCreateAlertClick,
             enabled = !isLoading
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        RecentActivitySection(
+        RecentActivitySectionComponent(
             activities = uiState.recentActivities,
             onActivityClick = onAlertClick,
             onRefresh = onRefresh,

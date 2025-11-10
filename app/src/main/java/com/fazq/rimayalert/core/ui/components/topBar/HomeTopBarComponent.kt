@@ -24,11 +24,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.fazq.rimayalert.core.ui.components.UserAvatar
+import com.fazq.rimayalert.core.ui.components.UserAvatarComponent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeTopBar(
+fun HomeTopBarComponent(
     userName: String,
     onNotificationClick: () -> Unit
 ) {
@@ -47,7 +47,7 @@ fun HomeTopBar(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                UserAvatar(userName = userName)
+                UserAvatarComponent(userName = userName)
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
                     text = userName,

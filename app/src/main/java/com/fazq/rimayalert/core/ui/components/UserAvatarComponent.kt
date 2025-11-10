@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun UserAvatar(userName: String) {
+fun UserAvatarComponent(userName: String) {
     Box(
         modifier = Modifier
             .size(44.dp)

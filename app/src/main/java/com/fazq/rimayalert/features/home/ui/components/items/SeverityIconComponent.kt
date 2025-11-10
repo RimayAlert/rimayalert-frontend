@@ -1,4 +1,4 @@
-package com.fazq.rimayalert.features.home.ui.components
+package com.fazq.rimayalert.features.home.ui.components.items
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
