@@ -1,6 +1,5 @@
 package com.fazq.rimayalert.features.auth.ui.screens
 
-import android.widget.Toast
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -18,7 +17,6 @@ import com.fazq.rimayalert.features.auth.domain.model.AuthModel
 import com.fazq.rimayalert.features.auth.ui.components.sections.LoginContentComponent
 import com.fazq.rimayalert.features.auth.ui.state.LoginUiState
 import com.fazq.rimayalert.features.auth.ui.viewmodel.AuthViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
@@ -27,9 +25,6 @@ fun LoginScreen(
     onLoginSuccess: () -> Unit = {},
     authViewModel: AuthViewModel = hiltViewModel()
 ) {
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-
     val authUiState by authViewModel.authUiState.collectAsState()
     var localUiState by remember { mutableStateOf(LoginUiState()) }
     val snackbarHostState = remember { SnackbarHostState() }
@@ -41,19 +36,7 @@ fun LoginScreen(
                     "¡Inicio de sesión exitoso!",
                     duration = SnackbarDuration.Short
                 )
-                authViewModel.syncLocationPermissions()
-                if (!wasLocationRequested && !authViewModel.hasAnyLocationPermission()) {
-                    val permissionsToRequest = authViewModel.getRequiredLocationPermissions()
-                    locationPermissionLauncher.launch(permissionsToRequest)
-                } else if (authViewModel.hasAnyLocationPermission()) {
-                    onLoginSuccess()
-                } else {
-                    Toast.makeText(
-                        context,
-                        "Se requieren permisos de ubicación para continuar.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
+                onLoginSuccess()
                 authViewModel.resetState()
             }
 
