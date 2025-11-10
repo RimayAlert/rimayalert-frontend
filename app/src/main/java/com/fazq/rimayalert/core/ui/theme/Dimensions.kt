@@ -34,6 +34,7 @@ object Dimensions {
     val cornerRadiusMedium: Dp = 12.dp
     val cornerRadiusLarge: Dp = 16.dp
     val cornerRadiusExtraLarge: Dp = 20.dp
+    val cornerRadiusPill: Dp = 50.dp
 
     // Elevation - niveles de sombra/elevación
     val elevationNone: Dp = 0.dp
