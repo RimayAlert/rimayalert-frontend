@@ -1,0 +1,53 @@
+name: Android CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Cache Gradle files
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle
+
+      # ✅ Instalar Android SDK (para proyectos Android)
+      - name: Install Android SDK
+        uses: android-actions/setup-android@v3
+
+      # ✅ Crear archivo env.properties
+      - name: Create env.properties file
+        run: |
+          echo "BASE_URL_DEV=${{ secrets.BASE_URL_DEV }}" >> env.properties
+          echo "BASE_URL_PROD=${{ secrets.BASE_URL_PROD }}" >> env.properties
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build project
+        run: ./gradlew build --stacktrace
+
+      - name: Run unit tests
+        run: ./gradlew test
