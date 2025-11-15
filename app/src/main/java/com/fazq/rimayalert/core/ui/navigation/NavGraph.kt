@@ -9,7 +9,7 @@ import com.fazq.rimayalert.features.alerts.ui.screen.AlertsScreen
 import com.fazq.rimayalert.features.auth.ui.screens.LoginScreen
 import com.fazq.rimayalert.features.auth.ui.screens.RegisterScreen
 import com.fazq.rimayalert.features.home.ui.screen.HomeScreen
-import com.fazq.rimayalert.features.maps.ui.states.MapScreen
+import com.fazq.rimayalert.features.maps.ui.screen.MapScreen
 import com.fazq.rimayalert.features.splash.ui.screen.SplashScreen
 
 @Composable

@@ -1,5 +1,6 @@
-package com.fazq.rimayalert.features.maps.ui.states
+package com.fazq.rimayalert.features.maps.ui.screen
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -7,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fazq.rimayalert.core.ui.components.scaffold.AppBottomNavigationComponent
@@ -15,6 +17,9 @@ import com.fazq.rimayalert.core.ui.components.topBar.HomeTopBarComponent
 import com.fazq.rimayalert.core.ui.extensions.getDisplayName
 import com.fazq.rimayalert.features.home.ui.states.HomeUiState
 import com.fazq.rimayalert.features.home.ui.viewmodel.HomeViewModel
+import com.fazq.rimayalert.features.maps.ui.component.MapScreenContent
+import com.fazq.rimayalert.features.maps.ui.event.MapsEvent
+import com.fazq.rimayalert.features.maps.viewmodel.MapsViewModel
 
 @Composable
 fun MapScreen(
@@ -22,17 +27,14 @@ fun MapScreen(
     onNavigateToAlerts: () -> Unit = {},
     onNavigateToMap: () -> Unit = {},
     onNavigateToProfile: () -> Unit = {},
-
     onNotificationClick: () -> Unit = {},
     homeViewModel: HomeViewModel = hiltViewModel(),
-
-    ) {
-
+    mapsViewModel: MapsViewModel = hiltViewModel()
+) {
     val user by homeViewModel.user.collectAsStateWithLifecycle()
+    val mapsUiState by mapsViewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     var localUiState by remember { mutableStateOf(HomeUiState()) }
-
-
 
     LaunchedEffect(user) {
         user?.let { userData ->
@@ -40,6 +42,12 @@ fun MapScreen(
         }
     }
 
+    LaunchedEffect(mapsUiState.errorMessage) {
+        mapsUiState.errorMessage?.let { message ->
+            snackbarHostState.showSnackbar(message)
+            mapsViewModel.onEvent(MapsEvent.ClearError)
+        }
+    }
 
     AppScaffoldComponent(
         topBar = {
@@ -55,7 +63,11 @@ fun MapScreen(
             )
         },
         snackbarHostState = snackbarHostState
-    ) {
-
+    ) {paddingValues ->
+        MapScreenContent(
+            modifier = Modifier.padding(paddingValues),
+            mapsUiState = mapsUiState,
+            onEvent = mapsViewModel::onEvent
+        )
     }
 }

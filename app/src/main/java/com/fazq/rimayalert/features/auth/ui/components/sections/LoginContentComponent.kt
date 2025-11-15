@@ -16,8 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -27,22 +25,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import com.fazq.rimayalert.core.states.BaseUiState
 import com.fazq.rimayalert.core.ui.theme.AppColors
 import com.fazq.rimayalert.core.ui.theme.Dimensions
 import com.fazq.rimayalert.core.ui.theme.TextSizes
-import com.fazq.rimayalert.features.auth.ui.components.buttons.AuthButtonComponent
 import com.fazq.rimayalert.features.auth.ui.components.AuthFooterTextComponent
 import com.fazq.rimayalert.features.auth.ui.components.AuthTextFieldComponent
 import com.fazq.rimayalert.features.auth.ui.components.MascotPlaceholderComponent
+import com.fazq.rimayalert.features.auth.ui.components.buttons.AuthButtonComponent
 import com.fazq.rimayalert.features.auth.ui.state.LoginUiState
 
 
 @Composable
 fun LoginContentComponent(
     uiState: LoginUiState,
-    authState: BaseUiState,
-    snackbarHostState: SnackbarHostState,
     onUserNameChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onRememberMeChange: (Boolean) -> Unit,
@@ -50,7 +45,7 @@ fun LoginContentComponent(
     onRegisterClick: () -> Unit,
     onForgotPasswordClick: () -> Unit
 ) {
-    val isLoading = authState is BaseUiState.LoadingState
+    val isLoading = uiState.isLoading
 
     Box(
         modifier = Modifier
@@ -172,13 +167,6 @@ fun LoginContentComponent(
 
             Spacer(modifier = Modifier.height(Dimensions.gapXXLarge))
         }
-
-        SnackbarHost(
-            hostState = snackbarHostState,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(Dimensions.paddingDefault)
-        )
     }
 
 }
