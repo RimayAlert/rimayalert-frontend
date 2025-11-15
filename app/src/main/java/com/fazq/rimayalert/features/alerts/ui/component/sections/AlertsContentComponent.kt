@@ -26,21 +26,17 @@ import com.fazq.rimayalert.core.ui.theme.Dimensions
 import com.fazq.rimayalert.core.ui.theme.TextSizes
 import com.fazq.rimayalert.features.alerts.ui.component.AlertHeaderComponent
 import com.fazq.rimayalert.features.alerts.ui.component.AlertTypeSelectorComponent
+import com.fazq.rimayalert.features.alerts.ui.component.HandleDialogs
+import com.fazq.rimayalert.features.alerts.ui.event.AlertEvent
 import com.fazq.rimayalert.features.alerts.ui.state.AlertUiState
-
 
 @Composable
 fun AlertsContentComponent(
     modifier: Modifier = Modifier,
     uiState: AlertUiState,
-    onTypeSelected: (String) -> Unit,
-    onDescriptionChanged: (String) -> Unit,
-    onLocationEdit: () -> Unit,
-    onUseMap: () -> Unit,
+    onEvent: (AlertEvent) -> Unit,
     onUploadImage: () -> Unit,
-    onOpenCamera: () -> Unit,
-    onSendAlert: () -> Unit,
-    onRemoveImage: (() -> Unit)? = null
+    onOpenCamera: () -> Unit
 ) {
     Box(
         modifier = modifier
@@ -73,30 +69,30 @@ fun AlertsContentComponent(
 
                     AlertTypeSelectorComponent(
                         selectedType = uiState.selectedType,
-                        onTypeSelected = onTypeSelected
+                        onTypeSelected = { onEvent(AlertEvent.TypeSelected(it)) }
                     )
 
                     LocationSectionComponent(
                         location = uiState.location,
-                        onEdit = onLocationEdit,
-                        onUseMap = onUseMap
+                        onEdit = { onEvent(AlertEvent.LocationEdit) },
+                        onUseMap = { onEvent(AlertEvent.UseMap) }
                     )
 
                     DescriptionInputComponent(
                         description = uiState.description,
-                        onDescriptionChange = onDescriptionChanged
+                        onDescriptionChange = { onEvent(AlertEvent.DescriptionChanged(it)) }
                     )
 
                     ImageUploadSectionComponent(
                         imageUri = uiState.imageUri,
                         onUpload = onUploadImage,
                         onCamera = onOpenCamera,
-                        onRemoveImage = onRemoveImage
+                        onRemoveImage = { onEvent(AlertEvent.RemoveImage) }
                     )
                 }
 
                 Button(
-                    onClick = onSendAlert,
+                    onClick = { onEvent(AlertEvent.SendAlert) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(Dimensions.paddingMediumLarge)
@@ -120,4 +116,9 @@ fun AlertsContentComponent(
             }
         }
     }
+
+    HandleDialogs(
+        dialogState = uiState.dialogState,
+        onEvent = onEvent
+    )
 }
