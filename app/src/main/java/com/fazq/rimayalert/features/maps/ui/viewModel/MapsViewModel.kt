@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fazq.rimayalert.core.preferences.LocationPermissionsManager
+import com.fazq.rimayalert.core.states.MapDialogState
 import com.fazq.rimayalert.features.maps.ui.event.MapsEvent
 import com.fazq.rimayalert.features.maps.ui.state.IncidentMarker
 import com.fazq.rimayalert.features.maps.ui.state.IncidentType
@@ -43,8 +44,10 @@ class MapsViewModel @Inject constructor(
             is MapsEvent.OnMapReady -> onMapReady(event.isReady)
             is MapsEvent.OnIncidentSelected -> selectIncident(event.incidentId)
             is MapsEvent.OnMapCameraMove -> updateCameraPosition(event.position, event.zoom)
-            is MapsEvent.ClearError -> clearError()
+            is MapsEvent.DismissError -> dismissDialog()
             is MapsEvent.RefreshIncidents -> refreshIncidents()
+            is MapsEvent.OnMyLocationClick -> getCurrentLocation()
+            is MapsEvent.OnRefreshClick -> refreshIncidents()
         }
     }
 
@@ -62,7 +65,10 @@ class MapsViewModel @Inject constructor(
         if (!_uiState.value.hasLocationPermission) {
             _uiState.update {
                 it.copy(
-                    errorMessage = locationPermissionsManager.getPermissionDeniedMessage()
+                    dialogState = MapDialogState.Error(
+                        title = "Permiso denegado",
+                        message = locationPermissionsManager.getPermissionDeniedMessage()
+                    )
                 )
             }
             return
@@ -81,15 +87,17 @@ class MapsViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             currentLocation = latLng,
-                            isLoadingLocation = false,
-                            errorMessage = null
+                            isLoadingLocation = false
                         )
                     }
                 } else {
                     _uiState.update {
                         it.copy(
                             isLoadingLocation = false,
-                            errorMessage = "No se pudo obtener la ubicación"
+                            dialogState = MapDialogState.Error(
+                                title = "Error de ubicación",
+                                message = "No se pudo obtener la ubicación actual"
+                            )
                         )
                     }
                 }
@@ -97,7 +105,10 @@ class MapsViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         isLoadingLocation = false,
-                        errorMessage = "Error al obtener ubicación: ${e.localizedMessage}"
+                        dialogState = MapDialogState.Error(
+                            title = "Error de ubicación",
+                            message = "Error al obtener ubicación: ${e.localizedMessage}"
+                        )
                     )
                 }
             }
@@ -114,55 +125,63 @@ class MapsViewModel @Inject constructor(
         val incident = incidentId?.let { id ->
             _uiState.value.incidents.find { it.id == id }
         }
-        _uiState.update { it.copy(selectedIncident = incident) }
+        _uiState.update {
+            it.copy(
+                selectedIncident = incident,
+                dialogState = incident?.let { MapDialogState.IncidentDetails(it) }
+                    ?: MapDialogState.None
+            )
+        }
     }
 
     private fun updateCameraPosition(position: LatLng, zoom: Float) {
         _uiState.update { it.copy(mapZoom = zoom) }
     }
 
-    private fun clearError() {
-        _uiState.update { it.copy(errorMessage = null) }
+    private fun dismissDialog() {
+        _uiState.update { it.copy(dialogState = MapDialogState.None) }
     }
 
     private fun refreshIncidents() {
-        // TODO: Implementar llamada al caso de uso para obtener incidentes reales
-        loadMockIncidents()
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoadingLocation = true) }
+            loadMockIncidents()
+            _uiState.update { it.copy(isLoadingLocation = false) }
+        }
     }
 
-    // Temporal: datos de prueba basados en tu diseño
+//     TOSO : Delete fun
     private fun loadMockIncidents() {
         val mockIncidents = listOf(
             IncidentMarker(
                 id = "1",
-                position = LatLng(37.7749, -122.4194), // Ajusta coordenadas
+                position = LatLng(-2.1894, -79.8886), // Milagro, Ecuador
                 title = "Corte eléctrico",
                 type = IncidentType.POWER_OUTAGE,
                 priority = Priority.MEDIUM
             ),
             IncidentMarker(
                 id = "2",
-                position = LatLng(37.7849, -122.4094),
+                position = LatLng(-2.1794, -79.8786),
                 title = "Incendio leve",
                 type = IncidentType.FIRE,
                 priority = Priority.HIGH
             ),
             IncidentMarker(
                 id = "3",
-                position = LatLng(37.7649, -122.4294),
+                position = LatLng(-2.1994, -79.8986),
                 title = "Emergencia médica",
                 type = IncidentType.MEDICAL_EMERGENCY,
                 priority = Priority.HIGH
             ),
             IncidentMarker(
                 id = "4",
-                position = LatLng(37.7549, -122.4394),
+                position = LatLng(-2.2094, -79.9086),
                 title = "Zona de residencia",
                 type = IncidentType.RESIDENCE,
                 priority = Priority.LOW
             )
         )
-
         _uiState.update { it.copy(incidents = mockIncidents) }
     }
 }

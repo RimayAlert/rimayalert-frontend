@@ -58,7 +58,6 @@ fun MapHeader() {
             }
         }
 
-        // Botón de modo de visualización
         Surface(
             shape = RoundedCornerShape(8.dp),
             color = MaterialTheme.colorScheme.surfaceVariant,

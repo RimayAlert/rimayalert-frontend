@@ -1,18 +1,14 @@
 package com.fazq.rimayalert.features.maps.ui.component
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,80 +30,75 @@ fun MapScreenContent(
             .fillMaxSize()
             .padding(Dimensions.paddingDefault)
     ) {
-        MapHeader()
-
-//        Spacer(modifier = Modifier.height(16.dp))
-
-        Card(
+        Column(
             modifier = Modifier.fillMaxSize(),
-            shape = RoundedCornerShape(Dimensions.cornerRadiusExtraLarge),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.White
-            ),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = Dimensions.elevationLow
-            )
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Box(
-                modifier = Modifier.fillMaxSize()
+            MapHeader()
+
+            Card(
+                modifier = Modifier.fillMaxSize(),
+                shape = RoundedCornerShape(Dimensions.cornerRadiusExtraLarge),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White
+                ),
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = Dimensions.elevationLow
+                )
             ) {
-                when {
-                    !mapsUiState.hasLocationPermission -> {
-                        LocationPermissionRequired()
-                    }
-
-                    else -> {
-                        // Mapa de fondo con clip para las esquinas redondeadas
-                        MapView(
-                            currentLocation = mapsUiState.currentLocation,
-                            incidents = mapsUiState.incidents,
-                            selectedIncidentId = mapsUiState.selectedIncident?.id,
-                            hasLocationPermission = mapsUiState.hasLocationPermission,
-                            onIncidentClick = { incidentId ->
-                                onEvent(MapsEvent.OnIncidentSelected(incidentId))
-                            },
-                            onMapReady = { isReady ->
-                                onEvent(MapsEvent.OnMapReady(isReady))
-                            },
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .clip(RoundedCornerShape(16.dp))
-                        )
-
-                        // Controles del mapa (esquina superior derecha)
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(top = 12.dp, end = 12.dp),
-                            contentAlignment = Alignment.TopEnd
-                        ) {
-                            MapControls(
-                                onMyLocationClick = {
-                                    onEvent(MapsEvent.GetCurrentLocation)
-                                },
-                                onRefreshClick = {
-                                    onEvent(MapsEvent.RefreshIncidents)
-                                }
+                Box(modifier = Modifier.fillMaxSize()) {
+                    when {
+                        !mapsUiState.hasLocationPermission -> {
+                            LocationPermissionRequired(
+                                onRequestPermission = { onEvent(MapsEvent.RequestLocationPermission) }
                             )
                         }
 
-                        // Leyenda (esquina inferior izquierda)
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(start = 12.dp, bottom = 12.dp),
-                            contentAlignment = Alignment.BottomStart
-                        ) {
-                            MapLegend()
-                        }
+                        else -> {
+                            MapView(
+                                currentLocation = mapsUiState.currentLocation,
+                                incidents = mapsUiState.incidents,
+                                selectedIncidentId = mapsUiState.selectedIncident?.id,
+                                hasLocationPermission = mapsUiState.hasLocationPermission,
+                                onIncidentClick = { incidentId ->
+                                    onEvent(MapsEvent.OnIncidentSelected(incidentId))
+                                },
+                                onMapReady = { isReady ->
+                                    onEvent(MapsEvent.OnMapReady(isReady))
+                                },
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(RoundedCornerShape(16.dp))
+                            )
 
-                        // Indicador de carga
-                        if (mapsUiState.isLoadingLocation) {
                             Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(top = 12.dp, end = 12.dp),
+                                contentAlignment = Alignment.TopEnd
                             ) {
-                                CircularProgressIndicator()
+                                MapControls(
+                                    onMyLocationClick = { onEvent(MapsEvent.OnMyLocationClick) },
+                                    onRefreshClick = { onEvent(MapsEvent.OnRefreshClick) }
+                                )
+                            }
+
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(start = 12.dp, bottom = 12.dp),
+                                contentAlignment = Alignment.BottomStart
+                            ) {
+                                MapLegend()
+                            }
+
+                            if (mapsUiState.isLoadingLocation) {
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator()
+                                }
                             }
                         }
                     }
@@ -115,4 +106,9 @@ fun MapScreenContent(
             }
         }
     }
+
+    HandleMapDialogs(
+        dialogState = mapsUiState.dialogState,
+        onEvent = onEvent
+    )
 }

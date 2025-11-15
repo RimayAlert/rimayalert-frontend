@@ -56,7 +56,7 @@ fun MapView(
         ),
         uiSettings = MapUiSettings(
             zoomControlsEnabled = false,
-            myLocationButtonEnabled = hasLocationPermission,
+            myLocationButtonEnabled = false,
             compassEnabled = true
         ),
         onMapLoaded = {

@@ -28,10 +28,11 @@ fun IncidentMarkerComponent(
         alpha = if (isSelected) 1f else 0.8f,
         onClick = {
             onClick()
-            true
+            true // Consumir el evento
         }
     )
 }
+
 
 private fun getIncidentTypeLabel(type: IncidentType): String {
     return when (type) {

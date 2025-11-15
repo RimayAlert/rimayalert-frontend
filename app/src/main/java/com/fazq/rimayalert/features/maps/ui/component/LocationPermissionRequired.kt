@@ -15,7 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LocationPermissionRequired() {
+fun LocationPermissionRequired(onRequestPermission: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()

@@ -1,15 +1,16 @@
 package com.fazq.rimayalert.features.maps.ui.state
 
+import com.fazq.rimayalert.core.states.MapDialogState
 import com.google.android.gms.maps.model.LatLng
 
 data class MapsUiState(
     val currentLocation: LatLng? = null,
     val isLoadingLocation: Boolean = false,
     val hasLocationPermission: Boolean = false,
-    val errorMessage: String? = null,
     val incidents: List<IncidentMarker> = emptyList(),
     val selectedIncident: IncidentMarker? = null,
-    val mapZoom: Float = 15f
+    val mapZoom: Float = 15f,
+    val dialogState: MapDialogState = MapDialogState.None
 )
 
 data class IncidentMarker(
