@@ -29,21 +29,9 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v3
 
-      - name: Cache Gradle files
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle
-
-      # ✅ Instalar Android SDK (para proyectos Android)
       - name: Install Android SDK
         uses: android-actions/setup-android@v3
 
-      # ✅ Crear archivo env.properties
       - name: Create env.properties file
         run: |
           echo "BASE_URL_DEV=${{ secrets.BASE_URL_DEV }}" >> env.properties
