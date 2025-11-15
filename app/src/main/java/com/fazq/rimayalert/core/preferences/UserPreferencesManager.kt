@@ -27,6 +27,7 @@ class UserPreferencesManager(private val context: Context) {
         private val FULL_NAME = stringPreferencesKey("full_name")
         private val ALIAS_NAME = stringPreferencesKey("alias_name")
         private val IS_ACTIVE = booleanPreferencesKey("is_active")
+        private val HAS_COMMUNITY =  booleanPreferencesKey("has_community")
     }
 
     suspend fun saveUser(user: UserModel) {
@@ -61,6 +62,16 @@ class UserPreferencesManager(private val context: Context) {
                 active = prefs[IS_ACTIVE] ?: false
             )
         } else null
+    }
+
+    suspend fun saveHasCommunity(hasCommunity: Boolean) {
+        context.dataStore.edit { prefs ->
+            prefs[HAS_COMMUNITY] = hasCommunity
+        }
+    }
+
+    val hasCommunity: Flow<Boolean> = context.dataStore.data.map { prefs ->
+        prefs[HAS_COMMUNITY] ?: false
     }
 
     val isLoggedIn: Flow<Boolean> = context.dataStore.data.map { prefs ->

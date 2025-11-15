@@ -51,7 +51,6 @@ fun AlertsScreen(
     val isCameraGranted by homeViewModel.isCameraGranted.collectAsState(initial = false)
     val isStorageGranted by homeViewModel.isStorageGranted.collectAsState(initial = false)
 
-    val user by homeViewModel.user.collectAsStateWithLifecycle()
     val alertUiState by alertViewModel.alertUiState.collectAsStateWithLifecycle()
     val sendAlertState by alertViewModel.sendAlertState.collectAsStateWithLifecycle()
     var localUiState by remember { mutableStateOf(HomeUiState()) }
@@ -116,11 +115,7 @@ fun AlertsScreen(
         )
     }
 
-    LaunchedEffect(user) {
-        user?.let { userData ->
-            localUiState = localUiState.copy(userName = userData.getDisplayName())
-        }
-    }
+
 
     LaunchedEffect(sendAlertState) {
         when (sendAlertState) {

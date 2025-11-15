@@ -6,18 +6,20 @@ import androidx.lifecycle.viewModelScope
 import com.fazq.rimayalert.core.preferences.LocationPermissionsManager
 import com.fazq.rimayalert.core.preferences.PermissionsManager
 import com.fazq.rimayalert.core.preferences.UserPreferencesManager
-import com.fazq.rimayalert.core.states.BaseUiState
 import com.fazq.rimayalert.core.states.DataState
-import com.fazq.rimayalert.features.auth.domain.model.UserModel
+import com.fazq.rimayalert.core.states.DialogState
+import com.fazq.rimayalert.core.ui.extensions.getDisplayName
 import com.fazq.rimayalert.features.home.domain.usecase.CommunityUseCase
 import com.fazq.rimayalert.features.home.domain.usecase.HomeUseCase
+import com.fazq.rimayalert.features.home.ui.event.HomeEvent
+import com.fazq.rimayalert.features.home.ui.states.HomeUiState
 import com.google.android.gms.location.FusedLocationProviderClient
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,14 +33,8 @@ class HomeViewModel @Inject constructor(
     private val fusedLocationClient: FusedLocationProviderClient
 ) : ViewModel() {
 
-    private val _homeUiState = MutableStateFlow<BaseUiState>(BaseUiState.EmptyState)
-    val homeUiState: StateFlow<BaseUiState> = _homeUiState.asStateFlow()
-
-    private val _checkCommunityState = MutableStateFlow<BaseUiState>(BaseUiState.EmptyState)
-    val checkCommunityState: StateFlow<BaseUiState> = _checkCommunityState.asStateFlow()
-
-    private val _assignCommunityState = MutableStateFlow<BaseUiState>(BaseUiState.EmptyState)
-    val assignCommunityState: StateFlow<BaseUiState> = _assignCommunityState.asStateFlow()
+    private val _homeState = MutableStateFlow(HomeUiState())
+    val homeState: StateFlow<HomeUiState> = _homeState.asStateFlow()
 
     val isCameraGranted = permissionsManager.isCameraPermissionGranted
     val isStorageGranted = permissionsManager.isStoragePermissionGranted
@@ -50,101 +46,172 @@ class HomeViewModel @Inject constructor(
     val isLocationDeniedPermanently = locationPermissionsManager.isLocationDeniedPermanently
     val wasLocationPermissionRequested = locationPermissionsManager.wasLocationPermissionRequested
 
-    val user: StateFlow<UserModel?> = userPreferencesManager.user
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = null
-        )
-
     init {
-        checkInitialCommunityStatus()
+        observeUser()
+        observeCachedCommunityStatus()
+        loadHomeData()
     }
 
-    private fun checkInitialCommunityStatus() {
+    private fun observeUser() {
         viewModelScope.launch {
-            locationPermissionsManager.syncPermissionsWithSystem()
-
-            if (!locationPermissionsManager.hasAnyLocationPermission()) {
-                return@launch
+            userPreferencesManager.user.collect { userData ->
+                _homeState.update { currentState ->
+                    currentState.copy(
+                        user = userData,
+                        userName = userData?.getDisplayName() ?: ""
+                    )
+                }
             }
-
-            checkCommunityStatus()
         }
     }
 
-    fun checkCommunityStatus() {
+    private fun observeCachedCommunityStatus() {
         viewModelScope.launch {
-            _checkCommunityState.value = BaseUiState.LoadingState
-            when (val responseState = communityUseCase.checkCommunityStatus()) {
-                is DataState.Success -> {
-                    _checkCommunityState.value = BaseUiState.SuccessState(responseState.data)
-                }
-
-                is DataState.Error -> {
-                    _checkCommunityState.value = BaseUiState.ErrorState(responseState.message)
+            userPreferencesManager.hasCommunity.collect { hasCommunity ->
+                _homeState.update {
+                    it.copy(
+                        hasCommunity = hasCommunity,
+                        communityCheckCompleted = hasCommunity
+                    )
                 }
             }
+        }
+    }
+
+    fun onEvent(event: HomeEvent) {
+        when (event) {
+            is HomeEvent.ValidateOrAssignCommunity -> validateOrAssignCommunity()
         }
     }
 
     @SuppressLint("MissingPermission")
-    fun assignCommunityWithCurrentLocation() {
+    private fun validateOrAssignCommunity() {
         viewModelScope.launch {
             try {
-                _assignCommunityState.value = BaseUiState.LoadingState
+                if (userPreferencesManager.hasCommunity.first()) {
+                    _homeState.update { it.copy(communityCheckCompleted = true) }
+                    return@launch
+                }
+                _homeState.update { it.copy(isLoadingCommunity = true) }
 
                 if (!locationPermissionsManager.hasAnyLocationPermission()) {
-                    _assignCommunityState.value = BaseUiState.ErrorState(
-                        locationPermissionsManager.getPermissionDeniedMessage()
-                    )
+                    _homeState.update {
+                        it.copy(
+                            isLoadingCommunity = false,
+                            dialogState = DialogState.Error(
+                                title = "Permisos requeridos",
+                                message = locationPermissionsManager.getPermissionDeniedMessage()
+                            )
+                        )
+                    }
                     return@launch
                 }
 
                 fusedLocationClient.lastLocation.addOnSuccessListener { location ->
                     if (location != null) {
                         viewModelScope.launch {
-                            assignCommunity(location.latitude, location.longitude)
+                            when (val response = communityUseCase.validateOrAssignCommunity(
+                                location.latitude,
+                                location.longitude
+                            )) {
+                                is DataState.Success -> {
+                                    if (response.data.hasCommunity) {
+
+                                    }
+                                    _homeState.update {
+                                        it.copy(
+                                            isLoadingCommunity = false,
+                                            communityName = response.data.community?.name,
+                                            communityCheckCompleted = true,
+                                            dialogState = if (response.data.message != null) {
+                                                DialogState.Success(
+                                                    title = "¡Comunidad asignada!",
+                                                    message = response.data.message
+                                                )
+                                            } else {
+                                                DialogState.None
+                                            }
+                                        )
+                                    }
+                                }
+
+                                is DataState.Error -> {
+                                    _homeState.update {
+                                        it.copy(
+                                            isLoadingCommunity = false,
+                                            dialogState = DialogState.Error(
+                                                title = "Error al validar comunidad",
+                                                message = response.message
+                                            )
+                                        )
+                                    }
+                                }
+                            }
                         }
                     } else {
-                        _assignCommunityState.value =
-                            BaseUiState.ErrorState("No se pudo obtener la ubicación")
+                        _homeState.update {
+                            it.copy(
+                                isLoadingCommunity = false,
+                                dialogState = DialogState.Error(
+                                    title = "Error de ubicación",
+                                    message = "No se pudo obtener la ubicación"
+                                )
+                            )
+                        }
                     }
-                }.addOnFailureListener {
-                    _assignCommunityState.value =
-                        BaseUiState.ErrorState("Error al obtener ubicación: ${it.message}")
+                }.addOnFailureListener { exception ->
+                    _homeState.update {
+                        it.copy(
+                            isLoadingCommunity = false,
+                            dialogState = DialogState.Error(
+                                title = "Error de ubicación",
+                                message = "Error al obtener ubicación: ${exception.message}"
+                            )
+                        )
+                    }
                 }
 
             } catch (e: Exception) {
-                _assignCommunityState.value = BaseUiState.ErrorState("Error: ${e.message}")
+                _homeState.update {
+                    it.copy(
+                        isLoadingCommunity = false,
+                        dialogState = DialogState.Error(
+                            title = "Error",
+                            message = e.message ?: "Error desconocido"
+                        )
+                    )
+                }
             }
         }
     }
 
-    private suspend fun assignCommunity(latitude: Double, longitude: Double) {
-        when (val responseState = communityUseCase.assignCommunity(latitude, longitude)) {
-            is DataState.Success -> {
-                _assignCommunityState.value = BaseUiState.SuccessState(responseState.data)
-            }
-
-            is DataState.Error -> {
-                _assignCommunityState.value = BaseUiState.ErrorState(responseState.message)
-            }
-        }
-    }
-
-    fun handleLocationPermissionsResult(
-        permissions: Map<String, Boolean>,
-        shouldShowRationale: Boolean
-    ) {
+    fun loadHomeData() {
         viewModelScope.launch {
-            locationPermissionsManager.handleLocationPermissionsResult(
-                permissions,
-                shouldShowRationale
-            )
+            _homeState.update { it.copy(isLoadingHome = true) }
 
-            if (locationPermissionsManager.hasAnyLocationPermission()) {
-                assignCommunityWithCurrentLocation()
+            when (val response = homeUseCase()) {
+                is DataState.Success -> {
+                    _homeState.update {
+                        it.copy(
+                            isLoadingHome = false,
+                            recentActivities = response.data,
+                            isRefreshing = false,
+                        )
+                    }
+                }
+
+                is DataState.Error -> {
+                    _homeState.update {
+                        it.copy(
+                            isLoadingHome = false,
+                            isRefreshing = false,
+                            dialogState = DialogState.Error(
+                                title = "Error al cargar datos",
+                                message = response.message
+                            )
+                        )
+                    }
+                }
             }
         }
     }
@@ -153,34 +220,7 @@ class HomeViewModel @Inject constructor(
         return locationPermissionsManager.hasAnyLocationPermission()
     }
 
-    suspend fun loadHomeData() {
-        when (val responseState = homeUseCase()) {
-            is DataState.Success -> {
-                _homeUiState.value = BaseUiState.SuccessState(responseState.data)
-            }
-
-            is DataState.Error -> {
-                _homeUiState.value = BaseUiState.ErrorState(responseState.message)
-            }
-        }
-    }
-
-    fun resetCheckCommunityState() {
-        _checkCommunityState.value = BaseUiState.EmptyState
-    }
-
-    fun resetAssignCommunityState() {
-        _assignCommunityState.value = BaseUiState.EmptyState
-    }
-
-    fun resetState() {
-        _homeUiState.value = BaseUiState.EmptyState
-    }
-
-    fun logout(onLogoutSuccess: () -> Unit) {
-        viewModelScope.launch {
-            // authUseCase.logout()
-            onLogoutSuccess()
-        }
+    fun dismissDialog() {
+        _homeState.update { it.copy(dialogState = DialogState.None) }
     }
 }

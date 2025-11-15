@@ -36,6 +36,8 @@ jobs:
         run: |
           echo "BASE_URL_DEV=${{ secrets.BASE_URL_DEV }}" >> env.properties
           echo "BASE_URL_PROD=${{ secrets.BASE_URL_PROD }}" >> env.properties
+          echo "GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_MAPS_API_KEY }}" >> env.properties
+
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
