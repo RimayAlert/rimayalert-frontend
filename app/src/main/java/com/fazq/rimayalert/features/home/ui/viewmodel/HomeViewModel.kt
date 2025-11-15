@@ -1,9 +1,6 @@
 package com.fazq.rimayalert.features.home.ui.viewmodel
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.content.pm.PackageManager
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fazq.rimayalert.core.preferences.LocationPermissionsManager
