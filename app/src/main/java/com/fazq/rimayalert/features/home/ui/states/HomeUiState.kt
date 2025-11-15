@@ -1,19 +1,18 @@
 package com.fazq.rimayalert.features.home.ui.states
 
+import com.fazq.rimayalert.core.states.DialogState
+import com.fazq.rimayalert.features.auth.domain.model.UserModel
 import com.fazq.rimayalert.features.home.domain.model.IncidentModel
 
 data class HomeUiState(
     val userName: String = "",
-    val weeklySummary: WeeklySummaryUiState = WeeklySummaryUiState(),
+    val user: UserModel? = null,
+    val hasCommunity: Boolean = false,
+    val communityName: String? = null,
+    val communityCheckCompleted: Boolean = false,
     val recentActivities: List<IncidentModel> = emptyList(),
     val isRefreshing: Boolean = false,
-    val hasCommunity: Boolean = false,
-    val communityName: String? = null
-)
-
-data class WeeklySummaryUiState(
-    val alerts: Int = 0,
-    val resolved: Int = 0,
-    val pending: Int = 0,
-    val averageTime: String = "0h 0m"
+    val isLoadingHome: Boolean = false,
+    val isLoadingCommunity: Boolean = false,
+    val dialogState: DialogState = DialogState.None
 )

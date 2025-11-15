@@ -31,16 +31,10 @@ fun MapScreen(
     homeViewModel: HomeViewModel = hiltViewModel(),
     mapsViewModel: MapsViewModel = hiltViewModel()
 ) {
-    val user by homeViewModel.user.collectAsStateWithLifecycle()
     val mapsUiState by mapsViewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     var localUiState by remember { mutableStateOf(HomeUiState()) }
 
-    LaunchedEffect(user) {
-        user?.let { userData ->
-            localUiState = localUiState.copy(userName = userData.getDisplayName())
-        }
-    }
 
     LaunchedEffect(mapsUiState.errorMessage) {
         mapsUiState.errorMessage?.let { message ->
