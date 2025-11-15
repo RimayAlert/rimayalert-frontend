@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fazq.rimayalert.core.preferences.LocationPermissionsManager
+import com.fazq.rimayalert.core.preferences.UserPreferencesManager
 import com.fazq.rimayalert.core.states.MapDialogState
+import com.fazq.rimayalert.core.ui.extensions.getDisplayName
 import com.fazq.rimayalert.features.maps.ui.event.MapsEvent
 import com.fazq.rimayalert.features.maps.ui.state.IncidentMarker
 import com.fazq.rimayalert.features.maps.ui.state.IncidentType
@@ -25,6 +27,7 @@ import com.google.android.gms.location.Priority as LocationPriority
 
 @HiltViewModel
 class MapsViewModel @Inject constructor(
+    private val userPreferencesManager: UserPreferencesManager,
     private val locationPermissionsManager: LocationPermissionsManager,
     private val fusedLocationClient: FusedLocationProviderClient
 ) : ViewModel() {
@@ -33,6 +36,7 @@ class MapsViewModel @Inject constructor(
     val uiState: StateFlow<MapsUiState> = _uiState.asStateFlow()
 
     init {
+        observeUser()
         checkLocationPermission()
         loadMockIncidents() // TODO : Temporal: cargar incidentes de prueba
     }
@@ -48,6 +52,14 @@ class MapsViewModel @Inject constructor(
             is MapsEvent.RefreshIncidents -> refreshIncidents()
             is MapsEvent.OnMyLocationClick -> getCurrentLocation()
             is MapsEvent.OnRefreshClick -> refreshIncidents()
+        }
+    }
+
+    private fun observeUser() {
+        viewModelScope.launch {
+            userPreferencesManager.user.collect { userData ->
+                _uiState.update { it.copy(userName = userData?.getDisplayName() ?: "") }
+            }
         }
     }
 
@@ -150,7 +162,7 @@ class MapsViewModel @Inject constructor(
         }
     }
 
-//     TOSO : Delete fun
+    //     TOSO : Delete fun
     private fun loadMockIncidents() {
         val mockIncidents = listOf(
             IncidentMarker(

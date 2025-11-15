@@ -4,6 +4,7 @@ import com.fazq.rimayalert.core.states.MapDialogState
 import com.google.android.gms.maps.model.LatLng
 
 data class MapsUiState(
+    val userName : String? = null,
     val currentLocation: LatLng? = null,
     val isLoadingLocation: Boolean = false,
     val hasLocationPermission: Boolean = false,

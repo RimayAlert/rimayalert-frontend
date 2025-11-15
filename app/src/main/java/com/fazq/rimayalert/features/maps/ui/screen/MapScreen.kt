@@ -11,7 +11,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fazq.rimayalert.core.ui.components.scaffold.AppBottomNavigationComponent
 import com.fazq.rimayalert.core.ui.components.scaffold.AppScaffoldComponent
 import com.fazq.rimayalert.core.ui.components.topBar.HomeTopBarComponent
-import com.fazq.rimayalert.features.home.ui.viewmodel.HomeViewModel
 import com.fazq.rimayalert.features.maps.ui.component.MapScreenContent
 import com.fazq.rimayalert.features.maps.viewmodel.MapsViewModel
 
@@ -22,7 +21,6 @@ fun MapScreen(
     onNavigateToMap: () -> Unit = {},
     onNavigateToProfile: () -> Unit = {},
     onNotificationClick: () -> Unit = {},
-    homeViewModel: HomeViewModel = hiltViewModel(),
     mapsViewModel: MapsViewModel = hiltViewModel()
 ) {
     val mapsUiState by mapsViewModel.uiState.collectAsStateWithLifecycle()
@@ -31,7 +29,7 @@ fun MapScreen(
 
     AppScaffoldComponent(
         topBar = {
-            HomeTopBarComponent("user name", onNotificationClick)
+            HomeTopBarComponent(mapsUiState.userName.toString(), onNotificationClick)
         },
         bottomBar = {
             AppBottomNavigationComponent(
