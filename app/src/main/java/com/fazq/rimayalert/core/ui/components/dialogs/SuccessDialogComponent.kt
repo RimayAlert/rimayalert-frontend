@@ -1,34 +1,36 @@
 package com.fazq.rimayalert.core.ui.components.dialogs
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.HelpOutline
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ConfirmationDialogComponent(
+fun SuccessDialogComponent(
     openDialog: Boolean,
     title: String = "",
     message: String = "",
-    confirmText: String = "Confirmar",
-    cancelText: String = "Cancelar",
-    onConfirm: () -> Unit,
+    buttonText: String = "Aceptar",
     onDismiss: () -> Unit
 ) {
     if (openDialog) {
@@ -36,24 +38,20 @@ fun ConfirmationDialogComponent(
             onDismissRequest = onDismiss,
             confirmButton = {
                 Button(
-                    onClick = onConfirm,
+                    onClick = onDismiss,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary
+                        containerColor = Color(0xFF4CAF50)
                     )
                 ) {
-                    Text(confirmText)
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = onDismiss) {
-                    Text(cancelText)
+                    Text(buttonText)
                 }
             },
             title = {
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF4CAF50)
                 )
             },
             text = {
@@ -63,12 +61,22 @@ fun ConfirmationDialogComponent(
                 )
             },
             icon = {
-                Icon(
-                    imageVector = Icons.Default.HelpOutline,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(32.dp)
-                )
+                Box(
+                    modifier = Modifier
+                        .size(56.dp)
+                        .background(
+                            color = Color(0xFF4CAF50).copy(alpha = 0.1f),
+                            shape = CircleShape
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.CheckCircle,
+                        contentDescription = null,
+                        tint = Color(0xFF4CAF50),
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
             },
             shape = RoundedCornerShape(20.dp)
         )
@@ -77,17 +85,17 @@ fun ConfirmationDialogComponent(
 
 @Preview(showBackground = true)
 @Composable
-fun ConfirmationDialogPreview() {
+fun SuccessDialogPreview() {
     MaterialTheme {
-        var openDialog by remember { mutableStateOf(true) }
-        ConfirmationDialogComponent(
-            openDialog = openDialog,
-            title = "Título",
-            message = "Mensagem",
-            confirmText = "Confirmar",
-            cancelText = "Cancelar",
-            onConfirm = { openDialog = false },
-            onDismiss = { openDialog = false }
+        var showDialog by remember { mutableStateOf(true) }
+
+        SuccessDialogComponent(
+            openDialog = showDialog,
+            title = "¡Eliminado!",
+            message = "El elemento ha sido eliminado correctamente.",
+            onDismiss = { showDialog = false }
         )
     }
 }
+
+

@@ -2,16 +2,15 @@ package com.fazq.rimayalert.features.auth.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.fazq.rimayalert.core.preferences.UserPreferencesManager
-import com.fazq.rimayalert.core.states.BaseUiState
 import com.fazq.rimayalert.core.states.DataState
-import com.fazq.rimayalert.core.utils.TokenManager
 import com.fazq.rimayalert.features.auth.domain.model.AuthModel
 import com.fazq.rimayalert.features.auth.domain.usecase.AuthUseCase
+import com.fazq.rimayalert.features.auth.ui.event.LoginEvent
+import com.fazq.rimayalert.features.auth.ui.state.LoginUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,37 +18,71 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val authUseCase: AuthUseCase,
-    private val tokenManager: TokenManager,
-    private val userPreferencesManager: UserPreferencesManager,
 ) : ViewModel() {
 
-    private val _authUiState = MutableStateFlow<BaseUiState>(BaseUiState.EmptyState)
-    val authUiState: StateFlow<BaseUiState> = _authUiState.asStateFlow()
+    private val _uiState = MutableStateFlow(LoginUiState())
+    val uiState: StateFlow<LoginUiState> = _uiState
 
+    fun onEvent(event: LoginEvent) {
+        when (event) {
 
-    fun auth(authParam: AuthModel) {
-        viewModelScope.launch {
-            _authUiState.value = BaseUiState.LoadingState
-            when (val responseState = authUseCase.auth(authParam)) {
-                is DataState.Success -> _authUiState.value =
-                    BaseUiState.SuccessState(responseState.data)
-
-                is DataState.Error -> _authUiState.value =
-                    BaseUiState.ErrorState(responseState.message)
+            is LoginEvent.UsernameChanged -> {
+                _uiState.update { it.copy(userName = event.username) }
             }
 
+            is LoginEvent.PasswordChanged -> {
+                _uiState.update { it.copy(password = event.password) }
+            }
+
+            is LoginEvent.RememberMeChanged -> {
+                _uiState.update { it.copy(rememberMe = event.value) }
+            }
+
+            LoginEvent.LoginButtonClicked -> login()
+
+            LoginEvent.ClearErrorMessage -> {
+                _uiState.update { it.copy(errorMessage = null) }
+            }
+
+            LoginEvent.ClearSuccessMessage -> {
+                _uiState.update { it.copy(successMessage = null) }
+            }
         }
     }
 
-    fun logout() {
+
+    private fun login() {
+        _uiState.update {
+            it.copy(
+                isLoading = true,
+                errorMessage = null,
+                successMessage = null,
+                loginSuccess = false
+            )
+        }
         viewModelScope.launch {
-            tokenManager.clearToken()
-            userPreferencesManager.clearUser()
-            _authUiState.value = BaseUiState.EmptyState
-        }
-    }
+            val authParam = AuthModel(uiState.value.userName, password = uiState.value.password)
+            when (val result = authUseCase.auth(authParam)) {
+                is DataState.Success -> {
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            loginSuccess = true,
+                            successMessage = "Inicio de sesión exitoso"
+                        )
+                    }
+                }
 
-    fun resetState() {
-        _authUiState.value = BaseUiState.EmptyState
+                is DataState.Error -> {
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            loginSuccess = false,
+                            errorMessage = result.message
+                        )
+                    }
+                }
+            }
+        }
     }
 }
