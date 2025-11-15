@@ -1,6 +1,5 @@
 package com.fazq.rimayalert.features.home.data.repository
 
-import android.util.Log
 import com.fazq.rimayalert.core.preferences.UserPreferencesManager
 import com.fazq.rimayalert.core.states.DataState
 import com.fazq.rimayalert.features.home.data.mapper.AssignCommunityRequestDTO

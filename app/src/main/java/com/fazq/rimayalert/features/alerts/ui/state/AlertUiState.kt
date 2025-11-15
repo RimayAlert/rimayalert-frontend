@@ -1,5 +1,7 @@
 package com.fazq.rimayalert.features.alerts.ui.state
 
+import com.fazq.rimayalert.core.states.DialogState
+
 data class AlertUiState(
     val selectedType: String = "Médica",
     val description: String = "",
@@ -8,6 +10,5 @@ data class AlertUiState(
     val longitude: Double? = null,
     val imageUri: String? = null,
     val isLoading: Boolean = false,
-    val error: String? = null,
-    val success: String? = null
+    val dialogState: DialogState = DialogState.None
 )

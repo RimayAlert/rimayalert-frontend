@@ -12,4 +12,10 @@ sealed class DialogState {
         val title: String,
         val message: String
     ) : DialogState()
+
+    data class Confirmation(
+        val title: String,
+        val message: String,
+        val onConfirm: () -> Unit
+    ) : DialogState()
 }
