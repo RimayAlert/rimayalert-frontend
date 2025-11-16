@@ -5,11 +5,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.fazq.rimayalert.features.alerts.ui.screen.AlertsScreen
-import com.fazq.rimayalert.features.auth.ui.screens.LoginScreen
-import com.fazq.rimayalert.features.auth.ui.screens.RegisterScreen
-import com.fazq.rimayalert.features.home.ui.screen.HomeScreen
-import com.fazq.rimayalert.features.maps.ui.screen.MapScreen
+import com.fazq.rimayalert.features.alerts.views.screen.AlertsScreen
+import com.fazq.rimayalert.features.auth.views.screens.LoginScreen
+import com.fazq.rimayalert.features.auth.views.screens.RegisterScreen
+import com.fazq.rimayalert.features.home.views.screen.HomeScreen
+import com.fazq.rimayalert.features.maps.views.screen.MapScreen
 import com.fazq.rimayalert.features.splash.ui.screen.SplashScreen
 
 @Composable
