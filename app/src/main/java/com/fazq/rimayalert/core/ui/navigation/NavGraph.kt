@@ -10,6 +10,7 @@ import com.fazq.rimayalert.features.auth.views.screens.LoginScreen
 import com.fazq.rimayalert.features.auth.views.screens.RegisterScreen
 import com.fazq.rimayalert.features.home.views.screen.HomeScreen
 import com.fazq.rimayalert.features.maps.views.screen.MapScreen
+import com.fazq.rimayalert.features.profile.views.screen.ProfileScreen
 import com.fazq.rimayalert.features.splash.ui.screen.SplashScreen
 
 @Composable
@@ -90,7 +91,13 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
         }
 
         composable(Screen.Profile.route) {
-
+            ProfileScreen(
+                onNavigateToHome = { navController.navigateToScreen(Screen.Home) },
+                onNavigateToAlerts = { navController.navigateToScreen(Screen.Alerts) },
+                onNavigateToMap = { navController.navigateToScreen(Screen.Map) },
+                onNavigateToProfile = {},
+                onNotificationClick = {}
+            )
         }
     }
 }

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.fazq.rimayalert.core.preferences.UserPreferencesManager
 import com.fazq.rimayalert.core.states.DataState
 import com.fazq.rimayalert.core.states.DialogState
+import com.fazq.rimayalert.core.ui.extensions.getDisplayName
 import com.fazq.rimayalert.features.alerts.domain.model.AlertModel
 import com.fazq.rimayalert.features.alerts.domain.usecase.AlertUseCase
 import com.fazq.rimayalert.features.alerts.views.event.AlertEvent
@@ -55,7 +56,7 @@ class AlertViewModel @Inject constructor(
     private fun observeUser() {
         viewModelScope.launch {
             userPreferencesManager.user.collect { user ->
-                _uiState.update { it.copy(userName = user.toString()) }
+                _uiState.update { it.copy(userName = user.getDisplayName()) }
             }
         }
     }
