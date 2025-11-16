@@ -11,6 +11,7 @@ import com.fazq.rimayalert.core.states.DialogState
 import com.fazq.rimayalert.core.ui.extensions.getDisplayName
 import com.fazq.rimayalert.features.home.domain.usecase.CommunityUseCase
 import com.fazq.rimayalert.features.home.domain.usecase.HomeUseCase
+import com.fazq.rimayalert.features.home.domain.usecase.UserStatsUseCase
 import com.fazq.rimayalert.features.home.views.event.HomeEvent
 import com.fazq.rimayalert.features.home.views.states.HomeUiState
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -28,6 +29,7 @@ class HomeViewModel @Inject constructor(
     private val userPreferencesManager: UserPreferencesManager,
     private val communityUseCase: CommunityUseCase,
     private val homeUseCase: HomeUseCase,
+    private val userStatsUseCase: UserStatsUseCase,
     val permissionsManager: PermissionsManager,
     private val locationPermissionsManager: LocationPermissionsManager,
     private val fusedLocationClient: FusedLocationProviderClient
@@ -50,6 +52,7 @@ class HomeViewModel @Inject constructor(
         observeUser()
         observeCachedCommunityStatus()
         loadHomeData()
+        loadUserStatsData()
     }
 
     private fun observeUser() {
@@ -115,9 +118,6 @@ class HomeViewModel @Inject constructor(
                                 location.longitude
                             )) {
                                 is DataState.Success -> {
-                                    if (response.data.hasCommunity) {
-
-                                    }
                                     _homeState.update {
                                         it.copy(
                                             isLoadingCommunity = false,
@@ -209,6 +209,32 @@ class HomeViewModel @Inject constructor(
                                 title = "Error al cargar datos",
                                 message = response.message
                             )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun loadUserStatsData() {
+        viewModelScope.launch {
+            _homeState.update { it.copy(isLoadingHome = true) }
+            val response = userStatsUseCase.invoke()
+            when (response) {
+                is DataState.Success -> {
+                    val stats = response.data
+                    _homeState.update {
+                        it.copy(
+                            userStats = stats,
+                            isLoadingHome = false
+                        )
+                    }
+                }
+
+                is DataState.Error -> {
+                    _homeState.update {
+                        it.copy(
+                            isLoadingHome = false
                         )
                     }
                 }
