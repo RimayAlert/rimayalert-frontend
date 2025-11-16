@@ -9,6 +9,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fazq.rimayalert.core.ui.components.scaffold.AppBottomNavigationComponent
 import com.fazq.rimayalert.core.ui.components.scaffold.AppScaffoldComponent
 import com.fazq.rimayalert.core.ui.components.topBar.HomeTopBarComponent
+import com.fazq.rimayalert.features.profile.views.component.ProfileContentComponent
 import com.fazq.rimayalert.features.profile.views.viewModel.ProfileViewModel
 
 @Composable
@@ -41,6 +42,10 @@ fun ProfileScreen(
         },
         snackbarHostState = snackbarHostState
     ) { paddingValues ->
-
+        ProfileContentComponent(
+            profileUiState = profileUiState,
+            paddingValues = paddingValues,
+            onEvent = profileViewModel::onEvent
+        )
     }
 }

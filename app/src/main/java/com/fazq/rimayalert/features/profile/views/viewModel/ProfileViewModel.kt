@@ -4,13 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fazq.rimayalert.core.preferences.UserPreferencesManager
 import com.fazq.rimayalert.core.ui.extensions.getDisplayName
-import com.fazq.rimayalert.features.alerts.views.event.AlertEvent
+import com.fazq.rimayalert.features.profile.views.event.ProfileEvent
 import com.fazq.rimayalert.features.profile.views.state.ProfileUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
@@ -24,8 +24,15 @@ class ProfileViewModel @Inject constructor(
         observeUser()
     }
 
-    fun onEvent(event: AlertEvent) {
-
+    fun onEvent(event: ProfileEvent) {
+        when (event) {
+            is ProfileEvent.OnChangePasswordClick -> handleChangePassword()
+            is ProfileEvent.OnAboutAppClick -> handleAboutApp()
+            is ProfileEvent.OnLogoutClick -> handleLogout()
+            is ProfileEvent.OnNotificationToggle -> handleNotificationToggle()
+            is ProfileEvent.OnCommunityClick -> handleCommunityClick()
+            is ProfileEvent.OnOpenIncidentsMapClick -> handleOpenIncidentsMap()
+        }
     }
 
     private fun observeUser() {
@@ -34,5 +41,34 @@ class ProfileViewModel @Inject constructor(
                 _profileUiState.value = _profileUiState.value.copy(userName = user.getDisplayName())
             }
         }
+    }
+
+    private fun handleChangePassword() {
+        // TODO: Implementar cambio de contraseña
+    }
+
+    private fun handleAboutApp() {
+        // TODO: Implementar acerca de la app
+    }
+
+    private fun handleLogout() {
+        viewModelScope.launch {
+            // TODO: Implementar logout
+            userPreferencesManager.clearUser()
+        }
+    }
+
+    private fun handleNotificationToggle() {
+        _profileUiState.value = _profileUiState.value.copy(
+            notificationsEnabled = !_profileUiState.value.notificationsEnabled
+        )
+    }
+
+    private fun handleCommunityClick() {
+        // TODO: Implementar navegación a comunidad
+    }
+
+    private fun handleOpenIncidentsMap() {
+        // TODO: Implementar apertura del mapa
     }
 }
