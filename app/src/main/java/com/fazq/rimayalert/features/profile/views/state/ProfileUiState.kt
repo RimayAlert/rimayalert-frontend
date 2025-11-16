@@ -1,5 +1,7 @@
 package com.fazq.rimayalert.features.profile.views.state
 
+import com.fazq.rimayalert.core.states.DialogState
+
 data class ProfileUiState(
     val userName: String = "",
     val userEmail: String = "",
@@ -7,5 +9,6 @@ data class ProfileUiState(
     val notificationsEnabled: Boolean = true,
     val communityAssigned: String = "Centro Histórico",
     val isLoading: Boolean = false,
-    val errorMessage: String? = null
+    val dialogState: DialogState = DialogState.None,
+    val shouldNavigateToLogin: Boolean = false
 )

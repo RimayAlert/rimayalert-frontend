@@ -2,6 +2,7 @@ package com.fazq.rimayalert.features.profile.views.screen
 
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -18,14 +19,13 @@ fun ProfileScreen(
     onNavigateToAlerts: () -> Unit = {},
     onNavigateToMap: () -> Unit = {},
     onNavigateToProfile: () -> Unit = {},
+    onNavigateToLogin: () -> Unit = {},
     onNotificationClick: () -> Unit = {},
     profileViewModel: ProfileViewModel = hiltViewModel()
 ) {
 
     val profileUiState by profileViewModel.profileUiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
-
-
 
     AppScaffoldComponent(
         topBar = {
@@ -45,7 +45,8 @@ fun ProfileScreen(
         ProfileContentComponent(
             profileUiState = profileUiState,
             paddingValues = paddingValues,
-            onEvent = profileViewModel::onEvent
+            onEvent = profileViewModel::onEvent,
+            onNavigateToLogin = onNavigateToLogin
         )
     }
 }

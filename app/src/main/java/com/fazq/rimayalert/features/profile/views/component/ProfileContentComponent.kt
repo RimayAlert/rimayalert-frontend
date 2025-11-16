@@ -15,9 +15,14 @@ import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.fazq.rimayalert.core.states.DialogState
+import com.fazq.rimayalert.core.ui.components.dialogs.ConfirmationDialogComponent
+import com.fazq.rimayalert.core.ui.components.dialogs.ErrorDialogComponent
+import com.fazq.rimayalert.core.ui.components.dialogs.SuccessDialogComponent
 import com.fazq.rimayalert.features.profile.views.event.ProfileEvent
 import com.fazq.rimayalert.features.profile.views.state.ProfileUiState
 
@@ -26,8 +31,16 @@ fun ProfileContentComponent(
     profileUiState: ProfileUiState,
     paddingValues: PaddingValues,
     onEvent: (ProfileEvent) -> Unit,
+    onNavigateToLogin: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+
+    LaunchedEffect(profileUiState.shouldNavigateToLogin) {
+        if (profileUiState.shouldNavigateToLogin) {
+            onNavigateToLogin()
+        }
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -102,5 +115,40 @@ fun ProfileContentComponent(
             onClick = { onEvent(ProfileEvent.OnOpenIncidentsMapClick) },
             modifier = Modifier.padding(16.dp)
         )
+    }
+
+
+    when (val dialog = profileUiState.dialogState) {
+        is DialogState.Confirmation -> {
+            ConfirmationDialogComponent(
+                openDialog = true,
+                title = dialog.title,
+                message = dialog.message,
+                confirmText = "Confirmar",
+                cancelText = "Cancelar",
+                onConfirm = dialog.onConfirm,
+                onDismiss = { onEvent(ProfileEvent.OnDismissDialog) }
+            )
+        }
+
+        is DialogState.Error -> {
+            ErrorDialogComponent(
+                openDialog = true,
+                title = dialog.title,
+                message = dialog.message,
+                onDismiss = { onEvent(ProfileEvent.OnDismissDialog) }
+            )
+        }
+
+        is DialogState.Success -> {
+            SuccessDialogComponent(
+                openDialog = true,
+                title = dialog.title,
+                message = dialog.message,
+                onDismiss = { onEvent(ProfileEvent.OnDismissDialog) }
+            )
+        }
+
+        is DialogState.None -> {}
     }
 }

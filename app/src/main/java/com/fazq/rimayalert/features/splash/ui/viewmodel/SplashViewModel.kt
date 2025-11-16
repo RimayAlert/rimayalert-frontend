@@ -17,8 +17,7 @@ class SplashViewModel @Inject constructor(
     private val tokenManager: TokenManager,
 ) : ViewModel() {
 
-    private val _navigationState =
-        MutableStateFlow<SplashNavigationState>(SplashNavigationState.Initial)
+    private val _navigationState = MutableStateFlow<SplashNavigationState>(SplashNavigationState.Initial)
     val navigationState: StateFlow<SplashNavigationState> = _navigationState.asStateFlow()
 
     init {
