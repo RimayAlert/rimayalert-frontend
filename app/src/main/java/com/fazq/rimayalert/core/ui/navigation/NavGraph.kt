@@ -5,11 +5,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.fazq.rimayalert.features.alerts.ui.screen.AlertsScreen
-import com.fazq.rimayalert.features.auth.ui.screens.LoginScreen
-import com.fazq.rimayalert.features.auth.ui.screens.RegisterScreen
-import com.fazq.rimayalert.features.home.ui.screen.HomeScreen
-import com.fazq.rimayalert.features.maps.ui.screen.MapScreen
+import com.fazq.rimayalert.features.alerts.views.screen.AlertsScreen
+import com.fazq.rimayalert.features.auth.views.screens.LoginScreen
+import com.fazq.rimayalert.features.auth.views.screens.RegisterScreen
+import com.fazq.rimayalert.features.home.views.screen.HomeScreen
+import com.fazq.rimayalert.features.maps.views.screen.MapScreen
+import com.fazq.rimayalert.features.profile.views.screen.ProfileScreen
 import com.fazq.rimayalert.features.splash.ui.screen.SplashScreen
 
 @Composable
@@ -90,7 +91,13 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
         }
 
         composable(Screen.Profile.route) {
-
+            ProfileScreen(
+                onNavigateToHome = { navController.navigateToScreen(Screen.Home) },
+                onNavigateToAlerts = { navController.navigateToScreen(Screen.Alerts) },
+                onNavigateToMap = { navController.navigateToScreen(Screen.Map) },
+                onNavigateToProfile = {},
+                onNotificationClick = {}
+            )
         }
     }
 }

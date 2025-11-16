@@ -1,6 +1,6 @@
 package com.fazq.rimayalert.core.states
 
-import com.fazq.rimayalert.features.maps.ui.state.IncidentMarker
+import com.fazq.rimayalert.features.maps.views.state.IncidentMarker
 
 sealed class DialogState {
     data object None : DialogState()
