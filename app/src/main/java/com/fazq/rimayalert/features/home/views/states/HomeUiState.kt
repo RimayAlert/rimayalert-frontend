@@ -3,6 +3,7 @@ package com.fazq.rimayalert.features.home.views.states
 import com.fazq.rimayalert.core.states.DialogState
 import com.fazq.rimayalert.features.auth.domain.model.UserModel
 import com.fazq.rimayalert.features.home.domain.model.IncidentModel
+import com.fazq.rimayalert.features.home.domain.model.UserStatsModel
 
 data class HomeUiState(
     val userName: String = "",
@@ -14,5 +15,6 @@ data class HomeUiState(
     val isRefreshing: Boolean = false,
     val isLoadingHome: Boolean = false,
     val isLoadingCommunity: Boolean = false,
+    val userStats: UserStatsModel? = null,
     val dialogState: DialogState = DialogState.None
 )
