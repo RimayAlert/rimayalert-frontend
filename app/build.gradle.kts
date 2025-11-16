@@ -67,15 +67,20 @@ android {
     ) {
         val baseUrl = env.getProperty(baseKey)
             ?: throw GradleException("$baseKey not set in env.properties")
+        val mapsApiKey = env.getProperty("GOOGLE_MAPS_API_KEY")
+            ?: throw GradleException("GOOGLE_MAPS_API_KEY not set in env.properties")
 
         manifestPlaceholders.putAll(
             mapOf(
                 "fileProviderAuthority" to authority,
                 "baseUrl" to "\"$baseUrl\"",
+                "GOOGLE_MAPS_API_KEY" to mapsApiKey
             )
         )
         buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
+        buildConfigField("String", "GOOGLE_MAPS_API_KEY", "\"$mapsApiKey\"")
         resValue("string", "app_name", appName)
+        resValue("string", "google_maps_key", mapsApiKey)
     }
 
     productFlavors {
@@ -140,11 +145,16 @@ dependencies {
 
 //    Compose Icons
     implementation(libs.androidx.compose.material.icons.extended)
+    implementation(libs.google.maps)
+    implementation(libs.kotlinx.coroutines.play.services)
+    implementation(libs.google.maps.compose)
 
-    // Room
+
+            // Room
     implementation(libs.room.ktx)
     implementation(libs.androidx.ui)
     implementation(libs.volley)
+    implementation(libs.androidx.compose.foundation.layout)
     kapt(libs.room.compiler)
 
     // Utils

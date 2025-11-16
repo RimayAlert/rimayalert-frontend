@@ -9,8 +9,6 @@ object HomeApiUrls {
     private const val community = "${communities}/community"
 
 //    Comunity
-
-    const val CHECK_COMMUNITY_STATUS = "${community}/check"
     const val ASSIGN_COMMUNITY = "${community}/assign"
 
 //    Incident

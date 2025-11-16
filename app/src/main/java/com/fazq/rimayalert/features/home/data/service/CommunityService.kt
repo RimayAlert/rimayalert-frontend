@@ -17,10 +17,6 @@ class CommunityService @Inject constructor(
     private val errorDao: ErrorDao
 ) {
     @WorkerThread
-    suspend fun checkCommunity(): Flow<DataState<CommunityValidationResponseDTO>> =
-        flowResponse(api.checkCommunityStatus(), "checkCommunityStatus", errorDao, stringUtils)
-
-    @WorkerThread
-    suspend fun assignCommunity(data: AssignCommunityRequestDTO): Flow<DataState<CommunityValidationResponseDTO>> =
-        flowResponse(api.assignCommunity(data), "assignCommunity", errorDao, stringUtils)
+    suspend fun validateOrAssignCommunity(data: AssignCommunityRequestDTO): Flow<DataState<CommunityValidationResponseDTO>> =
+        flowResponse(api.validateOrAssignCommunity(data), "validateOrAssignCommunity", errorDao, stringUtils)
 }
