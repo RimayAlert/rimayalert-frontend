@@ -7,6 +7,7 @@ import com.fazq.rimayalert.features.auth.data.db.interfaces.RegisterDao
 import com.fazq.rimayalert.features.auth.data.repository.interfaces.RegisterInterface
 import com.fazq.rimayalert.features.auth.data.service.RegisterUserService
 import com.fazq.rimayalert.features.auth.domain.model.RegisterUserModel
+import com.fazq.rimayalert.features.auth.domain.model.toDTO
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
@@ -23,7 +24,7 @@ class RegisterRepository @Inject constructor(
             return DataState.Error("Las contraseñas no coinciden", 400)
         }
 
-        val response = service.registerUser(userData)
+        val response = service.registerUser(userData.toDTO())
         var dataState: DataState<String> = DataState.error("")
 
         response
