@@ -96,6 +96,12 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
                 onNavigateToAlerts = { navController.navigateToScreen(Screen.Alerts) },
                 onNavigateToMap = { navController.navigateToScreen(Screen.Map) },
                 onNavigateToProfile = {},
+                onNavigateToLogin = {
+                    navController.navigateAndClearBackStackTo(
+                        screen = Screen.Login,
+                        popUpToRoute = Screen.Profile.route
+                    )
+                },
                 onNotificationClick = {}
             )
         }
