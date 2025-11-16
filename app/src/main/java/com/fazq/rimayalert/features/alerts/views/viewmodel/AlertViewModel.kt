@@ -3,6 +3,8 @@ package com.fazq.rimayalert.features.alerts.views.viewmodel
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fazq.rimayalert.core.connection.location.LocationManager
+import com.fazq.rimayalert.core.preferences.LocationPermissionsManager
 import com.fazq.rimayalert.core.preferences.UserPreferencesManager
 import com.fazq.rimayalert.core.states.DataState
 import com.fazq.rimayalert.core.states.DialogState
@@ -24,6 +26,8 @@ import kotlinx.coroutines.launch
 class AlertViewModel @Inject constructor(
     private val alertUseCase: AlertUseCase,
     private val userPreferencesManager: UserPreferencesManager,
+    val locationPermissionsManager: LocationPermissionsManager,
+    private val locationManager: LocationManager
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(AlertUiState())
     val uiState: StateFlow<AlertUiState> = _uiState.asStateFlow()
@@ -31,6 +35,7 @@ class AlertViewModel @Inject constructor(
 
     init {
         observeUser()
+        getCurrentLocation()
     }
 
     fun onEvent(event: AlertEvent) {
@@ -44,12 +49,20 @@ class AlertViewModel @Inject constructor(
             )
 
             is AlertEvent.ImageSelected -> handleImageSelected(event.uri)
-            is AlertEvent.RemoveImage -> handleRemoveImage()
-            is AlertEvent.LocationEdit -> handleLocationEdit()
-            is AlertEvent.UseMap -> handleUseMap()
-            is AlertEvent.SendAlert -> validateAndShowConfirmation()
-            is AlertEvent.DismissDialog -> dismissDialog()
-            is AlertEvent.ConfirmSend -> sendAlert()
+            AlertEvent.RemoveImage -> handleRemoveImage()
+            AlertEvent.LocationEdit -> handleLocationEdit()
+            AlertEvent.UseMap -> handleUseMap()
+            AlertEvent.SendAlert -> validateAndShowConfirmation()
+            AlertEvent.DismissDialog -> dismissDialog()
+            AlertEvent.ConfirmSend -> sendAlert()
+            AlertEvent.DismissLocationDialog -> dismissLocationDialog()
+            is AlertEvent.ConfirmLocationEdit -> confirmLocationEdit(
+                event.address,
+                event.latitude,
+                event.longitude
+            )
+
+            AlertEvent.RefreshLocation -> getCurrentLocation()
         }
     }
 
@@ -61,13 +74,64 @@ class AlertViewModel @Inject constructor(
         }
     }
 
+    private fun getCurrentLocation() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoadingLocation = true) }
+
+            val result = locationManager.getCurrentLocation()
+
+            if (result.isSuccess) {
+                val locationData = result.getOrNull()
+                _uiState.update {
+                    it.copy(
+                        location = locationData?.address ?: "Ubicación desconocida",
+                        latitude = locationData?.latitude,
+                        longitude = locationData?.longitude,
+                        isLoadingLocation = false
+                    )
+                }
+            } else {
+                _uiState.update {
+                    it.copy(
+                        location = "No se pudo obtener la ubicación",
+                        latitude = null,
+                        longitude = null,
+                        isLoadingLocation = false
+                    )
+                }
+            }
+        }
+    }
+
     private fun handleTypeSelected(type: String) {
         _uiState.update { it.copy(selectedType = type) }
+    }
+
+    private fun dismissLocationDialog() {
+        _uiState.update {
+            it.copy(showLocationEditDialog = false)
+        }
     }
 
     private fun handleDescriptionChanged(description: String) {
         _uiState.update { it.copy(description = description) }
     }
+
+    private fun confirmLocationEdit(
+        address: String,
+        latitude: Double?,
+        longitude: Double?
+    ) {
+        _uiState.update {
+            it.copy(
+                location = address,
+                latitude = latitude,
+                longitude = longitude,
+                showLocationEditDialog = false
+            )
+        }
+    }
+
 
     private fun handleLocationUpdated(
         location: String,
