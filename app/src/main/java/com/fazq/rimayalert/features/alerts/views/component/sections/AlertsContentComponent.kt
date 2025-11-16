@@ -74,8 +74,10 @@ fun AlertsContentComponent(
 
                     LocationSectionComponent(
                         location = uiState.location,
+                        isLoadingLocation = uiState.isLoadingLocation,
                         onEdit = { onEvent(AlertEvent.LocationEdit) },
-                        onUseMap = { onEvent(AlertEvent.UseMap) }
+                        onUseMap = { onEvent(AlertEvent.UseMap) },
+                        onRefresh = { onEvent(AlertEvent.LocationEdit) }
                     )
 
                     DescriptionInputComponent(

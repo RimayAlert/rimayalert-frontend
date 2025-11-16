@@ -1,5 +1,6 @@
 package com.fazq.rimayalert.features.alerts.views.screen
 
+import LocationEditDialog
 import android.Manifest
 import android.os.Build
 import androidx.activity.ComponentActivity
@@ -22,6 +23,7 @@ import com.fazq.rimayalert.core.ui.components.scaffold.AppScaffoldComponent
 import com.fazq.rimayalert.core.ui.components.topBar.HomeTopBarComponent
 import com.fazq.rimayalert.core.utils.ImagePickerManager
 import com.fazq.rimayalert.features.alerts.views.component.sections.AlertsContentComponent
+import com.fazq.rimayalert.features.alerts.views.component.sections.LocationSectionComponent
 import com.fazq.rimayalert.features.alerts.views.event.AlertEvent
 import com.fazq.rimayalert.features.alerts.views.viewmodel.AlertViewModel
 import com.fazq.rimayalert.features.home.views.viewmodel.HomeViewModel
@@ -107,6 +109,25 @@ fun AlertsScreen(
         )
     }
 
+    if (uiState.showLocationEditDialog) {
+        LocationEditDialog(
+            currentAddress = uiState.location,
+            currentLatitude = uiState.latitude,
+            currentLongitude = uiState.longitude,
+            onDismiss = {
+                alertViewModel.onEvent(AlertEvent.DismissLocationDialog)
+            },
+            onConfirm = { address, lat, lon ->
+                alertViewModel.onEvent(
+                    AlertEvent.ConfirmLocationEdit(
+                        address = address,
+                        latitude = lat,
+                        longitude = lon
+                    )
+                )
+            }
+        )
+    }
 
     LaunchedEffect(uiState.dialogState) {
         if (uiState.dialogState is DialogState.Success) {
@@ -115,7 +136,6 @@ fun AlertsScreen(
             onNavigateToHome()
         }
     }
-
 
     AppScaffoldComponent(
         topBar = {
@@ -149,29 +169,3 @@ fun AlertsScreen(
         )
     }
 }
-
-
-//@Preview(showBackground = true, showSystemUi = true)
-//@Composable
-//fun AlertsScreenPreview() {
-//    RimayAlertTheme {
-//        val fakeUiState = HomeUiState(userName = "Dev")
-//        AppScaffoldComponent(
-//            topBar = {
-//                HomeTopBarComponent(fakeUiState.userName, onNotificationClick = {})
-//            },
-//            bottomBar = {
-//                AppBottomNavigationComponent(
-//                    currentRoute = 1,
-//                    onHomeClick = {},
-//                    onAlertsClick = {},
-//                    onMapClick = {},
-//                    onProfileClick = {}
-//                )
-//            },
-//            snackbarHostState = remember { SnackbarHostState() }
-//        ) { paddingValues ->
-//            AlertsContentComponent(uiState = fakeUiState)
-//        }
-//    }
-//}

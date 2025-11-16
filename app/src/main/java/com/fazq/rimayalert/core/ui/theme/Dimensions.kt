@@ -28,6 +28,9 @@ object Dimensions {
     val paddingHuge: Dp = 48.dp
     val paddingExtraHuge: Dp = 64.dp
     val paddingMassive: Dp = 80.dp
+    val paddingSmall : Dp = 16.dp
+    val paddingMedium : Dp = 24.dp
+
 
     // Corner Radius - radios para esquinas
     val cornerRadiusSmall: Dp = 8.dp
