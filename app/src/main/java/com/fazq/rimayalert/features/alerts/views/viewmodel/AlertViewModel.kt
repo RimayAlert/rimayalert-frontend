@@ -1,6 +1,7 @@
 package com.fazq.rimayalert.features.alerts.views.viewmodel
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fazq.rimayalert.core.connection.location.LocationManager
@@ -217,6 +218,7 @@ class AlertViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, dialogState = DialogState.None) }
+            Log.d("AlertViewModel", "sendAlert: $alertModel")
 
             when (val result = alertUseCase.createAlert(alertModel)) {
                 is DataState.Success -> {
