@@ -94,6 +94,8 @@ kotlinxCoroutines = "1.8.1"
 mapsCompose = "4.3.3"
 foundationLayout = "1.9.4"
 
+lottie-compose="6.3.0"
+
 
 
 
@@ -178,6 +180,9 @@ google-maps = { module = "com.google.android.gms:play-services-maps", version.re
 kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutines" }
 google-maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
 androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "foundationLayout" }
+
+lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie-compose" }
+
 
 
 

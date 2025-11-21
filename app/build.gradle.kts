@@ -181,8 +181,9 @@ dependencies {
     implementation(libs.firebase.messaging)
     implementation(libs.firebase.analytics)
 
-    // Utils
     implementation(libs.joda.time)
+    implementation(libs.lottie.compose)
+
 
     implementation(libs.material)
     implementation(libs.androidx.activity)
