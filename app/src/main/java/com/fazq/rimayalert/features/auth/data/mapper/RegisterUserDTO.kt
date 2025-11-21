@@ -22,5 +22,9 @@ data class RegisterUserDTO(
     @SerializedName("fcmToken")
     val fcmToken: String?,
     @SerializedName("deviceId")
-    val deviceId: String?
+    val deviceId: String?,
+    @SerializedName("latitude")
+    val latitude: Double?,
+    @SerializedName("longitude")
+    val longitude: Double?
 )

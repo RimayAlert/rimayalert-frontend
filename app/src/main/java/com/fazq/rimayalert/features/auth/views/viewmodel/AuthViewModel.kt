@@ -2,6 +2,7 @@ package com.fazq.rimayalert.features.auth.views.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fazq.rimayalert.core.preferences.UserPreferencesManager
 import com.fazq.rimayalert.core.states.DataState
 import com.fazq.rimayalert.features.auth.domain.model.AuthModel
 import com.fazq.rimayalert.features.auth.domain.usecase.AuthUseCase
@@ -17,6 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
+    private val userPreferencesManager: UserPreferencesManager,
     private val authUseCase: AuthUseCase,
 ) : ViewModel() {
 
@@ -25,6 +27,8 @@ class AuthViewModel @Inject constructor(
 
     fun onEvent(event: LoginEvent) {
         when (event) {
+            is LoginEvent.SaveLocation -> saveLocationToPreferences(event.latitude, event.longitude)
+
 
             is LoginEvent.UsernameChanged -> {
                 _uiState.update { it.copy(userName = event.username) }
@@ -47,6 +51,12 @@ class AuthViewModel @Inject constructor(
             LoginEvent.ClearSuccessMessage -> {
                 _uiState.update { it.copy(successMessage = null) }
             }
+        }
+    }
+
+    private fun saveLocationToPreferences(latitude: Double, longitude: Double) {
+        viewModelScope.launch {
+            userPreferencesManager.saveLocation(latitude, longitude)
         }
     }
 

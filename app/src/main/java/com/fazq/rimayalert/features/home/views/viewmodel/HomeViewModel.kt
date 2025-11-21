@@ -50,7 +50,7 @@ class HomeViewModel @Inject constructor(
 
     init {
         observeUser()
-        observeCachedCommunityStatus()
+//        observeCachedCommunityStatus()
         loadHomeData()
         loadUserStatsData()
     }
