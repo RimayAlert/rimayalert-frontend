@@ -14,7 +14,9 @@ data class RegisterUserModel(
     val confirmPassword: String = "",
     val acceptTerms: Boolean = false,
     val fcmToken: String = "",
-    val deviceId: String = ""
+    val deviceId: String = "",
+    val latitude: Double? = null,
+    val longitude: Double? = null
 )
 
 fun RegisterUserModel.toDTO(): RegisterUserDTO {
@@ -28,6 +30,8 @@ fun RegisterUserModel.toDTO(): RegisterUserDTO {
         phone.ifBlank { null },
         password,
         fcmToken.ifBlank { null },
-        deviceId.ifBlank { null }
+        deviceId.ifBlank { null },
+        latitude,
+        longitude
     )
 }

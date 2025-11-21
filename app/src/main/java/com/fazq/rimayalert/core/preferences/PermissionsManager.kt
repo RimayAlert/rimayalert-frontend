@@ -20,6 +20,12 @@ class PermissionsManager(private val context: Context) {
         private val STORAGE_PERMISSION_GRANTED = booleanPreferencesKey("storage_permission_granted")
         private val STORAGE_PERMISSION_DENIED_PERMANENTLY =
             booleanPreferencesKey("storage_denied_permanently")
+        private val NOTIFICATION_PERMISSION_GRANTED =
+            booleanPreferencesKey("notification_permission_granted")
+
+        private val NOTIFICATION_PERMISSION_DENIED_PERMANENTLY =
+            booleanPreferencesKey("notification_permission_denied_permanently")
+
     }
 
     suspend fun setCameraPermissionGranted(granted: Boolean) {
@@ -60,6 +66,32 @@ class PermissionsManager(private val context: Context) {
             prefs[STORAGE_PERMISSION_DENIED_PERMANENTLY] = denied
         }
     }
+
+
+    suspend fun setNotificationPermissionGranted(granted: Boolean) {
+        context.permissionsDataStore.edit { prefs ->
+            prefs[NOTIFICATION_PERMISSION_GRANTED] = granted
+            if (granted) {
+                prefs[NOTIFICATION_PERMISSION_DENIED_PERMANENTLY] = false
+            }
+        }
+    }
+
+    suspend fun setNotificationPermissionDeniedPermanently(denied: Boolean) {
+        context.permissionsDataStore.edit { prefs ->
+            prefs[NOTIFICATION_PERMISSION_DENIED_PERMANENTLY] = denied
+        }
+    }
+
+    val isNotificationPermissionGranted: Flow<Boolean> =
+        context.permissionsDataStore.data.map { prefs ->
+            prefs[NOTIFICATION_PERMISSION_GRANTED] ?: false
+        }
+
+    val isNotificationDeniedPermanently: Flow<Boolean> =
+        context.permissionsDataStore.data.map { prefs ->
+            prefs[NOTIFICATION_PERMISSION_DENIED_PERMANENTLY] ?: false
+        }
 
     val isStoragePermissionGranted: Flow<Boolean> = context.permissionsDataStore.data.map { prefs ->
         prefs[STORAGE_PERMISSION_GRANTED] ?: false

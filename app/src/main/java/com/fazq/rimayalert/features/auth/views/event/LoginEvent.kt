@@ -7,4 +7,5 @@ sealed class LoginEvent {
     data object LoginButtonClicked : LoginEvent()
     object ClearErrorMessage : LoginEvent()
     object ClearSuccessMessage : LoginEvent()
+    data class SaveLocation(val latitude: Double, val longitude: Double) : LoginEvent()
 }

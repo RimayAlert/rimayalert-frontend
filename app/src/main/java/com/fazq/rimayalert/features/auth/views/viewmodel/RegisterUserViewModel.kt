@@ -3,6 +3,7 @@ package com.fazq.rimayalert.features.auth.views.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fazq.rimayalert.core.preferences.UserPreferencesManager
 import com.fazq.rimayalert.core.services.FCMManager
 import com.fazq.rimayalert.core.states.DataState
 import com.fazq.rimayalert.core.states.DialogState
@@ -13,6 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,6 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RegisterUserViewModel @Inject constructor(
     private val useCase: RegisterUseCase,
+    private val userPreferencesManager: UserPreferencesManager,
     private val fcmManager: FCMManager
 ) : ViewModel() {
 
@@ -27,7 +30,7 @@ class RegisterUserViewModel @Inject constructor(
     val uiState: StateFlow<RegisterUiState> = _uiState.asStateFlow()
 
     init {
-        obtainFCMToken()
+        loadSavedLocation()
     }
 
     fun onEvent(event: RegisterEvent) {
@@ -59,16 +62,42 @@ class RegisterUserViewModel @Inject constructor(
         }
     }
 
+    private fun loadSavedLocation() {
+        viewModelScope.launch {
+            userPreferencesManager.location.firstOrNull()?.let { (lat, lon) ->
+                if (lat != null && lon != null) {
+                    _uiState.update {
+                        it.copy(
+                            registerData = it.registerData.copy(
+                                latitude = lat,
+                                longitude = lon
+                            )
+                        )
+                    }
+                    Log.d("RegisterViewModel", "Ubicación cargada: $lat, $lon")
+                } else {
+                    Log.w("RegisterViewModel", "No hay ubicación guardada")
+                }
+            }
+        }
+    }
+
+
     private fun obtainFCMToken() {
         viewModelScope.launch {
             try {
                 val token = fcmManager.getToken()
                 val deviceId = fcmManager.getDeviceName()
 
+                if (!isValidFcmToken(token)) {
+                    Log.e("RegisterViewModel", "Token FCM inválido: $token")
+                    return@launch
+                }
+
                 _uiState.update {
                     it.copy(
                         registerData = it.registerData.copy(
-                            fcmToken = token ?: "",
+                            fcmToken = token!!,
                             deviceId = deviceId
                         )
                     )
@@ -80,6 +109,13 @@ class RegisterUserViewModel @Inject constructor(
             }
         }
     }
+
+    private fun isValidFcmToken(token: String?): Boolean {
+        return token != null &&
+                token.contains(":") &&
+                token.length > 100
+    }
+
 
     private fun registerUser() {
         viewModelScope.launch {
