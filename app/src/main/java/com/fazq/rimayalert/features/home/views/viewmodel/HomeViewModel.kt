@@ -38,6 +38,9 @@ class HomeViewModel @Inject constructor(
     private val _homeState = MutableStateFlow(HomeUiState())
     val homeState: StateFlow<HomeUiState> = _homeState.asStateFlow()
 
+    private val _warningMessage = MutableStateFlow<String?>(null)
+    val warningMessage: StateFlow<String?> = _warningMessage.asStateFlow()
+
     val isCameraGranted = permissionsManager.isCameraPermissionGranted
     val isStorageGranted = permissionsManager.isStoragePermissionGranted
     val isCameraDeniedPermanently = permissionsManager.isCameraPermissionDeniedPermanently
@@ -48,9 +51,13 @@ class HomeViewModel @Inject constructor(
     val isLocationDeniedPermanently = locationPermissionsManager.isLocationDeniedPermanently
     val wasLocationPermissionRequested = locationPermissionsManager.wasLocationPermissionRequested
 
+    val notificationGranted = permissionsManager.isNotificationPermissionGranted
+    val notificationDeniedPermanent = permissionsManager.isNotificationDeniedPermanently
+
+
+
     init {
         observeUser()
-//        observeCachedCommunityStatus()
         loadHomeData()
         loadUserStatsData()
     }
@@ -182,6 +189,24 @@ class HomeViewModel @Inject constructor(
                     )
                 }
             }
+        }
+    }
+
+    fun showWarning(message: String?) {
+        viewModelScope.launch {
+            _warningMessage.emit(message)
+        }
+    }
+
+
+    fun setNotificationGranted() {
+        viewModelScope.launch {
+            permissionsManager.setNotificationPermissionGranted(true)
+        }
+    }
+    fun setNotificationDeniedPermanent() {
+        viewModelScope.launch {
+            permissionsManager.setNotificationPermissionDeniedPermanently(true)
         }
     }
 
