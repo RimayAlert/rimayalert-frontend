@@ -30,7 +30,6 @@ class RegisterUserViewModel @Inject constructor(
     val uiState: StateFlow<RegisterUiState> = _uiState.asStateFlow()
 
     init {
-        obtainFCMToken()
         loadSavedLocation()
     }
 
@@ -90,10 +89,15 @@ class RegisterUserViewModel @Inject constructor(
                 val token = fcmManager.getToken()
                 val deviceId = fcmManager.getDeviceName()
 
+                if (!isValidFcmToken(token)) {
+                    Log.e("RegisterViewModel", "Token FCM inválido: $token")
+                    return@launch
+                }
+
                 _uiState.update {
                     it.copy(
                         registerData = it.registerData.copy(
-                            fcmToken = token ?: "",
+                            fcmToken = token!!,
                             deviceId = deviceId
                         )
                     )
@@ -105,6 +109,13 @@ class RegisterUserViewModel @Inject constructor(
             }
         }
     }
+
+    private fun isValidFcmToken(token: String?): Boolean {
+        return token != null &&
+                token.contains(":") &&
+                token.length > 100
+    }
+
 
     private fun registerUser() {
         viewModelScope.launch {

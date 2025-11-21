@@ -15,6 +15,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -43,6 +44,10 @@ fun RegisterScreen(
     registerUserViewModel: RegisterUserViewModel = hiltViewModel()
 ) {
     val uiState by registerUserViewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        registerUserViewModel.onEvent(RegisterEvent.OnRetryObtainToken)
+    }
 
     Box(
         modifier = Modifier
@@ -104,6 +109,7 @@ fun RegisterScreen(
                                 registerUserViewModel.onEvent(RegisterEvent.OnRegisterClick)
                             },
                             enabled = !uiState.isLoading &&
+                                    uiState.registerData.fcmToken.length > 100 &&
                                     uiState.registerData.username.isNotBlank() &&
                                     uiState.registerData.email.isNotBlank() &&
                                     uiState.registerData.displayName.isNotBlank() &&
