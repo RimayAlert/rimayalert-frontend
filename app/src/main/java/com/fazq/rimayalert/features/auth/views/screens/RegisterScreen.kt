@@ -1,6 +1,5 @@
 package com.fazq.rimayalert.features.auth.views.screens
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,28 +15,22 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.compose.rememberNavController
-import com.fazq.rimayalert.core.states.BaseUiState
-import com.fazq.rimayalert.core.ui.theme.Dimensions
-import com.fazq.rimayalert.features.auth.domain.model.RegisterUserModel
-import com.fazq.rimayalert.features.auth.views.components.buttons.AuthButtonComponent
-import com.fazq.rimayalert.features.auth.views.components.AuthFooterTextComponent
 import com.fazq.rimayalert.core.ui.components.AuthTopBarComponent
 import com.fazq.rimayalert.core.ui.theme.AppColors
+import com.fazq.rimayalert.core.ui.theme.Dimensions
+import com.fazq.rimayalert.features.auth.views.components.AuthFooterTextComponent
 import com.fazq.rimayalert.features.auth.views.components.RegisterCheckboxesComponent
+import com.fazq.rimayalert.features.auth.views.components.buttons.AuthButtonComponent
+import com.fazq.rimayalert.features.auth.views.components.dialogs.HandleRegisterDialogs
 import com.fazq.rimayalert.features.auth.views.components.sections.RegisterFormFieldsComponent
+import com.fazq.rimayalert.features.auth.views.event.RegisterEvent
 import com.fazq.rimayalert.features.auth.views.viewmodel.RegisterUserViewModel
 
 
@@ -49,25 +42,7 @@ fun RegisterScreen(
     onTermsClick: () -> Unit = {},
     registerUserViewModel: RegisterUserViewModel = hiltViewModel()
 ) {
-    var registerState by remember { mutableStateOf(RegisterUserModel()) }
-    var displayNameError by remember { mutableStateOf(false) }
-
-    val registerUserUiState by registerUserViewModel.registerUserUiState.collectAsState()
-
-    LaunchedEffect(registerUserUiState) {
-        when (registerUserUiState) {
-            is BaseUiState.SuccessState<*> -> {
-                onRegisterSuccess()
-            }
-
-            is BaseUiState.ErrorState -> {
-                val error = (registerUserUiState as BaseUiState.ErrorState).message
-                Log.d("RegisterScreen", "Registration error: $error")
-            }
-
-            else -> {}
-        }
-    }
+    val uiState by registerUserViewModel.uiState.collectAsState()
 
     Box(
         modifier = Modifier
@@ -85,7 +60,10 @@ fun RegisterScreen(
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = Dimensions.paddingDefault)
-                    .padding(top = Dimensions.paddingDefault, bottom = Dimensions.paddingExtraSpacious),
+                    .padding(
+                        top = Dimensions.paddingDefault,
+                        bottom = Dimensions.paddingExtraSpacious
+                    ),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Surface(
@@ -101,20 +79,19 @@ fun RegisterScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         RegisterFormFieldsComponent(
-                            registerData = registerState,
+                            registerData = uiState.registerData,
                             onDataChange = {
-                                registerState = it
-                                displayNameError = it.displayName.isNotBlank()
+                                registerUserViewModel.onEvent(RegisterEvent.OnRegisterDataChange(it))
                             },
-                            displayNameError = displayNameError
+                            displayNameError = uiState.displayNameError
                         )
 
                         Spacer(modifier = Modifier.height(Dimensions.gapMedium))
 
                         RegisterCheckboxesComponent(
-                            acceptTerms = registerState.acceptTerms,
+                            acceptTerms = uiState.registerData.acceptTerms,
                             onAcceptTermsChange = {
-                                registerState = registerState.copy(acceptTerms = it)
+                                registerUserViewModel.onEvent(RegisterEvent.OnAcceptTermsChange(it))
                             },
                             onTermsClick = onTermsClick
                         )
@@ -124,18 +101,21 @@ fun RegisterScreen(
                         AuthButtonComponent(
                             text = "Crear Cuenta",
                             onClick = {
-                                registerUserViewModel.registerUser(registerState)
+                                registerUserViewModel.onEvent(RegisterEvent.OnRegisterClick)
                             },
-                            enabled = registerState.username.isNotBlank() &&
-                                    registerState.email.isNotBlank() &&
-                                    registerState.displayName.isNotBlank() &&
-                                    registerState.password.isNotBlank() &&
-                                    registerState.confirmPassword.isNotBlank()
+                            enabled = !uiState.isLoading &&
+                                    uiState.registerData.username.isNotBlank() &&
+                                    uiState.registerData.email.isNotBlank() &&
+                                    uiState.registerData.displayName.isNotBlank() &&
+                                    uiState.registerData.password.isNotBlank() &&
+                                    uiState.registerData.confirmPassword.isNotBlank() &&
+                                    uiState.registerData.acceptTerms,
+                            isLoading = uiState.isLoading
                         )
 
-                        if (registerUserUiState is BaseUiState.LoadingState) {
-                            CircularProgressIndicator(
-                            )
+                        if (uiState.isLoading) {
+                            Spacer(modifier = Modifier.height(Dimensions.gapMedium))
+                            CircularProgressIndicator()
                         }
 
                         Spacer(modifier = Modifier.height(16.dp))
@@ -150,17 +130,10 @@ fun RegisterScreen(
             }
         }
     }
-}
 
-
-@Preview(showBackground = true, showSystemUi = false)
-@Composable
-fun RegisterScreenPreview() {
-    val navController = rememberNavController()
-    RegisterScreen(
-        onRegisterSuccess = {},
-        onLoginClick = {},
-        onBackClick = {},
-        onTermsClick = {},
+    HandleRegisterDialogs(
+        dialogState = uiState.dialogState,
+        onDismiss = { registerUserViewModel.onEvent(RegisterEvent.OnDismissDialog) },
+        onSuccess = onRegisterSuccess
     )
 }

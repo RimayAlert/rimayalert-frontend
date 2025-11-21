@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.google.services)
     id("kotlin-kapt")
 }
 
@@ -150,7 +151,7 @@ dependencies {
     implementation(libs.google.maps.compose)
 
 
-            // Room
+    // Room
     implementation(libs.room.ktx)
     implementation(libs.androidx.ui)
     implementation(libs.volley)
@@ -174,6 +175,11 @@ dependencies {
     implementation(libs.retrofit.scalars)
     implementation(libs.retrofit.gson)
     implementation(libs.okhttp.logging)
+
+//    FIREBASE
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.messaging)
+    implementation(libs.firebase.analytics)
 
     // Utils
     implementation(libs.joda.time)
