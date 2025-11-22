@@ -1,0 +1,5 @@
+<< Convertir google-services.json >>
+
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("app/google-services.json")) > google.txt
+<<  Ver el base64 en pantalla >>>
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("app/google-services.json"))
