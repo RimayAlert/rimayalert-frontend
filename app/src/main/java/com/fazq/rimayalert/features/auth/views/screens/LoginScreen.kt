@@ -2,15 +2,13 @@ package com.fazq.rimayalert.features.auth.views.screens
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.os.Looper
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -19,17 +17,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.fazq.rimayalert.core.ui.components.dialogs.ErrorDialogComponent
 import com.fazq.rimayalert.core.ui.components.dialogs.SuccessDialogComponent
+import com.fazq.rimayalert.features.auth.views.components.dialog.PermissionDialogComponent
 import com.fazq.rimayalert.features.auth.views.components.sections.LoginContentComponent
 import com.fazq.rimayalert.features.auth.views.event.LoginEvent
+import com.fazq.rimayalert.features.auth.views.utils.fetchLocation
+import com.fazq.rimayalert.features.auth.views.utils.findActivity
+import com.fazq.rimayalert.features.auth.views.utils.hasLocationPermission
+import com.fazq.rimayalert.features.auth.views.utils.isPermissionPermanentlyDenied
 import com.fazq.rimayalert.features.auth.views.viewmodel.AuthViewModel
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.Priority
 
 @SuppressLint("MissingPermission")
 @Composable
@@ -39,66 +40,50 @@ fun LoginScreen(
     onLoginSuccess: () -> Unit = {},
     authViewModel: AuthViewModel = hiltViewModel()
 ) {
-    val loginUiState by authViewModel.uiState.collectAsState()
 
     val context = LocalContext.current
+    val activity = context.findActivity()
+    val uiState by authViewModel.uiState.collectAsState()
 
     val fusedLocationClient = remember {
         LocationServices.getFusedLocationProviderClient(context)
     }
 
-    var permissionsRequested by remember { mutableStateOf(false) }
-    var showPermissionDialog by remember { mutableStateOf(false) }
+    var permissionDialogVisible by remember { mutableStateOf(false) }
 
-    val locationPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        val fineLocationGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
-        val coarseLocationGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
+    val openSettings = {
+        val intent = Intent(
+            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+            Uri.fromParts("package", context.packageName, null)
+        )
+        context.startActivity(intent)
+    }
 
-        if (fineLocationGranted || coarseLocationGranted) {
-            // Obtener y guardar ubicación
-            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-                location?.let {
-                    authViewModel.onEvent(
-                        LoginEvent.SaveLocation(it.latitude, it.longitude)
-                    )
-                } ?: run {
-                    // Si no hay última ubicación, solicitar una nueva
-                    requestNewLocationData(fusedLocationClient, authViewModel)
-                }
-            }.addOnFailureListener {
-                requestNewLocationData(fusedLocationClient, authViewModel)
-            }
+    val locationLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { result ->
+        val granted = result[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+                result[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+
+        if (granted) {
+            permissionDialogVisible = false
+            authViewModel.onEvent(LoginEvent.PermissionGranted)
+            fetchLocation(fusedLocationClient, authViewModel)
         } else {
-            // Permisos denegados - mostrar diálogo
-            showPermissionDialog = true
+            authViewModel.onEvent(LoginEvent.PermissionDenied)
+            permissionDialogVisible = true
         }
     }
 
+    // Verificar permisos al inicio
     LaunchedEffect(Unit) {
-        if (!permissionsRequested) {
-            permissionsRequested = true
-            kotlinx.coroutines.delay(300) // Pequeño delay para que se cargue la UI
-            locationPermissionLauncher.launch(
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                )
-            )
-        }
-    }
-    LaunchedEffect(loginUiState.loginSuccess) {
-        if (loginUiState.loginSuccess) {
-            onLoginSuccess()
-        }
-    }
-
-
-    LaunchedEffect(loginUiState.loginSuccess) {
-        if (loginUiState.loginSuccess) {
-            // Solicitar permisos de ubicación después del login exitoso
-            locationPermissionLauncher.launch(
+        val hasPermission = hasLocationPermission(context)
+        if (hasPermission) {
+            authViewModel.onEvent(LoginEvent.PermissionGranted)
+            fetchLocation(fusedLocationClient, authViewModel)
+        } else if (!uiState.hasAskedPermissionBefore) {
+            authViewModel.onEvent(LoginEvent.PermissionRequestAttempt)
+            locationLauncher.launch(
                 arrayOf(
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION
@@ -107,110 +92,94 @@ fun LoginScreen(
         }
     }
 
-    if (showPermissionDialog) {
-        AlertDialog(
-            onDismissRequest = { },
-            title = { Text("Permisos Requeridos") },
-            text = {
-                Text(
-                    "La aplicación necesita acceso a tu ubicación para funcionar correctamente. " +
-                            "Sin este permiso no podrás registrarte ni usar las funcionalidades principales."
-                )
-            },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        showPermissionDialog = false
-                        locationPermissionLauncher.launch(
-                            arrayOf(
-                                Manifest.permission.ACCESS_FINE_LOCATION,
-                                Manifest.permission.ACCESS_COARSE_LOCATION
-                            )
-                        )
-                    }
-                ) {
-                    Text("Conceder Permisos")
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = {
-                        // Cerrar la app si no acepta permisos
-                        (context as? Activity)?.finish()
-                    }
-                ) {
-                    Text("Salir de la App")
+    // Verificar permisos cuando la app vuelve del foreground (desde Settings)
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                val granted = hasLocationPermission(context)
+                if (granted) {
+                    permissionDialogVisible = false
+                    authViewModel.onEvent(LoginEvent.PermissionGranted)
+                    fetchLocation(fusedLocationClient, authViewModel)
+                } else if (uiState.hasAskedPermissionBefore) {
+                    permissionDialogVisible = true
                 }
             }
-        )
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
     }
 
+    if (permissionDialogVisible && !uiState.hasLocationPermission) {
+        val permanentlyDenied = activity?.let { isPermissionPermanentlyDenied(it) } ?: false
 
-    loginUiState.successMessage?.let { message ->
-        SuccessDialogComponent(
+        PermissionDialogComponent(
             openDialog = true,
-            message = message,
-            onDismiss = {
-                authViewModel.onEvent(LoginEvent.ClearSuccessMessage)
+            onDismiss = { permissionDialogVisible = false },
+            permanentlyDenied = permanentlyDenied,
+            onRetry = {
+                if (!permanentlyDenied) {
+                    permissionDialogVisible = false
+                    locationLauncher.launch(
+                        arrayOf(
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION
+                        )
+                    )
+                }
+            },
+            onOpenSettings = {
+                permissionDialogVisible = false
+                openSettings()
             }
         )
     }
 
-    loginUiState.errorMessage?.let { message ->
+    uiState.errorMessage?.let {
         ErrorDialogComponent(
             openDialog = true,
-            message = message,
+            message = it,
             onDismiss = {
                 authViewModel.onEvent(LoginEvent.ClearErrorMessage)
             }
         )
     }
 
-
-    LoginContentComponent(
-        uiState = loginUiState,
-        onUserNameChange = {
-            authViewModel.onEvent(LoginEvent.UsernameChanged(it.trim()))
-        },
-        onPasswordChange = {
-            authViewModel.onEvent(LoginEvent.PasswordChanged(it.trim()))
-        },
-        onRememberMeChange = { },
-        onLoginClick = {
-            authViewModel.onEvent(LoginEvent.LoginButtonClicked)
-        },
-        onRegisterClick = onRegisterClick,
-        onForgotPasswordClick = onForgotPasswordClick
-    )
-}
-
-
-@SuppressLint("MissingPermission")
-private fun requestNewLocationData(
-    fusedLocationClient: FusedLocationProviderClient,
-    viewModel: AuthViewModel
-) {
-    val locationRequest = LocationRequest.Builder(
-        Priority.PRIORITY_HIGH_ACCURACY,
-        10000
-    ).apply {
-        setMinUpdateIntervalMillis(5000)
-        setMaxUpdates(1)
-    }.build()
-
-    val locationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult) {
-            locationResult.lastLocation?.let { location ->
-                viewModel.onEvent(
-                    LoginEvent.SaveLocation(location.latitude, location.longitude)
-                )
+    uiState.successMessage?.let {
+        SuccessDialogComponent(
+            openDialog = true,
+            message = it,
+            onDismiss = {
+                authViewModel.onEvent(LoginEvent.ClearSuccessMessage)
             }
-        }
+        )
     }
 
-    fusedLocationClient.requestLocationUpdates(
-        locationRequest,
-        locationCallback,
-        Looper.getMainLooper()
+    LoginContentComponent(
+        uiState = uiState,
+        onUserNameChange = { authViewModel.onEvent(LoginEvent.UsernameChanged(it)) },
+        onPasswordChange = { authViewModel.onEvent(LoginEvent.PasswordChanged(it)) },
+        onRememberMeChange = { },
+        onLoginClick = {
+            if (!uiState.hasLocationPermission) {
+                permissionDialogVisible = true
+            } else {
+                authViewModel.onEvent(LoginEvent.LoginButtonClicked)
+            }
+        },
+        onRegisterClick = {
+            if (!uiState.hasLocationPermission) {
+                permissionDialogVisible = true
+            } else {
+                onRegisterClick()
+            }
+        },
+        onForgotPasswordClick = onForgotPasswordClick,
+        onPermissionRequired = {
+            if (!uiState.hasLocationPermission) permissionDialogVisible = true
+        }
     )
 }

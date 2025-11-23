@@ -51,6 +51,17 @@ class AuthViewModel @Inject constructor(
             LoginEvent.ClearSuccessMessage -> {
                 _uiState.update { it.copy(successMessage = null) }
             }
+            LoginEvent.PermissionGranted -> {
+                _uiState.update { it.copy(hasLocationPermission = true) }
+            }
+
+            LoginEvent.PermissionDenied -> {
+                _uiState.update { it.copy(hasLocationPermission = false) }
+            }
+
+            LoginEvent.PermissionRequestAttempt -> {
+                _uiState.update { it.copy(hasAskedPermissionBefore = true) }
+            }
         }
     }
 
@@ -59,7 +70,11 @@ class AuthViewModel @Inject constructor(
             userPreferencesManager.saveLocation(latitude, longitude)
         }
     }
-
+    fun setLocationPermission(granted: Boolean) {
+        _uiState.update {
+            it.copy(hasLocationPermission = granted)
+        }
+    }
 
     private fun login() {
         _uiState.update {

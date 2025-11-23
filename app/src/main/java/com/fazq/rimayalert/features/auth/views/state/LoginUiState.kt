@@ -7,5 +7,7 @@ data class LoginUiState(
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
     val successMessage: String? = null,
-    val loginSuccess: Boolean = false
+    val loginSuccess: Boolean = false,
+    val hasLocationPermission: Boolean = false,
+    val hasAskedPermissionBefore: Boolean = false
 )

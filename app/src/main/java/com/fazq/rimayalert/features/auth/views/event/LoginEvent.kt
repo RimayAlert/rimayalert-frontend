@@ -8,4 +8,7 @@ sealed class LoginEvent {
     object ClearErrorMessage : LoginEvent()
     object ClearSuccessMessage : LoginEvent()
     data class SaveLocation(val latitude: Double, val longitude: Double) : LoginEvent()
+    object PermissionGranted : LoginEvent()
+    object PermissionDenied : LoginEvent()
+    object PermissionRequestAttempt : LoginEvent()
 }

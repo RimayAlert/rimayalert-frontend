@@ -43,9 +43,11 @@ fun LoginContentComponent(
     onRememberMeChange: (Boolean) -> Unit,
     onLoginClick: () -> Unit,
     onRegisterClick: () -> Unit,
-    onForgotPasswordClick: () -> Unit
+    onForgotPasswordClick: () -> Unit,
+    onPermissionRequired: () -> Unit
 ) {
     val isLoading = uiState.isLoading
+    val canAccess = uiState.hasLocationPermission
 
     Box(
         modifier = Modifier
@@ -150,8 +152,14 @@ fun LoginContentComponent(
 
                     AuthButtonComponent(
                         text = if (isLoading) "Iniciando sesión..." else "Iniciar Sesión",
-                        onClick = onLoginClick,
-                        enabled = true
+                        onClick = {
+                            if (canAccess) {
+                                onLoginClick()
+                            } else {
+                                onPermissionRequired()
+                            }
+                        },
+                        enabled = !isLoading
                     )
 
                     Spacer(modifier = Modifier.height(Dimensions.gapMedium))
@@ -159,9 +167,16 @@ fun LoginContentComponent(
                     AuthFooterTextComponent(
                         normalText = "¿No tienes una cuenta? ",
                         clickableText = "Regístrate aquí",
-                        onClick = onRegisterClick,
+                        onClick = {
+                            if (canAccess) {
+                                onRegisterClick()
+                            } else {
+                                onPermissionRequired()
+                            }
+                        },
                         enabled = !isLoading
                     )
+
                 }
             }
 
