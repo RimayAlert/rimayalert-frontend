@@ -37,7 +37,7 @@ fun HomeContent(
             alerts = uiState.userStats?.totalAlert?.toInt() ?: 0,
             resolved = uiState.userStats?.totalAlertResolved?.toInt() ?: 0,
             pending = uiState.userStats?.totalAlertPending?.toInt() ?: 0,
-            averageTime = "00-00-00",
+            topType = uiState.userStats?.topTypes,
             lastDays = 7
         )
 

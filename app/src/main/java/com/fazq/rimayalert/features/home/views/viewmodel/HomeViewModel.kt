@@ -41,20 +41,8 @@ class HomeViewModel @Inject constructor(
     private val _warningMessage = MutableStateFlow<String?>(null)
     val warningMessage: StateFlow<String?> = _warningMessage.asStateFlow()
 
-    val isCameraGranted = permissionsManager.isCameraPermissionGranted
-    val isStorageGranted = permissionsManager.isStoragePermissionGranted
-    val isCameraDeniedPermanently = permissionsManager.isCameraPermissionDeniedPermanently
-    val isStorageDeniedPermanently = permissionsManager.isStoragePermissionDeniedPermanently
-
-    val isFineLocationGranted = locationPermissionsManager.isFineLocationGranted
-    val isCoarseLocationGranted = locationPermissionsManager.isCoarseLocationGranted
-    val isLocationDeniedPermanently = locationPermissionsManager.isLocationDeniedPermanently
-    val wasLocationPermissionRequested = locationPermissionsManager.wasLocationPermissionRequested
-
     val notificationGranted = permissionsManager.isNotificationPermissionGranted
     val notificationDeniedPermanent = permissionsManager.isNotificationDeniedPermanently
-
-
 
     init {
         observeUser()
