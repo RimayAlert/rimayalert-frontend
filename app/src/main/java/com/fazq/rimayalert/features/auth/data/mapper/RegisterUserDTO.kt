@@ -1,12 +1,30 @@
 package com.fazq.rimayalert.features.auth.data.mapper
 
-data class RegisterUserDTO (
+import com.google.gson.annotations.SerializedName
+
+data class RegisterUserDTO(
+    @SerializedName("username")
     val username: String,
-    val dni : String,
-    val firstName : String,
-    val lastName : String,
+    @SerializedName("dni")
+    val dni: String,
+    @SerializedName("firstName")
+    val firstName: String,
+    @SerializedName("lastName")
+    val lastName: String,
+    @SerializedName("email")
     val email: String,
+    @SerializedName("displayName")
     val displayName: String,
-    val phone: String,
-    val password: String
+    @SerializedName("phone")
+    val phone: String?,
+    @SerializedName("password")
+    val password: String,
+    @SerializedName("fcmToken")
+    val fcmToken: String?,
+    @SerializedName("deviceId")
+    val deviceId: String?,
+    @SerializedName("latitude")
+    val latitude: Double?,
+    @SerializedName("longitude")
+    val longitude: Double?
 )

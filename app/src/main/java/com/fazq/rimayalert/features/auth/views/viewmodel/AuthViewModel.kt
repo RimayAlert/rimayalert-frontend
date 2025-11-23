@@ -2,6 +2,7 @@ package com.fazq.rimayalert.features.auth.views.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fazq.rimayalert.core.preferences.UserPreferencesManager
 import com.fazq.rimayalert.core.states.DataState
 import com.fazq.rimayalert.features.auth.domain.model.AuthModel
 import com.fazq.rimayalert.features.auth.domain.usecase.AuthUseCase
@@ -17,6 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
+    private val userPreferencesManager: UserPreferencesManager,
     private val authUseCase: AuthUseCase,
 ) : ViewModel() {
 
@@ -25,6 +27,8 @@ class AuthViewModel @Inject constructor(
 
     fun onEvent(event: LoginEvent) {
         when (event) {
+            is LoginEvent.SaveLocation -> saveLocationToPreferences(event.latitude, event.longitude)
+
 
             is LoginEvent.UsernameChanged -> {
                 _uiState.update { it.copy(userName = event.username) }
@@ -32,10 +36,6 @@ class AuthViewModel @Inject constructor(
 
             is LoginEvent.PasswordChanged -> {
                 _uiState.update { it.copy(password = event.password) }
-            }
-
-            is LoginEvent.RememberMeChanged -> {
-                _uiState.update { it.copy(rememberMe = event.value) }
             }
 
             LoginEvent.LoginButtonClicked -> login()
@@ -47,11 +47,53 @@ class AuthViewModel @Inject constructor(
             LoginEvent.ClearSuccessMessage -> {
                 _uiState.update { it.copy(successMessage = null) }
             }
+
+            LoginEvent.PermissionGranted -> {
+                _uiState.update { it.copy(hasLocationPermission = true) }
+            }
+
+            LoginEvent.PermissionDenied -> {
+                _uiState.update { it.copy(hasLocationPermission = false) }
+            }
+
+            LoginEvent.PermissionRequestAttempt -> {
+                _uiState.update { it.copy(hasAskedPermissionBefore = true) }
+            }
+
+            else -> {}
         }
     }
 
+    private fun saveLocationToPreferences(latitude: Double, longitude: Double) {
+        viewModelScope.launch {
+            userPreferencesManager.saveLocation(latitude, longitude)
+        }
+    }
+
+    fun setLocationPermission(granted: Boolean) {
+        _uiState.update {
+            it.copy(hasLocationPermission = granted)
+        }
+    }
 
     private fun login() {
+        val username = uiState.value.userName.trim()
+        val password = uiState.value.password.trim()
+        when {
+            username.isEmpty() -> {
+                _uiState.update {
+                    it.copy(errorMessage = "El nombre de usuario no puede estar vacío.")
+                }
+                return
+            }
+
+            password.isEmpty() -> {
+                _uiState.update {
+                    it.copy(errorMessage = "La contraseña no puede estar vacía.")
+                }
+                return
+            }
+        }
         _uiState.update {
             it.copy(
                 isLoading = true,
@@ -60,6 +102,7 @@ class AuthViewModel @Inject constructor(
                 loginSuccess = false
             )
         }
+
         viewModelScope.launch {
             val authParam = AuthModel(uiState.value.userName, password = uiState.value.password)
             when (val result = authUseCase.auth(authParam)) {

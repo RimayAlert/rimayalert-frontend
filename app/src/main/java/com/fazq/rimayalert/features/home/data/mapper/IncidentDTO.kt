@@ -1,22 +1,17 @@
 package com.fazq.rimayalert.features.home.data.mapper
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.google.gson.annotations.SerializedName
 
-@Serializable
+
 data class IncidentDTO(
-    @SerialName("id")
+    @SerializedName("id")
     val id: Int,
-
-    @SerialName("title")
+    @SerializedName("title")
     val title: String,
-
-    @SerialName("description")
+    @SerializedName("description")
     val description: String,
-
-    @SerialName("occurred_at")
+    @SerializedName("occurred_at")
     val occurredAt: String? = null,
-
-    @SerialName("severity_level")
+    @SerializedName("severity_level")
     val severityLevel: String
 )

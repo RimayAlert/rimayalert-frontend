@@ -1,6 +1,7 @@
 package com.fazq.rimayalert.features.alerts.data.repository
 
 import android.content.Context
+import android.util.Log
 import androidx.core.net.toUri
 import com.fazq.rimayalert.core.preferences.UserPreferencesManager
 import com.fazq.rimayalert.core.states.DataState
@@ -33,6 +34,7 @@ class AlertRepository @Inject constructor(
 
 
     override suspend fun createAlert(alertModel: AlertModel): DataState<String> {
+        Log.d("AlertRepository", "createAlert: $alertModel")
         val alertDTO = alertModel.toRequestDTO()
         val jsonData = Json.encodeToString(alertDTO.copy(image = null))
         val dataRequestBody = jsonData.toRequestBody("application/json".toMediaTypeOrNull())

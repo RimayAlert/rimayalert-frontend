@@ -2,8 +2,10 @@ package com.fazq.rimayalert.core.preferences
 
 import android.content.Context
 import androidx.datastore.core.DataStore
+import androidx.datastore.dataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -28,6 +30,8 @@ class UserPreferencesManager(private val context: Context) {
         private val ALIAS_NAME = stringPreferencesKey("alias_name")
         private val IS_ACTIVE = booleanPreferencesKey("is_active")
         private val HAS_COMMUNITY =  booleanPreferencesKey("has_community")
+        private val LATITUDE_KEY = doublePreferencesKey("user_latitude")
+        private val LONGITUDE_KEY = doublePreferencesKey("user_longitude")
     }
 
     suspend fun saveUser(user: UserModel) {
@@ -64,10 +68,24 @@ class UserPreferencesManager(private val context: Context) {
         } else null
     }
 
+    suspend fun saveLocation(latitude: Double, longitude: Double) {
+        context.dataStore.edit { preferences ->
+            preferences[LATITUDE_KEY] = latitude
+            preferences[LONGITUDE_KEY] = longitude
+        }
+    }
+
     suspend fun saveHasCommunity(hasCommunity: Boolean) {
         context.dataStore.edit { prefs ->
             prefs[HAS_COMMUNITY] = hasCommunity
         }
+    }
+
+    val location: Flow<Pair<Double?, Double?>> = context.dataStore.data.map { preferences ->
+        Pair(
+            preferences[LATITUDE_KEY],
+            preferences[LONGITUDE_KEY]
+        )
     }
 
     val hasCommunity: Flow<Boolean> = context.dataStore.data.map { prefs ->

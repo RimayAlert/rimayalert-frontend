@@ -1,18 +1,33 @@
 package com.fazq.rimayalert.features.auth.views.state
 
-data class RegisterUiState(
-    val displayName: String = "",
-    val email: String = "",
-    val password: String = "",
-    val confirmPassword: String = "",
-    val acceptTerms: Boolean = false,
-    val acceptPrivacy: Boolean = false,
-    val showPassword: Boolean = false,
-    val showConfirmPassword: Boolean = false,
+import com.fazq.rimayalert.core.states.DialogState
+import com.fazq.rimayalert.features.auth.domain.model.RegisterUserModel
 
-    val displayNameError: Boolean = false,
-    val emailError: Boolean = false,
-    val passwordError: Boolean = false,
-    val confirmPasswordError: Boolean = false,
-    val termsError: Boolean = false
+data class RegisterUiState(
+    val registerData: RegisterUserModel = RegisterUserModel(),
+
+    val displayNameError: String? = null,
+    val cedulaError: String? = null,
+    val emailError: String? = null,
+    val telefonoError: String? = null,
+    val passwordError: String? = null,
+    val confirmPasswordError: String? = null,
+    val lastNameError : String? = null,
+    val firstNameError : String? = null,
+    val termsError: Boolean = false,
+
+    val displayNameTouched: Boolean = false,
+    val firstNameTouched : Boolean = false,
+    val lastNameTouched : Boolean = false,
+    val cedulaTouched: Boolean = false,
+    val emailTouched: Boolean = false,
+    val telefonoTouched: Boolean = false,
+    val passwordTouched: Boolean = false,
+    val confirmPasswordTouched: Boolean = false,
+
+    val isLoading: Boolean = false,
+    val fcmToken: String? = null,
+    val deviceId: String = "",
+
+    val dialogState: DialogState = DialogState.None
 )

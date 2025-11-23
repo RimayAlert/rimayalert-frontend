@@ -1,13 +1,14 @@
 package com.fazq.rimayalert.features.home.views.screen
 
+import android.Manifest
+import android.os.Build
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.fazq.rimayalert.core.states.DialogState
 import com.fazq.rimayalert.core.ui.components.dialogs.ErrorDialogComponent
@@ -15,12 +16,12 @@ import com.fazq.rimayalert.core.ui.components.dialogs.SuccessDialogComponent
 import com.fazq.rimayalert.core.ui.components.scaffold.AppBottomNavigationComponent
 import com.fazq.rimayalert.core.ui.components.scaffold.AppScaffoldComponent
 import com.fazq.rimayalert.core.ui.components.topBar.HomeTopBarComponent
-import com.fazq.rimayalert.features.home.views.components.dialogs.LocationPermissionDialogComponent
 import com.fazq.rimayalert.features.home.views.components.sections.HomeContent
-import com.fazq.rimayalert.features.home.views.event.HomeEvent
 import com.fazq.rimayalert.features.home.views.viewmodel.HomeViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -34,39 +35,54 @@ fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     val homeUiState by homeViewModel.homeState.collectAsState()
-    var showLocationDialog by remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
 
+    val warningMessage by homeViewModel.warningMessage.collectAsState()
 
-    val locationPermissionsState = rememberMultiplePermissionsState(
-        permissions = listOf(
-            android.Manifest.permission.ACCESS_FINE_LOCATION,
-            android.Manifest.permission.ACCESS_COARSE_LOCATION
-        )
+    val notificationPermission = rememberPermissionState(
+        permission = Manifest.permission.POST_NOTIFICATIONS
     )
 
-    LaunchedEffect(homeUiState.hasCommunity, homeUiState.communityCheckCompleted) {
-        showLocationDialog = !homeUiState.hasCommunity &&
-                !homeUiState.communityCheckCompleted &&
-                !locationPermissionsState.allPermissionsGranted
-    }
+    val notificationGranted by homeViewModel.notificationGranted.collectAsState(initial = false)
+    val notificationDeniedPermanent by homeViewModel.notificationDeniedPermanent.collectAsState(
+        initial = false
+    )
 
-    LaunchedEffect(locationPermissionsState.allPermissionsGranted) {
-        if (locationPermissionsState.allPermissionsGranted &&
-            !homeUiState.hasCommunity &&
-            !homeUiState.communityCheckCompleted) {
-            homeViewModel.onEvent(HomeEvent.ValidateOrAssignCommunity)
+    LaunchedEffect(Unit) {
+        if (Build.VERSION.SDK_INT >= 33 &&
+            !notificationGranted &&
+            !notificationDeniedPermanent
+        ) {
+            notificationPermission.launchPermissionRequest()
         }
     }
 
-    if (showLocationDialog) {
-        LocationPermissionDialogComponent(
-            onAllowClick = {
-                locationPermissionsState.launchMultiplePermissionRequest()
-                showLocationDialog = false
-            },
-            onDismiss = {showLocationDialog = false}
-        )
+    LaunchedEffect(notificationPermission.status) {
+        when {
+            notificationPermission.status.isGranted -> {
+                homeViewModel.setNotificationGranted()
+            }
+
+            notificationPermission.status.shouldShowRationale -> {
+                homeViewModel.showWarning("Para recibir alertas, permite las notificaciones.")
+            }
+
+            !notificationPermission.status.isGranted &&
+                    !notificationPermission.status.shouldShowRationale -> {
+                homeViewModel.showWarning("Puedes activar las notificaciones desde Ajustes.")
+                homeViewModel.setNotificationDeniedPermanent()
+            }
+        }
+    }
+
+    LaunchedEffect(warningMessage) {
+        warningMessage?.let { msg ->
+            snackbarHostState.showSnackbar(
+                message = msg,
+                duration = SnackbarDuration.Short
+            )
+            homeViewModel.showWarning(null)
+        }
     }
 
     when (val dialog = homeUiState.dialogState) {
@@ -88,9 +104,8 @@ fun HomeScreen(
             )
         }
 
-        else -> {}
+        else -> Unit
     }
-
 
     AppScaffoldComponent(
         topBar = {

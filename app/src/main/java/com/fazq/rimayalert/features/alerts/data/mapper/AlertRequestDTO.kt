@@ -8,19 +8,14 @@ import kotlinx.serialization.Serializable
 data class AlertRequestDTO(
     @SerialName("type")
     val type: String,
-
     @SerialName("description")
     val description: String,
-
     @SerialName("location")
     val location: String,
-
     @SerialName("latitude")
     val latitude: Double? = null,
-
     @SerialName("longitude")
     val longitude: Double? = null,
-
     @SerialName("image")
     val image: String? = null
 )

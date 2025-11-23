@@ -34,10 +34,10 @@ fun HomeContent(
         Spacer(modifier = Modifier.height(16.dp))
 
         WeeklySummaryCardComponent(
-            alerts = 0,
-            resolved = 0,
-            pending = 0,
-            averageTime = "2003",
+            alerts = uiState.userStats?.totalAlert?.toInt() ?: 0,
+            resolved = uiState.userStats?.totalAlertResolved?.toInt() ?: 0,
+            pending = uiState.userStats?.totalAlertPending?.toInt() ?: 0,
+            topType = uiState.userStats?.topTypes,
             lastDays = 7
         )
 

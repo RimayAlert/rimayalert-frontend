@@ -32,11 +32,15 @@ jobs:
       - name: Install Android SDK
         uses: android-actions/setup-android@v3
 
+      - name: Cleanup old Room schemas
+        run: rm -rf app/schemas
+
       - name: Create env.properties file
         run: |
           echo "BASE_URL_DEV=${{ secrets.BASE_URL_DEV }}" >> env.properties
           echo "BASE_URL_PROD=${{ secrets.BASE_URL_PROD }}" >> env.properties
           echo "GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_MAPS_API_KEY }}" >> env.properties
+          echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > app/google-services.json
 
 
       - name: Grant execute permission for gradlew

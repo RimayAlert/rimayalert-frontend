@@ -9,7 +9,7 @@ sealed interface MapsEvent {
     data object DismissError : MapsEvent
 
     data class OnMapReady(val isReady: Boolean) : MapsEvent
-    data class OnIncidentSelected(val incidentId: String?) : MapsEvent
+    data class OnIncidentSelected(val incidentId: Int?) : MapsEvent
     data class OnMapCameraMove(val position: LatLng, val zoom: Float) : MapsEvent
     data object OnMyLocationClick : MapsEvent
     data object OnRefreshClick : MapsEvent

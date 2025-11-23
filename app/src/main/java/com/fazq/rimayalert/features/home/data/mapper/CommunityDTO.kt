@@ -1,38 +1,34 @@
 package com.fazq.rimayalert.features.home.data.mapper
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.google.gson.annotations.SerializedName
 
-@Serializable
 data class CommunityDTO(
-    @SerialName("id")
+    @SerializedName("id")
     val id: Int,
-    @SerialName("name")
+    @SerializedName("name")
     val name: String,
-    @SerialName("description")
+    @SerializedName("description")
     val description: String? = null,
-    @SerialName("latitude")
+    @SerializedName("latitude")
     val latitude: Double,
-    @SerialName("longitude")
+    @SerializedName("longitude")
     val longitude: Double,
-    @SerialName("radius")
+    @SerializedName("radius")
     val radius: Double
 )
 
-@Serializable
 data class CommunityValidationResponseDTO(
-    @SerialName("has_community")
+    @SerializedName("has_community")
     val hasCommunity: Boolean,
-    @SerialName("community")
+    @SerializedName("community")
     val community: CommunityDTO? = null,
-    @SerialName("message")
+    @SerializedName("message")
     val message: String? = null
 )
 
-@Serializable
 data class AssignCommunityRequestDTO(
-    @SerialName("latitude")
+    @SerializedName("latitude")
     val latitude: Double,
-    @SerialName("longitude")
+    @SerializedName("longitude")
     val longitude: Double
 )

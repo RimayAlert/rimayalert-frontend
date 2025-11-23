@@ -5,37 +5,29 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -125,7 +117,6 @@ fun LocationSectionComponent(
                         modifier = Modifier.weight(1f),
                         verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
-                        // ⭐ MOSTRAR LOADING O UBICACIÓN
                         if (isLoadingLocation) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
@@ -187,69 +178,6 @@ fun LocationSectionComponent(
                 }
 
                 Spacer(modifier = Modifier.height(Dimensions.paddingMedium))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(Dimensions.paddingSmall)
-                ) {
-                    OutlinedButton(
-                        onClick = onEdit,
-                        modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(Dimensions.cornerRadiusMedium),
-                        colors = ButtonDefaults.outlinedButtonColors(
-                            containerColor = Color.White,
-                            contentColor = AppColors.primary
-                        ),
-                        border = BorderStroke(1.dp, AppColors.primary.copy(alpha = 0.3f)),
-                        contentPadding = PaddingValues(
-                            horizontal = Dimensions.paddingSmall,
-                            vertical = Dimensions.paddingSmall
-                        )
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp)
-                        )
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Text(
-                            text = "Editar",
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                fontWeight = FontWeight.Medium
-                            ),
-                            fontSize = 14.sp
-                        )
-                    }
-
-                    Button(
-                        onClick = onUseMap,
-                        modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(Dimensions.cornerRadiusMedium),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = AppColors.primary
-                        ),
-                        contentPadding = PaddingValues(
-                            horizontal = Dimensions.paddingSmall,
-                            vertical = Dimensions.paddingSmall
-                        )
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Map,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp),
-                            tint = Color.White
-                        )
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Text(
-                            text = "Usar mapa",
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                fontWeight = FontWeight.Medium
-                            ),
-                            fontSize = 14.sp,
-                            color = Color.White
-                        )
-                    }
-                }
             }
         }
 
