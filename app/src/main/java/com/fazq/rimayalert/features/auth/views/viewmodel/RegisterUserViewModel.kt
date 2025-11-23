@@ -7,8 +7,10 @@ import com.fazq.rimayalert.core.preferences.UserPreferencesManager
 import com.fazq.rimayalert.core.services.FCMManager
 import com.fazq.rimayalert.core.states.DataState
 import com.fazq.rimayalert.core.states.DialogState
+import com.fazq.rimayalert.features.auth.domain.model.RegisterUserModel
 import com.fazq.rimayalert.features.auth.domain.usecase.RegisterUseCase
 import com.fazq.rimayalert.features.auth.views.event.RegisterEvent
+import com.fazq.rimayalert.features.auth.views.event.RegisterField
 import com.fazq.rimayalert.features.auth.views.state.RegisterUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,17 +38,11 @@ class RegisterUserViewModel @Inject constructor(
     fun onEvent(event: RegisterEvent) {
         when (event) {
             is RegisterEvent.OnRegisterDataChange -> {
-                _uiState.update {
-                    it.copy(
-                        registerData = event.registerData,
-                        displayNameError = false,
-                        emailError = false,
-                        passwordError = false,
-                        confirmPasswordError = false
-                    )
-                }
+                updateRegisterData(event.registerData)
             }
-
+            is RegisterEvent.OnFieldTouched -> {
+                markFieldAsTouched(event.field)
+            }
             is RegisterEvent.OnAcceptTermsChange -> {
                 _uiState.update {
                     it.copy(
@@ -55,11 +51,126 @@ class RegisterUserViewModel @Inject constructor(
                     )
                 }
             }
-
             RegisterEvent.OnRegisterClick -> registerUser()
             RegisterEvent.OnDismissDialog -> dismissDialog()
             RegisterEvent.OnRetryObtainToken -> obtainFCMToken()
         }
+    }
+
+    private fun markFieldAsTouched(field: RegisterField) {
+        _uiState.update {
+            when (field) {
+                RegisterField.DISPLAY_NAME -> it.copy(displayNameTouched = true)
+                RegisterField.CEDULA -> it.copy(cedulaTouched = true)
+                RegisterField.EMAIL -> it.copy(emailTouched = true)
+                RegisterField.TELEFONO -> it.copy(telefonoTouched = true)
+                RegisterField.PASSWORD -> it.copy(passwordTouched = true)
+                RegisterField.CONFIRM_PASSWORD -> it.copy(confirmPasswordTouched = true)
+            }
+        }
+        // Validar solo el campo que fue tocado
+        updateRegisterData(_uiState.value.registerData)
+    }
+
+    private fun updateRegisterData(data: RegisterUserModel) {
+        _uiState.update {
+            it.copy(
+                registerData = data,
+                displayNameError = if (it.displayNameTouched) validateDisplayName(data.displayName) else null,
+                cedulaError = if (it.cedulaTouched) validateCedula(data.dni) else null,
+                emailError = if (it.emailTouched) validateEmail(data.email) else null,
+                telefonoError = if (it.telefonoTouched) validateTelefono(data.phone) else null,
+                passwordError = if (it.passwordTouched) validatePassword(data.password) else null,
+                confirmPasswordError = if (it.confirmPasswordTouched) validateConfirmPassword(data.password, data.confirmPassword) else null
+            )
+        }
+    }
+
+    private fun validateDisplayName(displayName: String): String? {
+        return when {
+            displayName.isBlank() -> "El nombre es requerido"
+            displayName.length < 3 -> "El nombre debe tener al menos 3 caracteres"
+            else -> null
+        }
+    }
+
+    private fun validateCedula(cedula: String): String? {
+        return when {
+            cedula.isBlank() -> "La cédula es requerida"
+            cedula.length != 10 -> "La cédula debe tener 10 dígitos"
+            !cedula.all { it.isDigit() } -> "La cédula solo debe contener números"
+            else -> null
+        }
+    }
+
+    private fun validateEmail(email: String): String? {
+        return when {
+            email.isBlank() -> "El correo es requerido"
+            !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() -> "Correo inválido"
+            else -> null
+        }
+    }
+
+    private fun validateTelefono(telefono: String): String? {
+        return when {
+            telefono.isBlank() -> "El teléfono es requerido"
+            telefono.length != 10 -> "El teléfono debe tener 10 dígitos"
+            !telefono.all { it.isDigit() } -> "El teléfono solo debe contener números"
+            else -> null
+        }
+    }
+
+    private fun validatePassword(password: String): String? {
+        return when {
+            password.isBlank() -> "La contraseña es requerida"
+            password.length < 6 -> "La contraseña debe tener al menos 6 caracteres"
+            else -> null
+        }
+    }
+
+    private fun validateConfirmPassword(password: String, confirmPassword: String): String? {
+        return when {
+            confirmPassword.isBlank() -> "Confirma tu contraseña"
+            password != confirmPassword -> "Las contraseñas no coinciden"
+            else -> null
+        }
+    }
+
+    private fun validateAllFields(): Boolean {
+        val data = _uiState.value.registerData
+
+        val displayNameError = validateDisplayName(data.displayName)
+        val cedulaError = validateCedula(data.dni)
+        val emailError = validateEmail(data.email)
+        val telefonoError = validateTelefono(data.phone)
+        val passwordError = validatePassword(data.password)
+        val confirmPasswordError = validateConfirmPassword(data.password, data.confirmPassword)
+
+        _uiState.update {
+            it.copy(
+                displayNameError = displayNameError,
+                cedulaError = cedulaError,
+                emailError = emailError,
+                telefonoError = telefonoError,
+                passwordError = passwordError,
+                confirmPasswordError = confirmPasswordError,
+                displayNameTouched = true,
+                cedulaTouched = true,
+                emailTouched = true,
+                telefonoTouched = true,
+                passwordTouched = true,
+                confirmPasswordTouched = true
+            )
+        }
+
+        return displayNameError == null &&
+                cedulaError == null &&
+                emailError == null &&
+                telefonoError == null &&
+                passwordError == null &&
+                confirmPasswordError == null &&
+                data.acceptTerms &&
+                data.fcmToken.length > 100
     }
 
     private fun loadSavedLocation() {
@@ -81,7 +192,6 @@ class RegisterUserViewModel @Inject constructor(
             }
         }
     }
-
 
     private fun obtainFCMToken() {
         viewModelScope.launch {
@@ -111,13 +221,14 @@ class RegisterUserViewModel @Inject constructor(
     }
 
     private fun isValidFcmToken(token: String?): Boolean {
-        return token != null &&
-                token.contains(":") &&
-                token.length > 100
+        return token != null && token.contains(":") && token.length > 100
     }
 
-
     private fun registerUser() {
+        if (!validateAllFields()) {
+            return
+        }
+
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
@@ -133,7 +244,6 @@ class RegisterUserViewModel @Inject constructor(
                         )
                     }
                 }
-
                 is DataState.Error -> {
                     _uiState.update {
                         it.copy(
@@ -147,40 +257,6 @@ class RegisterUserViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    private fun validateFields(): Boolean {
-        val data = _uiState.value.registerData
-        var isValid = true
-
-        if (data.username.isBlank()) {
-            _uiState.update { it.copy(displayNameError = true) }
-            isValid = false
-        }
-
-        if (data.email.isBlank() || !android.util.Patterns.EMAIL_ADDRESS.matcher(data.email)
-                .matches()
-        ) {
-            _uiState.update { it.copy(emailError = true) }
-            isValid = false
-        }
-
-        if (data.password.length < 6) {
-            _uiState.update { it.copy(passwordError = true) }
-            isValid = false
-        }
-
-        if (data.password != data.confirmPassword) {
-            _uiState.update { it.copy(confirmPasswordError = true) }
-            isValid = false
-        }
-
-        if (!data.acceptTerms) {
-            _uiState.update { it.copy(termsError = true) }
-            isValid = false
-        }
-
-        return isValid
     }
 
     private fun dismissDialog() {

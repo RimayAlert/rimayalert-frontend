@@ -88,7 +88,15 @@ fun RegisterScreen(
                             onDataChange = {
                                 registerUserViewModel.onEvent(RegisterEvent.OnRegisterDataChange(it))
                             },
-                            displayNameError = uiState.displayNameError
+                            onFieldTouched = { field ->
+                                registerUserViewModel.onEvent(RegisterEvent.OnFieldTouched(field))
+                            },
+                            displayNameError = uiState.displayNameError,
+                            cedulaError = uiState.cedulaError,
+                            emailError = uiState.emailError,
+                            telefonoError = uiState.telefonoError,
+                            passwordError = uiState.passwordError,
+                            confirmPasswordError = uiState.confirmPasswordError
                         )
 
                         Spacer(modifier = Modifier.height(Dimensions.gapMedium))
@@ -109,13 +117,21 @@ fun RegisterScreen(
                                 registerUserViewModel.onEvent(RegisterEvent.OnRegisterClick)
                             },
                             enabled = !uiState.isLoading &&
-                                    uiState.registerData.fcmToken.length > 100 &&
-                                    uiState.registerData.username.isNotBlank() &&
-                                    uiState.registerData.email.isNotBlank() &&
+                                    uiState.displayNameError == null &&
+                                    uiState.cedulaError == null &&
+                                    uiState.emailError == null &&
+                                    uiState.telefonoError == null &&
+                                    uiState.passwordError == null &&
+                                    uiState.confirmPasswordError == null &&
                                     uiState.registerData.displayName.isNotBlank() &&
+                                    uiState.registerData.dni.isNotBlank() &&
+                                    uiState.registerData.email.isNotBlank() &&
+                                    uiState.registerData.phone.isNotBlank() &&
+                                    uiState.registerData.username.isNotBlank() &&
                                     uiState.registerData.password.isNotBlank() &&
                                     uiState.registerData.confirmPassword.isNotBlank() &&
-                                    uiState.registerData.acceptTerms,
+                                    uiState.registerData.acceptTerms &&
+                                    uiState.registerData.fcmToken.length > 100,
                             isLoading = uiState.isLoading
                         )
 
