@@ -9,11 +9,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.fazq.rimayalert.features.maps.views.state.IncidentMarker
+import androidx.compose.ui.graphics.Color
+import com.fazq.rimayalert.features.maps.domain.model.MapIncidentModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.Circle
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
@@ -24,16 +26,18 @@ import com.google.maps.android.compose.rememberCameraPositionState
 @Composable
 fun MapView(
     currentLocation: LatLng?,
-    incidents: List<IncidentMarker>,
-    selectedIncidentId: String?,
+    myIncidents: List<MapIncidentModel>,
+    otherIncidents: List<MapIncidentModel>,
+    selectedIncidentId: Int?,
     hasLocationPermission: Boolean,
-    onIncidentClick: (String) -> Unit,
+    radiusKm: Double,
+    onIncidentClick: (Int) -> Unit,
     onMapReady: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val defaultLocation = LatLng(-2.1894, -79.8886) // Milagro, Ecuador
+    val defaultLocation = LatLng(-2.1894, -79.8886)
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(currentLocation ?: defaultLocation, 15f)
+        position = CameraPosition.fromLatLngZoom(currentLocation ?: defaultLocation, 13f)
     }
 
     var isMapLoaded by remember { mutableStateOf(false) }
@@ -41,7 +45,7 @@ fun MapView(
     LaunchedEffect(currentLocation) {
         currentLocation?.let {
             cameraPositionState.animate(
-                update = CameraUpdateFactory.newLatLngZoom(it, 15f),
+                update = CameraUpdateFactory.newLatLngZoom(it, 13f),
                 durationMs = 1000
             )
         }
@@ -51,32 +55,55 @@ fun MapView(
         modifier = modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState,
         properties = MapProperties(
-            isMyLocationEnabled = hasLocationPermission
+            isMyLocationEnabled = false
         ),
         uiSettings = MapUiSettings(
             zoomControlsEnabled = false,
             myLocationButtonEnabled = false,
-            compassEnabled = true
+            compassEnabled = true,
+            mapToolbarEnabled = false
         ),
         onMapLoaded = {
             isMapLoaded = true
             onMapReady(true)
         }
     ) {
-        currentLocation?.let {
+        currentLocation?.let { location ->
+            Circle(
+                center = location,
+                radius = radiusKm * 1000,
+                fillColor = Color(0x226366F1),
+                strokeColor = Color(0xFF6366F1),
+                strokeWidth = 3f
+            )
+
             Marker(
-                state = MarkerState(position = it),
+                state = MarkerState(position = location),
                 title = "Mi ubicación",
                 icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)
             )
         }
 
-        incidents.forEach { incident ->
-            IncidentMarkerComponent(
-                incident = incident,
-                isSelected = incident.id == selectedIncidentId,
-                onClick = { onIncidentClick(incident.id) }
-            )
+        myIncidents.forEach { incident ->
+            if (incident.latitude != null && incident.longitude != null) {
+                IncidentMarkerComponent(
+                    incident = incident,
+                    isOwn = true,
+                    isSelected = incident.id == selectedIncidentId,
+                    onClick = { onIncidentClick(incident.id) }
+                )
+            }
+        }
+
+        otherIncidents.forEach { incident ->
+            if (incident.latitude != null && incident.longitude != null) {
+                IncidentMarkerComponent(
+                    incident = incident,
+                    isOwn = false,
+                    isSelected = incident.id == selectedIncidentId,
+                    onClick = { onIncidentClick(incident.id) }
+                )
+            }
         }
     }
 }

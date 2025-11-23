@@ -1,44 +1,43 @@
 package com.fazq.rimayalert.features.maps.views.component
 
 import androidx.compose.runtime.Composable
+import com.fazq.rimayalert.features.maps.domain.model.MapIncidentModel
 import com.fazq.rimayalert.features.maps.views.state.IncidentMarker
 import com.fazq.rimayalert.features.maps.views.state.IncidentType
 import com.fazq.rimayalert.features.maps.views.state.Priority
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 
 @Composable
 fun IncidentMarkerComponent(
-    incident: IncidentMarker,
+    incident: MapIncidentModel,
+    isOwn: Boolean,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    val markerColor = when (incident.priority) {
-        Priority.LOW -> BitmapDescriptorFactory.HUE_BLUE
-        Priority.MEDIUM -> BitmapDescriptorFactory.HUE_YELLOW
-        Priority.HIGH -> BitmapDescriptorFactory.HUE_RED
+    val position = LatLng(incident.latitude ?: return, incident.longitude ?: return)
+
+    val markerColor = when {
+        isOwn -> BitmapDescriptorFactory.HUE_AZURE // Azul para mis incidentes
+        else -> when (incident.severityLevel) {
+            3 -> BitmapDescriptorFactory.HUE_RED    // Alta
+            2 -> BitmapDescriptorFactory.HUE_ORANGE // Media
+            1 -> BitmapDescriptorFactory.HUE_YELLOW // Baja
+            else -> BitmapDescriptorFactory.HUE_VIOLET
+        }
     }
 
     Marker(
-        state = MarkerState(position = incident.position),
+        state = MarkerState(position = position),
         title = incident.title,
-        snippet = getIncidentTypeLabel(incident.type),
+        snippet = "${incident.incidentTypeName} - ${incident.statusName}",
         icon = BitmapDescriptorFactory.defaultMarker(markerColor),
-        alpha = if (isSelected) 1f else 0.8f,
+        alpha = if (isSelected) 1f else 0.85f,
         onClick = {
             onClick()
-            true // Consumir el evento
+            true
         }
     )
-}
-
-
-private fun getIncidentTypeLabel(type: IncidentType): String {
-    return when (type) {
-        IncidentType.POWER_OUTAGE -> "Corte eléctrico"
-        IncidentType.FIRE -> "Incendio"
-        IncidentType.MEDICAL_EMERGENCY -> "Emergencia médica"
-        IncidentType.RESIDENCE -> "Zona de residencia"
-    }
 }

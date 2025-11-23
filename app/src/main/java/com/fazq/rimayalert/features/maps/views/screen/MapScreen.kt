@@ -11,8 +11,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fazq.rimayalert.core.ui.components.scaffold.AppBottomNavigationComponent
 import com.fazq.rimayalert.core.ui.components.scaffold.AppScaffoldComponent
 import com.fazq.rimayalert.core.ui.components.topBar.HomeTopBarComponent
-import com.fazq.rimayalert.features.maps.views.component.MapScreenContent
 import com.fazq.rimayalert.features.maps.viewmodel.MapsViewModel
+import com.fazq.rimayalert.features.maps.views.component.MapScreenContent
 
 @Composable
 fun MapScreen(

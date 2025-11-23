@@ -1,12 +1,16 @@
 package com.fazq.rimayalert.features.maps.viewmodel
 
+import android.R.attr.type
 import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fazq.rimayalert.core.preferences.LocationPermissionsManager
 import com.fazq.rimayalert.core.preferences.UserPreferencesManager
+import com.fazq.rimayalert.core.states.DataState
 import com.fazq.rimayalert.core.states.MapDialogState
 import com.fazq.rimayalert.core.ui.extensions.getDisplayName
+import com.fazq.rimayalert.features.maps.domain.model.MapIncidentModel
+import com.fazq.rimayalert.features.maps.domain.usecase.MapUseCase
 import com.fazq.rimayalert.features.maps.views.event.MapsEvent
 import com.fazq.rimayalert.features.maps.views.state.IncidentMarker
 import com.fazq.rimayalert.features.maps.views.state.IncidentType
@@ -29,7 +33,8 @@ import com.google.android.gms.location.Priority as LocationPriority
 class MapsViewModel @Inject constructor(
     private val userPreferencesManager: UserPreferencesManager,
     private val locationPermissionsManager: LocationPermissionsManager,
-    private val fusedLocationClient: FusedLocationProviderClient
+    private val fusedLocationClient: FusedLocationProviderClient,
+    private val mapUseCase: MapUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MapsUiState())
@@ -38,7 +43,6 @@ class MapsViewModel @Inject constructor(
     init {
         observeUser()
         checkLocationPermission()
-        loadMockIncidents() // TODO : Temporal: cargar incidentes de prueba
     }
 
     fun onEvent(event: MapsEvent) {
@@ -69,6 +73,7 @@ class MapsViewModel @Inject constructor(
 
         if (hasPermission) {
             getCurrentLocation()
+            loadMapIncidents()
         }
     }
 
@@ -127,24 +132,107 @@ class MapsViewModel @Inject constructor(
         }
     }
 
-    private fun onMapReady(isReady: Boolean) {
-        if (isReady && _uiState.value.hasLocationPermission) {
-            getCurrentLocation()
+    private fun loadMapIncidents() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoadingIncidents = true) }
+
+            when (val result = mapUseCase.getMapIncidents()) {
+                is DataState.Success -> {
+                    val mapData = result.data
+                    _uiState.update {
+                        it.copy(
+                            myIncidents = mapData.myIncidents,
+                            otherIncidents = mapData.otherIncidents,
+                            totalCount = mapData.totalCount,
+                            radiusKm = mapData.radiusKm,
+                            userLocation = mapData.userLocation,
+                            isLoadingIncidents = false
+                        )
+                    }
+                }
+
+                is DataState.Error -> {
+                    _uiState.update {
+                        it.copy(
+                            isLoadingIncidents = false,
+                            dialogState = MapDialogState.Error(
+                                title = "Error al cargar incidentes",
+                                message = result.message
+                            )
+                        )
+                    }
+                }
+            }
         }
     }
 
-    private fun selectIncident(incidentId: String?) {
+    private fun onMapReady(isReady: Boolean) {
+        if (isReady && _uiState.value.hasLocationPermission) {
+            if (_uiState.value.myIncidents.isEmpty() && _uiState.value.otherIncidents.isEmpty()) {
+                loadMapIncidents()
+            }
+        }
+    }
+
+    private fun selectIncident(incidentId: Int?) {
+        val allIncidents = _uiState.value.myIncidents + _uiState.value.otherIncidents
         val incident = incidentId?.let { id ->
-            _uiState.value.incidents.find { it.id == id }
+            allIncidents.find { it.id == id }
         }
         _uiState.update {
             it.copy(
                 selectedIncident = incident,
-                dialogState = incident?.let { MapDialogState.IncidentDetails(it) }
+                dialogState = incident?.let { MapDialogState.IncidentDetails(it.toIncidentMarker()) }
                     ?: MapDialogState.None
             )
         }
     }
+
+    fun MapIncidentModel.toIncidentMarker(): IncidentMarker {
+
+        val lat = latitude ?: 0.0
+        val lng = longitude ?: 0.0
+
+        val mappedType = mapStringToIncidentType(incidentTypeName)
+
+        val mappedPriority = when (severityLevel) {
+            1 -> Priority.LOW
+            2 -> Priority.MEDIUM
+            3 -> Priority.HIGH
+            else -> Priority.MEDIUM
+        }
+
+        return IncidentMarker(
+            id = id.toString(),
+            position = LatLng(lat, lng),
+            title = title,
+            type = mappedType,
+            priority = mappedPriority
+        )
+    }
+
+    fun mapStringToIncidentType(raw: String?): IncidentType {
+        if (raw.isNullOrBlank()) return IncidentType.RESIDENCE
+
+        return when (raw.trim().lowercase()) {
+
+            "power_outage", "outage", "blackout", "sin_energia" ->
+                IncidentType.POWER_OUTAGE
+
+            "fire", "incendio", "fuego" ->
+                IncidentType.FIRE
+
+            "medical_emergency", "medical", "emergencia_medica" ->
+                IncidentType.MEDICAL_EMERGENCY
+
+            "residence", "hogar", "casa" ->
+                IncidentType.RESIDENCE
+
+            else ->
+                IncidentType.RESIDENCE
+        }
+    }
+
 
     private fun updateCameraPosition(position: LatLng, zoom: Float) {
         _uiState.update { it.copy(mapZoom = zoom) }
@@ -155,45 +243,7 @@ class MapsViewModel @Inject constructor(
     }
 
     private fun refreshIncidents() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoadingLocation = true) }
-            loadMockIncidents()
-            _uiState.update { it.copy(isLoadingLocation = false) }
-        }
+        loadMapIncidents()
     }
 
-    //     TOSO : Delete fun
-    private fun loadMockIncidents() {
-        val mockIncidents = listOf(
-            IncidentMarker(
-                id = "1",
-                position = LatLng(-2.1894, -79.8886), // Milagro, Ecuador
-                title = "Corte eléctrico",
-                type = IncidentType.POWER_OUTAGE,
-                priority = Priority.MEDIUM
-            ),
-            IncidentMarker(
-                id = "2",
-                position = LatLng(-2.1794, -79.8786),
-                title = "Incendio leve",
-                type = IncidentType.FIRE,
-                priority = Priority.HIGH
-            ),
-            IncidentMarker(
-                id = "3",
-                position = LatLng(-2.1994, -79.8986),
-                title = "Emergencia médica",
-                type = IncidentType.MEDICAL_EMERGENCY,
-                priority = Priority.HIGH
-            ),
-            IncidentMarker(
-                id = "4",
-                position = LatLng(-2.2094, -79.9086),
-                title = "Zona de residencia",
-                type = IncidentType.RESIDENCE,
-                priority = Priority.LOW
-            )
-        )
-        _uiState.update { it.copy(incidents = mockIncidents) }
-    }
 }
