@@ -12,9 +12,13 @@ data class RegisterUiState(
     val telefonoError: String? = null,
     val passwordError: String? = null,
     val confirmPasswordError: String? = null,
+    val lastNameError : String? = null,
+    val firstNameError : String? = null,
     val termsError: Boolean = false,
 
     val displayNameTouched: Boolean = false,
+    val firstNameTouched : Boolean = false,
+    val lastNameTouched : Boolean = false,
     val cedulaTouched: Boolean = false,
     val emailTouched: Boolean = false,
     val telefonoTouched: Boolean = false,

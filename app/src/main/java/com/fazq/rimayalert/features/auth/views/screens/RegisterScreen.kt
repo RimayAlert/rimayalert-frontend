@@ -96,7 +96,9 @@ fun RegisterScreen(
                             emailError = uiState.emailError,
                             telefonoError = uiState.telefonoError,
                             passwordError = uiState.passwordError,
-                            confirmPasswordError = uiState.confirmPasswordError
+                            confirmPasswordError = uiState.confirmPasswordError,
+                            lastNameError = uiState.lastNameError,
+                            firtNameError = uiState.firstNameError,
                         )
 
                         Spacer(modifier = Modifier.height(Dimensions.gapMedium))
