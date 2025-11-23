@@ -68,6 +68,7 @@ fun MapView(
             onMapReady(true)
         }
     ) {
+        // Círculo de radio
         currentLocation?.let { location ->
             Circle(
                 center = location,
@@ -77,13 +78,11 @@ fun MapView(
                 strokeWidth = 3f
             )
 
-            Marker(
-                state = MarkerState(position = location),
-                title = "Mi ubicación",
-                icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)
-            )
+            // Marker de ubicación actual mejorado
+            CurrentLocationMarker(location = location)
         }
 
+        // Markers de mis incidentes
         myIncidents.forEach { incident ->
             if (incident.latitude != null && incident.longitude != null) {
                 IncidentMarkerComponent(
@@ -95,6 +94,7 @@ fun MapView(
             }
         }
 
+        // Markers de otros incidentes
         otherIncidents.forEach { incident ->
             if (incident.latitude != null && incident.longitude != null) {
                 IncidentMarkerComponent(

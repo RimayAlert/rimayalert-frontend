@@ -112,8 +112,9 @@ fun MapScreenContent(
         )
     }
 
-    HandleMapDialogs(
-        dialogState = mapsUiState.dialogState,
-        onEvent = onEvent
+    // Bottom Sheet para detalles del incidente
+    IncidentBottomSheet(
+        incident = mapsUiState.selectedIncident,
+        onDismiss = { onEvent(MapsEvent.DismissError) }
     )
 }
