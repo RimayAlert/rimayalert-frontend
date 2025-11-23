@@ -38,10 +38,6 @@ class AuthViewModel @Inject constructor(
                 _uiState.update { it.copy(password = event.password) }
             }
 
-            is LoginEvent.RememberMeChanged -> {
-                _uiState.update { it.copy(rememberMe = event.value) }
-            }
-
             LoginEvent.LoginButtonClicked -> login()
 
             LoginEvent.ClearErrorMessage -> {
@@ -51,6 +47,20 @@ class AuthViewModel @Inject constructor(
             LoginEvent.ClearSuccessMessage -> {
                 _uiState.update { it.copy(successMessage = null) }
             }
+
+            LoginEvent.PermissionGranted -> {
+                _uiState.update { it.copy(hasLocationPermission = true) }
+            }
+
+            LoginEvent.PermissionDenied -> {
+                _uiState.update { it.copy(hasLocationPermission = false) }
+            }
+
+            LoginEvent.PermissionRequestAttempt -> {
+                _uiState.update { it.copy(hasAskedPermissionBefore = true) }
+            }
+
+            else -> {}
         }
     }
 
@@ -60,8 +70,30 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    fun setLocationPermission(granted: Boolean) {
+        _uiState.update {
+            it.copy(hasLocationPermission = granted)
+        }
+    }
 
     private fun login() {
+        val username = uiState.value.userName.trim()
+        val password = uiState.value.password.trim()
+        when {
+            username.isEmpty() -> {
+                _uiState.update {
+                    it.copy(errorMessage = "El nombre de usuario no puede estar vacío.")
+                }
+                return
+            }
+
+            password.isEmpty() -> {
+                _uiState.update {
+                    it.copy(errorMessage = "La contraseña no puede estar vacía.")
+                }
+                return
+            }
+        }
         _uiState.update {
             it.copy(
                 isLoading = true,
@@ -70,6 +102,7 @@ class AuthViewModel @Inject constructor(
                 loginSuccess = false
             )
         }
+
         viewModelScope.launch {
             val authParam = AuthModel(uiState.value.userName, password = uiState.value.password)
             when (val result = authUseCase.auth(authParam)) {

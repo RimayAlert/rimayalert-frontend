@@ -48,9 +48,6 @@ fun HomeScreen(
         initial = false
     )
 
-    /**
-     * 1. PEDIR PERMISO AUTOMÁTICAMENTE SOLO 1 VEZ
-     */
     LaunchedEffect(Unit) {
         if (Build.VERSION.SDK_INT >= 33 &&
             !notificationGranted &&
@@ -60,12 +57,8 @@ fun HomeScreen(
         }
     }
 
-    /**
-     * 2. ESCUCHAR CAMBIO REAL DEL PERMISO DEL SISTEMA
-     */
     LaunchedEffect(notificationPermission.status) {
         when {
-            // PERMITIDO
             notificationPermission.status.isGranted -> {
                 homeViewModel.setNotificationGranted()
             }
