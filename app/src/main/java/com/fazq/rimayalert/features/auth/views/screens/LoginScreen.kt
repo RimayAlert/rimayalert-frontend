@@ -75,7 +75,6 @@ fun LoginScreen(
         }
     }
 
-    // Verificar permisos al inicio
     LaunchedEffect(Unit) {
         val hasPermission = hasLocationPermission(context)
         if (hasPermission) {
@@ -92,7 +91,6 @@ fun LoginScreen(
         }
     }
 
-    // Verificar permisos cuando la app vuelve del foreground (desde Settings)
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -138,6 +136,12 @@ fun LoginScreen(
         )
     }
 
+    LaunchedEffect(uiState.loginSuccess) {
+        if (uiState.loginSuccess) {
+            onLoginSuccess()
+        }
+    }
+
     uiState.errorMessage?.let {
         ErrorDialogComponent(
             openDialog = true,
@@ -162,7 +166,6 @@ fun LoginScreen(
         uiState = uiState,
         onUserNameChange = { authViewModel.onEvent(LoginEvent.UsernameChanged(it)) },
         onPasswordChange = { authViewModel.onEvent(LoginEvent.PasswordChanged(it)) },
-        onRememberMeChange = { },
         onLoginClick = {
             if (!uiState.hasLocationPermission) {
                 permissionDialogVisible = true

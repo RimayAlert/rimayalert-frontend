@@ -26,7 +26,7 @@ fun MascotPlaceholderComponent(
 ) {
     Box(
         modifier = modifier
-            .size(120.dp)
+            .size(180.dp)
             .clip(CircleShape)
             .background(AppColors.backgroundLight)
             .padding(8.dp),
