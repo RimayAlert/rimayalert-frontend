@@ -26,7 +26,7 @@ fun AuthFooterTextComponent(
         Text(
             text = normalText,
             fontSize = TextSizes.medium,
-            color = AppColors.secondary
+            color = AppColors.textPrimary
         )
         TextButton(
             onClick = onClick,

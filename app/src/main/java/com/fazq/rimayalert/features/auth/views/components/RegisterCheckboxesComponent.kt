@@ -45,7 +45,7 @@ fun RegisterCheckboxesComponent(
                 Text(
                     text = "Acepto los ",
                     fontSize = 14.sp,
-                    color = AppColors.secondary
+                    color = AppColors.textPrimary
                 )
                 TextButton(
                     onClick = onTermsClick,

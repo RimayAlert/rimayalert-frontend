@@ -130,7 +130,7 @@ fun LoginContentComponent(
                             Text(
                                 text = "Recordarme",
                                 fontSize = TextSizes.medium,
-                                color = AppColors.secondary
+                                color = AppColors.textPrimary
                             )
                         }
 
