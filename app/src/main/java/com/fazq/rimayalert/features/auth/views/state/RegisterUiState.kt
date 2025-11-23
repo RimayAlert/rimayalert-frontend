@@ -6,14 +6,20 @@ import com.fazq.rimayalert.features.auth.domain.model.RegisterUserModel
 data class RegisterUiState(
     val registerData: RegisterUserModel = RegisterUserModel(),
 
-    val showPassword: Boolean = false,
-    val showConfirmPassword: Boolean = false,
-
-    val displayNameError: Boolean = false,
-    val emailError: Boolean = false,
-    val passwordError: Boolean = false,
-    val confirmPasswordError: Boolean = false,
+    val displayNameError: String? = null,
+    val cedulaError: String? = null,
+    val emailError: String? = null,
+    val telefonoError: String? = null,
+    val passwordError: String? = null,
+    val confirmPasswordError: String? = null,
     val termsError: Boolean = false,
+
+    val displayNameTouched: Boolean = false,
+    val cedulaTouched: Boolean = false,
+    val emailTouched: Boolean = false,
+    val telefonoTouched: Boolean = false,
+    val passwordTouched: Boolean = false,
+    val confirmPasswordTouched: Boolean = false,
 
     val isLoading: Boolean = false,
     val fcmToken: String? = null,
