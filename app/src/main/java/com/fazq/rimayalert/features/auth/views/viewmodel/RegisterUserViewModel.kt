@@ -62,11 +62,14 @@ class RegisterUserViewModel @Inject constructor(
         _uiState.update {
             when (field) {
                 RegisterField.DISPLAY_NAME -> it.copy(displayNameTouched = true)
+                RegisterField.FIRST_NAME -> it.copy(firstNameTouched = true)
+                RegisterField.LAST_NAME -> it.copy(lastNameTouched = true)
                 RegisterField.CEDULA -> it.copy(cedulaTouched = true)
                 RegisterField.EMAIL -> it.copy(emailTouched = true)
                 RegisterField.TELEFONO -> it.copy(telefonoTouched = true)
                 RegisterField.PASSWORD -> it.copy(passwordTouched = true)
                 RegisterField.CONFIRM_PASSWORD -> it.copy(confirmPasswordTouched = true)
+
             }
         }
         updateRegisterData(_uiState.value.registerData)

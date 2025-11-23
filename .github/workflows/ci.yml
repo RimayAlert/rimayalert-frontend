@@ -32,6 +32,9 @@ jobs:
       - name: Install Android SDK
         uses: android-actions/setup-android@v3
 
+      - name: Cleanup old Room schemas
+        run: rm -rf app/schemas
+
       - name: Create env.properties file
         run: |
           echo "BASE_URL_DEV=${{ secrets.BASE_URL_DEV }}" >> env.properties

@@ -8,13 +8,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.fazq.rimayalert.core.ui.components.ModernLoaderComponent
 import com.fazq.rimayalert.core.ui.theme.Dimensions
 import com.fazq.rimayalert.features.maps.views.event.MapsEvent
 import com.fazq.rimayalert.features.maps.views.state.MapsUiState
@@ -32,18 +32,23 @@ fun MapScreenContent(
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            MapHeader()
+            MapHeaderWithStats(
+                totalIncidents = mapsUiState.totalCount,
+                myIncidents = mapsUiState.myIncidents.size,
+                otherIncidents = mapsUiState.otherIncidents.size,
+                radiusKm = mapsUiState.radiusKm
+            )
 
             Card(
                 modifier = Modifier.fillMaxSize(),
-                shape = RoundedCornerShape(Dimensions.cornerRadiusExtraLarge),
+                shape = RoundedCornerShape(24.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = Color.White
                 ),
                 elevation = CardDefaults.cardElevation(
-                    defaultElevation = Dimensions.elevationLow
+                    defaultElevation = 4.dp
                 )
             ) {
                 Box(modifier = Modifier.fillMaxSize()) {
@@ -57,9 +62,11 @@ fun MapScreenContent(
                         else -> {
                             MapView(
                                 currentLocation = mapsUiState.currentLocation,
-                                incidents = mapsUiState.incidents,
+                                myIncidents = mapsUiState.myIncidents,
+                                otherIncidents = mapsUiState.otherIncidents,
                                 selectedIncidentId = mapsUiState.selectedIncident?.id,
                                 hasLocationPermission = mapsUiState.hasLocationPermission,
+                                radiusKm = mapsUiState.radiusKm,
                                 onIncidentClick = { incidentId ->
                                     onEvent(MapsEvent.OnIncidentSelected(incidentId))
                                 },
@@ -68,47 +75,46 @@ fun MapScreenContent(
                                 },
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .clip(RoundedCornerShape(16.dp))
+                                    .clip(RoundedCornerShape(24.dp))
                             )
 
                             Box(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(top = 12.dp, end = 12.dp),
+                                    .padding(16.dp),
                                 contentAlignment = Alignment.TopEnd
                             ) {
                                 MapControls(
                                     onMyLocationClick = { onEvent(MapsEvent.OnMyLocationClick) },
-                                    onRefreshClick = { onEvent(MapsEvent.OnRefreshClick) }
+                                    onRefreshClick = { onEvent(MapsEvent.OnRefreshClick) },
+                                    isRefreshing = mapsUiState.isLoadingIncidents
                                 )
                             }
 
                             Box(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(start = 12.dp, bottom = 12.dp),
+                                    .padding(16.dp),
                                 contentAlignment = Alignment.BottomStart
                             ) {
                                 MapLegend()
-                            }
-
-                            if (mapsUiState.isLoadingLocation) {
-                                Box(
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    CircularProgressIndicator()
-                                }
                             }
                         }
                     }
                 }
             }
         }
+
+        ModernLoaderComponent(
+            isLoading = mapsUiState.isLoadingIncidents,
+            message = "Cargando incidentes cercanos...",
+            fullScreen = false
+        )
     }
 
-    HandleMapDialogs(
-        dialogState = mapsUiState.dialogState,
-        onEvent = onEvent
+    // Bottom Sheet para detalles del incidente
+    IncidentBottomSheet(
+        incident = mapsUiState.selectedIncident,
+        onDismiss = { onEvent(MapsEvent.DismissError) }
     )
 }

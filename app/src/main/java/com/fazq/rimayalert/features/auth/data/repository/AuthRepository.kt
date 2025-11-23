@@ -34,7 +34,7 @@ class AuthRepository @Inject constructor(
             .flowOn(Dispatchers.IO)
             .collect { responseState ->
                 dataState = when (responseState) {
-                    is DataState.Success -> {
+                        is DataState.Success -> {
                         val token = if ("Token" in responseState.data.token) {
                             responseState.data.token
                         } else {

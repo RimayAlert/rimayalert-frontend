@@ -9,10 +9,10 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.AlternateEmail
 import androidx.compose.material.icons.filled.Badge
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -52,19 +52,39 @@ fun RegisterFormFieldsComponent(
     emailError: String?,
     telefonoError: String?,
     passwordError: String?,
-    confirmPasswordError: String?
+    confirmPasswordError: String?,
+    firtNameError: String?,
+    lastNameError: String?
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(Dimensions.gapMedium)
     ) {
         ModernTextField(
+            value = registerData.firstName,
+            onValueChange = { onDataChange(registerData.copy(firstName = it)) },
+            onFocusLost = { onFieldTouched(RegisterField.FIRST_NAME) },
+            label = "Nombre",
+            error = firtNameError,
+            leadingIcon = Icons.Default.Badge
+        )
+
+        ModernTextField(
+            value = registerData.lastName,
+            onValueChange = { onDataChange(registerData.copy(lastName = it)) },
+            onFocusLost = { onFieldTouched(RegisterField.LAST_NAME) },
+            label = "Apellido",
+            error = lastNameError,
+            leadingIcon = Icons.Default.AccountCircle
+        )
+
+        ModernTextField(
             value = registerData.displayName,
             onValueChange = { onDataChange(registerData.copy(displayName = it)) },
             onFocusLost = { onFieldTouched(RegisterField.DISPLAY_NAME) },
-            label = "Nombre completo",
+            label = "Alias",
             error = displayNameError,
-            leadingIcon = Icons.Default.Person
+            leadingIcon = Icons.Default.AlternateEmail
         )
 
         ModernTextField(

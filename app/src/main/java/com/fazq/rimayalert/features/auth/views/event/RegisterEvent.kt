@@ -13,6 +13,8 @@ sealed class RegisterEvent {
 }
 
 enum class RegisterField {
+    LAST_NAME,
+    FIRST_NAME,
     DISPLAY_NAME,
     CEDULA,
     EMAIL,
