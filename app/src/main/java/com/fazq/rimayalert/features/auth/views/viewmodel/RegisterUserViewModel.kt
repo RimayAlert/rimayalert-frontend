@@ -13,6 +13,7 @@ import com.fazq.rimayalert.features.auth.views.event.RegisterEvent
 import com.fazq.rimayalert.features.auth.views.event.RegisterField
 import com.fazq.rimayalert.features.auth.views.state.RegisterUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -68,7 +69,6 @@ class RegisterUserViewModel @Inject constructor(
                 RegisterField.CONFIRM_PASSWORD -> it.copy(confirmPasswordTouched = true)
             }
         }
-        // Validar solo el campo que fue tocado
         updateRegisterData(_uiState.value.registerData)
     }
 
@@ -231,9 +231,11 @@ class RegisterUserViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
+            delay(800)
 
             when (val result = useCase.registerUser(_uiState.value.registerData)) {
                 is DataState.Success -> {
+                    delay(1000)
                     _uiState.update {
                         it.copy(
                             isLoading = false,
