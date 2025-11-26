@@ -37,6 +37,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fazq.rimayalert.features.home.views.utils.formatRelativeTime
 import com.fazq.rimayalert.features.maps.domain.model.MapIncidentModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,10 +57,18 @@ fun IncidentBottomSheet(
     onDismiss: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val scope = rememberCoroutineScope()
+
+
 
     if (incident != null) {
         ModalBottomSheet(
-            onDismissRequest = onDismiss,
+            onDismissRequest = {
+                scope.launch {
+                    sheetState.hide()
+                    onDismiss()
+                }
+            },
             sheetState = sheetState,
             shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
             containerColor = Color.White,
@@ -82,7 +93,12 @@ fun IncidentBottomSheet(
         ) {
             IncidentDetailsContent(
                 incident = incident,
-                onDismiss = onDismiss
+                onDismiss = {
+                    scope.launch {
+                        sheetState.hide()
+                        onDismiss()
+                    }
+                }
             )
         }
     }

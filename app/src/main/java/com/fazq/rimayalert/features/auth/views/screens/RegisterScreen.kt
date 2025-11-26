@@ -132,8 +132,7 @@ fun RegisterScreen(
                                     uiState.registerData.username.isNotBlank() &&
                                     uiState.registerData.password.isNotBlank() &&
                                     uiState.registerData.confirmPassword.isNotBlank() &&
-                                    uiState.registerData.acceptTerms &&
-                                    uiState.registerData.fcmToken.length > 100,
+                                    uiState.registerData.acceptTerms,
                             isLoading = uiState.isLoading
                         )
 
