@@ -108,7 +108,7 @@ fun RegisterScreen(
                             onAcceptTermsChange = {
                                 registerUserViewModel.onEvent(RegisterEvent.OnAcceptTermsChange(it))
                             },
-                            onTermsClick = onTermsClick
+//                            onTermsClick = onTermsClick
                         )
 
                         Spacer(modifier = Modifier.height(Dimensions.gapXLarge))

@@ -136,23 +136,23 @@ fun LoginContentComponent(
 
                     Spacer(modifier = Modifier.height(Dimensions.gapCompact))
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        TextButton(
-                            onClick = onForgotPasswordClick,
-                            enabled = !isLoading,
-                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
-                        ) {
-                            Text(
-                                text = "¿Olvidaste tu contraseña?",
-                                fontSize = 14.sp,
-                                color = MaterialTheme.colorScheme.primary,
-                                fontWeight = FontWeight.Medium
-                            )
-                        }
-                    }
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.End
+//                    ) {
+//                        TextButton(
+//                            onClick = onForgotPasswordClick,
+//                            enabled = !isLoading,
+//                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
+//                        ) {
+//                            Text(
+//                                text = "¿Olvidaste tu contraseña?",
+//                                fontSize = 14.sp,
+//                                color = MaterialTheme.colorScheme.primary,
+//                                fontWeight = FontWeight.Medium
+//                            )
+//                        }
+//                    }
 
                     Spacer(modifier = Modifier.height(Dimensions.gapLarge))
 

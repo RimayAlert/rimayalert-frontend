@@ -15,7 +15,7 @@ data class MapsUiState(
     val myIncidents: List<MapIncidentModel> = emptyList(),
     val otherIncidents: List<MapIncidentModel> = emptyList(),
     val totalCount: Int = 0,
-    val radiusKm: Double = 5.0,
+    val radiusKm: Double = 2.0,
     val userLocation: UserLocationModel? = null,
 
     val selectedIncident: MapIncidentModel? = null,
