@@ -18,12 +18,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fazq.rimayalert.core.states.DialogState
+import com.fazq.rimayalert.core.ui.components.ModernLoaderComponent
 import com.fazq.rimayalert.core.ui.components.scaffold.AppBottomNavigationComponent
 import com.fazq.rimayalert.core.ui.components.scaffold.AppScaffoldComponent
 import com.fazq.rimayalert.core.ui.components.topBar.HomeTopBarComponent
 import com.fazq.rimayalert.core.utils.ImagePickerManager
 import com.fazq.rimayalert.features.alerts.views.component.sections.AlertsContentComponent
-import com.fazq.rimayalert.features.alerts.views.component.sections.LocationSectionComponent
 import com.fazq.rimayalert.features.alerts.views.event.AlertEvent
 import com.fazq.rimayalert.features.alerts.views.viewmodel.AlertViewModel
 import com.fazq.rimayalert.features.home.views.viewmodel.HomeViewModel
@@ -168,4 +168,11 @@ fun AlertsScreen(
             }
         )
     }
+
+
+    ModernLoaderComponent(
+        isLoading = uiState.isLoading,
+        message = "Enviando alerta...",
+        fullScreen = false
+    )
 }
