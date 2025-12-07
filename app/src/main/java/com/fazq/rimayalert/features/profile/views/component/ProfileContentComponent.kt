@@ -1,5 +1,6 @@
 package com.fazq.rimayalert.features.profile.views.component
 
+import AboutAppDialog
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,14 +9,18 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -34,6 +39,7 @@ fun ProfileContentComponent(
     onNavigateToLogin: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var showAboutDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(profileUiState.shouldNavigateToLogin) {
         if (profileUiState.shouldNavigateToLogin) {
@@ -49,6 +55,7 @@ fun ProfileContentComponent(
     ) {
         ProfileHeaderComponent(
             userName = profileUiState.userName,
+            userEmail = profileUiState.userEmail,
             memberSince = profileUiState.memberSince
         )
 
@@ -56,9 +63,9 @@ fun ProfileContentComponent(
 
         ProfileSectionComponent(title = "Datos Personales") {
             ProfileMenuItemComponent(
-                icon = Icons.Outlined.DateRange,
-                title = "Miembro desde",
-                subtitle = profileUiState.memberSince,
+                icon = Icons.Outlined.Person,
+                title = "Nombre de Usuario",
+                subtitle = profileUiState.userName,
                 showArrow = false
             )
 
@@ -70,11 +77,10 @@ fun ProfileContentComponent(
             )
 
             ProfileMenuItemComponent(
-                icon = Icons.Filled.Notifications,
-                title = "Notificaciones Activas",
-                showSwitch = true,
-                switchValue = profileUiState.notificationsEnabled,
-                onSwitchChange = { onEvent(ProfileEvent.OnNotificationToggle) }
+                icon = Icons.Outlined.DateRange,
+                title = "Miembro desde",
+                subtitle = profileUiState.memberSince,
+                showArrow = false
             )
 
             ProfileMenuItemComponent(
@@ -89,15 +95,18 @@ fun ProfileContentComponent(
 
         ProfileSectionComponent(title = "Configuración") {
             ProfileMenuItemComponent(
-                icon = Icons.Filled.Lock,
-                title = "Cambiar Contraseña",
-                onClick = { onEvent(ProfileEvent.OnChangePasswordClick) }
+                icon = Icons.Filled.Notifications,
+                title = "Notificaciones Activas",
+                subtitle = if (profileUiState.notificationsEnabled) "Recibiendo alertas" else "Sin alertas",
+                showSwitch = true,
+                switchValue = profileUiState.notificationsEnabled,
+                onSwitchChange = { onEvent(ProfileEvent.OnNotificationToggle) }
             )
 
             ProfileMenuItemComponent(
                 icon = Icons.Filled.Info,
                 title = "Acerca de la App",
-                onClick = { onEvent(ProfileEvent.OnAboutAppClick) }
+                onClick = { showAboutDialog = true }
             )
 
             ProfileMenuItemComponent(
@@ -117,7 +126,12 @@ fun ProfileContentComponent(
         )
     }
 
+    // About App Dialog
+    if (showAboutDialog) {
+        AboutAppDialog(onDismiss = { showAboutDialog = false })
+    }
 
+    // Other Dialogs
     when (val dialog = profileUiState.dialogState) {
         is DialogState.Confirmation -> {
             ConfirmationDialogComponent(

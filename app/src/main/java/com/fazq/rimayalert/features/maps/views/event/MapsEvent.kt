@@ -13,4 +13,5 @@ sealed interface MapsEvent {
     data class OnMapCameraMove(val position: LatLng, val zoom: Float) : MapsEvent
     data object OnMyLocationClick : MapsEvent
     data object OnRefreshClick : MapsEvent
+    data object DismissIncident : MapsEvent
 }

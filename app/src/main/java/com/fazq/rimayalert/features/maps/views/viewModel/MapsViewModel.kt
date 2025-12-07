@@ -56,6 +56,11 @@ class MapsViewModel @Inject constructor(
             is MapsEvent.RefreshIncidents -> refreshIncidents()
             is MapsEvent.OnMyLocationClick -> getCurrentLocation()
             is MapsEvent.OnRefreshClick -> refreshIncidents()
+            is MapsEvent.DismissIncident -> {
+                _uiState.update {
+                    it.copy(selectedIncident = null)
+                }
+            }
         }
     }
 

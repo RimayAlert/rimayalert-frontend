@@ -108,7 +108,7 @@ fun RegisterScreen(
                             onAcceptTermsChange = {
                                 registerUserViewModel.onEvent(RegisterEvent.OnAcceptTermsChange(it))
                             },
-                            onTermsClick = onTermsClick
+//                            onTermsClick = onTermsClick
                         )
 
                         Spacer(modifier = Modifier.height(Dimensions.gapXLarge))
@@ -132,8 +132,7 @@ fun RegisterScreen(
                                     uiState.registerData.username.isNotBlank() &&
                                     uiState.registerData.password.isNotBlank() &&
                                     uiState.registerData.confirmPassword.isNotBlank() &&
-                                    uiState.registerData.acceptTerms &&
-                                    uiState.registerData.fcmToken.length > 100,
+                                    uiState.registerData.acceptTerms,
                             isLoading = uiState.isLoading
                         )
 

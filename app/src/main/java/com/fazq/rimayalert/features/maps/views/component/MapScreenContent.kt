@@ -112,9 +112,10 @@ fun MapScreenContent(
         )
     }
 
-    // Bottom Sheet para detalles del incidente
     IncidentBottomSheet(
         incident = mapsUiState.selectedIncident,
-        onDismiss = { onEvent(MapsEvent.DismissError) }
+        onDismiss = { onEvent(MapsEvent.DismissIncident) }
     )
+
+
 }

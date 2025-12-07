@@ -29,8 +29,6 @@ class ProfileViewModel @Inject constructor(
 
     fun onEvent(event: ProfileEvent) {
         when (event) {
-            is ProfileEvent.OnChangePasswordClick -> handleChangePassword()
-            is ProfileEvent.OnAboutAppClick -> handleAboutApp()
             is ProfileEvent.OnLogoutClick -> handleLogoutClick()
             is ProfileEvent.OnDismissDialog -> handleDismissDialog()
             is ProfileEvent.OnNotificationToggle -> handleNotificationToggle()
@@ -42,17 +40,12 @@ class ProfileViewModel @Inject constructor(
     private fun observeUser() {
         viewModelScope.launch {
             userPreferencesManager.user.collect { user ->
-                _profileUiState.value = _profileUiState.value.copy(userName = user.getDisplayName())
+                _profileUiState.value = _profileUiState.value.copy(
+                    userName = user.getDisplayName(),
+                    userEmail = user?.email?.ifEmpty { "No especificado" } ?: ""
+                )
             }
         }
-    }
-
-    private fun handleChangePassword() {
-        // TODO: Implementar cambio de contraseña
-    }
-
-    private fun handleAboutApp() {
-        // TODO: Implementar acerca de la app
     }
 
     private fun handleLogoutClick() {
@@ -98,6 +91,7 @@ class ProfileViewModel @Inject constructor(
         _profileUiState.value = _profileUiState.value.copy(
             notificationsEnabled = !_profileUiState.value.notificationsEnabled
         )
+        // Aquí puedes agregar lógica para guardar la preferencia
     }
 
     private fun handleCommunityClick() {

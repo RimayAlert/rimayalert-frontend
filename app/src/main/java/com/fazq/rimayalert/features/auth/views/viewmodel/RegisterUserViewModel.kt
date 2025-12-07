@@ -172,8 +172,7 @@ class RegisterUserViewModel @Inject constructor(
                 telefonoError == null &&
                 passwordError == null &&
                 confirmPasswordError == null &&
-                data.acceptTerms &&
-                data.fcmToken.length > 100
+                data.acceptTerms
     }
 
     private fun loadSavedLocation() {
