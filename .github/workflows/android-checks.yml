@@ -1,15 +1,11 @@
-name: Android CI
+name: Android Checks
 
 on:
-  push:
-    branches:
-      - main
-      - develop
-      - 'feature/**'
   pull_request:
     branches:
-      - main
       - develop
+      - main
+    types: [ opened, synchronize, reopened ]
 
 jobs:
   build:
