@@ -86,7 +86,10 @@ espressoCore = "3.7.0"
 firebase-bom = "33.7.0"
 google-services = "4.4.2"
 
-
+##########################
+# SONAR QUBE
+##########################
+sonarqube = "7.2.2.6593"
 
 playServicesLocation = "21.3.0"
 googleMaps = "19.2.0"
@@ -94,7 +97,7 @@ kotlinxCoroutines = "1.8.1"
 mapsCompose = "4.3.3"
 foundationLayout = "1.9.4"
 
-lottie-compose="6.3.0"
+lottie-compose = "6.3.0"
 
 
 
@@ -196,5 +199,7 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
+# --- SonarQube ---
+sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
 
 
