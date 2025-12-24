@@ -5,7 +5,7 @@ on:
     branches:
       - develop
       - main
-    types: [opened, synchronize, reopened]
+    types: [ opened, synchronize, reopened ]
 
 jobs:
   sonar:
@@ -23,6 +23,9 @@ jobs:
         with:
           java-version: 17
           distribution: zulu
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
 
       - name: Cache SonarQube
         uses: actions/cache@v4
